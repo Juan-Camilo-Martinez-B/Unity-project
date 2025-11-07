@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
 
     public bool hasPistol = false;
     public bool hasRiffle = false;
+    public bool hasGrenade = false;
 
     //Cámara
     public Transform cameraAxis;
@@ -51,8 +52,9 @@ public class PlayerController : MonoBehaviour
 
     public GameObject primaryWeapon;
     public GameObject secondaryWeapon;
+    public GameObject throwableWeapon;
 
-
+    public Transform spawnGrenade;
     
     // Start is called before the first frame update
     void Start()
@@ -93,7 +95,13 @@ public class PlayerController : MonoBehaviour
         ItemLogic();
         AnimLogic();
 
-        if (hasPistol || hasRiffle)
+        if (hasPistol || hasRiffle || hasGrenade)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                SwitchWeapon();
+            }
+        }
         {
             if (Input.GetAxis("Mouse ScrollWheel") > 0f)
             {
@@ -144,7 +152,7 @@ public class PlayerController : MonoBehaviour
 
         cameraAxis.localRotation = localRotation;
 
-        if (hasPistol || hasRiffle)
+        if (hasPistol || hasRiffle || hasGrenade)
         {
             cameraTrack.gameObject.SetActive(false);
             cameraWeaponTrack.gameObject.SetActive(true);
@@ -222,6 +230,26 @@ public class PlayerController : MonoBehaviour
 
                     break;
                 }
+                else if (itemPrefab.CompareTag("TW") && nearItem.CompareTag("TW"))
+                {
+                    // Instanciar como hijo del itemSlot
+                    instantiatedItem = Instantiate(itemPrefab, itemSlot);
+                    
+                    // Resetear posición y rotación local
+                    instantiatedItem.transform.localPosition = Vector3.zero;
+                    instantiatedItem.transform.localRotation = Quaternion.identity;
+                    
+                    throwableWeapon = this.gameObject;
+                    haveWeapon = true;
+                    countWeapons++;
+                    weapons++;
+
+                    Destroy(nearItem.gameObject);
+
+                    nearItem = null;
+
+                    break;
+                }
             }
 
             if (haveWeapon && hasPistol && countWeapons > 1)
@@ -232,26 +260,48 @@ public class PlayerController : MonoBehaviour
             {
                 hasRiffle = false;
             }
+            else if (haveWeapon && hasGrenade && countWeapons > 1)
+            {
+                hasGrenade = false;
+            }
 
             if (instantiatedItem.CompareTag("PW"))
             {
                 primaryWeapon = instantiatedItem;
                 hasPistol = true;
                 hasRiffle = false;
+                hasGrenade = false;
 
                 primaryWeapon.SetActive(true);
-                if (secondaryWeapon != null)
+                if (secondaryWeapon && throwableWeapon != null)
                     secondaryWeapon.SetActive(false);
+                    throwableWeapon.SetActive(false);
             }
             else if (instantiatedItem.CompareTag("SW"))
             {
                 secondaryWeapon = instantiatedItem;
                 hasRiffle = true;
                 hasPistol = false;
+                hasGrenade = false;
 
-                if (primaryWeapon != null)
+                if (primaryWeapon && throwableWeapon != null)
                     primaryWeapon.SetActive(false);
+                    throwableWeapon.SetActive(false);
                 secondaryWeapon.SetActive(true);
+                
+            }
+            else if (instantiatedItem.CompareTag("TW"))
+            {
+                throwableWeapon = instantiatedItem;
+                hasRiffle = false;
+                hasPistol = false;
+                hasGrenade = true;
+
+                if (primaryWeapon && secondaryWeapon != null)
+                    primaryWeapon.SetActive(false);
+                    secondaryWeapon.SetActive(false);
+                throwableWeapon.SetActive(true);
+                
             }
 
 
@@ -268,19 +318,34 @@ public class PlayerController : MonoBehaviour
         if (primaryWeapon.activeSelf == true)
         {
             hasPistol = false;
+            hasGrenade = false;
             hasRiffle = true;
 
             primaryWeapon.gameObject.SetActive(false);
             secondaryWeapon.gameObject.SetActive(true);
+            throwableWeapon.gameObject.SetActive(false);
+        }
+        else if (throwableWeapon.activeSelf == true)
+        {
+            hasRiffle = false;
+            hasPistol = false;
+            hasGrenade = true;
+
+            secondaryWeapon.gameObject.SetActive(false);
+            primaryWeapon.gameObject.SetActive(false);
+            throwableWeapon.gameObject.SetActive(true);
         }
         else if (secondaryWeapon.activeSelf == true)
         {
             hasRiffle = false;
+            hasGrenade = false;
             hasPistol = true;
 
-            secondaryWeapon.gameObject.SetActive(false);
             primaryWeapon.gameObject.SetActive(true);
+            secondaryWeapon.gameObject.SetActive(false);
+            throwableWeapon.gameObject.SetActive(false);
         }
+         
     }
 
     public void TakeDamage(float damage)
@@ -324,10 +389,18 @@ public class PlayerController : MonoBehaviour
 
         playerAnim.SetBool("holdPistol", hasPistol);
         playerAnim.SetBool("holdRiffle", hasRiffle);
+        playerAnim.SetBool("holdGrenade", hasGrenade);
 
         if (hasPistol || hasRiffle)
         {
+            playerAnim.SetLayerWeight(2, 0);
             playerAnim.SetLayerWeight(1, 1);
         }
+        else if (hasGrenade)
+        {
+            playerAnim.SetLayerWeight(1, 0);
+            playerAnim.SetLayerWeight(2, 1);
+        }
+        
     }
 }

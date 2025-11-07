@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PW
   - SW
+  - TW
   layers:
   - Default
   - TransparentFX
