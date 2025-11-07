@@ -17,6 +17,9 @@ public class BulletController : MonoBehaviour
     Vector3 lastBulletPos;
 
     public LayerMask hitboxMask;
+    
+    [HideInInspector]
+    public GameObject shooter; // Referencia al jugador que disparó la bala
 
 
 
@@ -24,14 +27,13 @@ public class BulletController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         bulletTr = GetComponent<Transform>();
         bulletRb = GetComponent<Rigidbody>();
 
         bulletRb.velocity = this.transform.forward * bulletPower; 
 
-        hitboxMask = LayerMask.NameToLayer("Hitbox");
-        
+        hitboxMask = 1 << LayerMask.NameToLayer("Hitbox");
+        lastBulletPos = transform.position;
     }
 
     // Update is called once per frame
@@ -51,25 +53,31 @@ public class BulletController : MonoBehaviour
     public void DetectCollision()
     {
         Vector3 bulletNewPos = bulletTr.position;
-        Vector3 bulletDirection = lastBulletPos - bulletNewPos ;
+        Vector3 bulletDirection = bulletNewPos - lastBulletPos;
 
         RaycastHit hit;
 
-        if (Physics.Raycast(bulletNewPos, bulletDirection.normalized, out hit, bulletDirection.magnitude))
+        if (Physics.Raycast(lastBulletPos, bulletDirection.normalized, out hit, bulletDirection.magnitude, hitboxMask))
         {
             GameObject go = hit.collider.gameObject;
 
-            if (go.layer == hitboxMask)
+            // Verificar si el objeto golpeado pertenece al jugador que disparó
+            if (shooter != null && go.transform.IsChildOf(shooter.transform))
             {
-                BodyPartHitCheck playerBodyPart = go.GetComponent<BodyPartHitCheck>();
-
-                if (playerBodyPart != null)
-                {
-                    playerBodyPart.TakeHit(bulletDamage);
-
-                Debug.Log("Disparo en " + playerBodyPart.BodyName);
-                }
+                lastBulletPos = bulletNewPos;
+                return; // Ignorar colisión con el jugador que disparó
             }
+
+            BodyPartHitCheck playerBodyPart = go.GetComponent<BodyPartHitCheck>();
+
+            if (playerBodyPart != null)
+            {
+                playerBodyPart.TakeHit(bulletDamage);
+                Debug.Log("Disparo en " + playerBodyPart.BodyName);
+            }
+
+            // Destruir la bala al impactar
+            Destroy(gameObject);
         }
 
         lastBulletPos = bulletNewPos;

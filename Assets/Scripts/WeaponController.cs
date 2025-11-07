@@ -39,17 +39,26 @@ public class WeaponController : MonoBehaviour
             shooting = false;
         }
 
-        Debug.DrawLine(shootSpawn.position, shootSpawn.position + shootSpawn.forward * 10f, Color.red);
         Debug.DrawLine(Camera.main.transform.position, Camera.main.transform.position + Camera.main.transform.forward * 10f, Color.blue);
         
         RaycastHit cameraHit;
-        
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out cameraHit))
         {
-            Vector3 shootDirection = cameraHit.point - shootSpawn.position;
-            shootSpawn.rotation = Quaternion.LookRotation(shootDirection);
-
+            // Calcular la dirección desde el arma hasta el punto donde mira la cámara
+            Vector3 targetPoint = cameraHit.point;
+            Vector3 directionToTarget = (targetPoint - shootSpawn.position).normalized;
+            shootSpawn.rotation = Quaternion.LookRotation(directionToTarget);
             
+            // Dibujar la línea roja solo hasta el punto de impacto
+            RaycastHit weaponHit;
+            if (Physics.Raycast(shootSpawn.position, directionToTarget, out weaponHit))
+            {
+                Debug.DrawLine(shootSpawn.position, weaponHit.point, Color.red);
+            }
+            else
+            {
+                Debug.DrawLine(shootSpawn.position, shootSpawn.position + directionToTarget * 10f, Color.red);
+            }
         }
 
 
@@ -77,7 +86,12 @@ public class WeaponController : MonoBehaviour
 
     public void InstantiateBullet()
     {
-        Instantiate(bulletPrefab, shootSpawn.position,shootSpawn.rotation);
+        GameObject bullet = Instantiate(bulletPrefab, shootSpawn.position, shootSpawn.rotation);
+        BulletController bulletCtrl = bullet.GetComponent<BulletController>();
+        if (bulletCtrl != null)
+        {
+            bulletCtrl.shooter = transform.root.gameObject; // Asigna el objeto raíz del jugador
+        }
     }
 
     IEnumerator AutomaticShoot()
