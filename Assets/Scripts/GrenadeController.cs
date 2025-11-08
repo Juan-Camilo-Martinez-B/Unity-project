@@ -12,14 +12,18 @@ public class GrenadeController : MonoBehaviour
 
     public GameObject theGrenade;
 
+    public Sprite weaponIcon;
+
     //Externos
     PlayerController player;
+    WeaponSlots weaponSlots;
 
 
     // Start is called before the first frame update
     void Start()
     {
         player = GetComponentInParent<PlayerController>();
+        weaponSlots = player != null ? player.GetComponentInChildren<WeaponSlots>() : null;
         
     }
 
@@ -65,14 +69,35 @@ public class GrenadeController : MonoBehaviour
 
             Debug.Log("[Grenade] Instanciada localScale: " + g.transform.localScale + " | lossyScale: " + g.transform.lossyScale);
 
+            // Actualizar estado antes de destruir el arma en mano
             throwing = false;
-            Destroy(this.gameObject);
 
+            // Vaciar el slot de granada y ocultar icono hasta que se recoja otra
+            if (weaponSlots != null && weaponSlots.throwableSlot != null)
+            {
+                weaponSlots.throwableSlot.gameObject.SetActive(false);
+            }
+            if (player.throwableWeaponIcon != null)
+            {
+                player.throwableWeaponIcon.gameObject.SetActive(false);
+                player.throwableWeaponIcon.sprite = null; // Limpiar sprite
+            }
+            player.throwableWeapon = null;
+
+            // Actualizar contadores y animación
             player.weapons--;
-
             player.hasGrenade = false;
             player.playerAnim.SetLayerWeight(1, 1);
             player.playerAnim.SetLayerWeight(2, 0);
+
+            // Restaurar arma previa o volver a idle
+            if (weaponSlots != null)
+            {
+                weaponSlots.RestoreLastWeaponOrIdle();
+            }
+
+            // Destruir el objeto del arma de la mano
+            Destroy(this.gameObject);
         }
 
     }

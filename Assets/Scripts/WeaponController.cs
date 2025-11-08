@@ -20,6 +20,24 @@ public class WeaponController : MonoBehaviour
     public ShootMode currentShootMode = ShootMode.Single;
 
     public GameObject bulletPrefab;
+
+    public Sprite weaponIcon;
+
+    [Header("Aiming")]
+    public float maxShootDistance = 100f;
+    [Tooltip("Capas consideradas para apuntar (lo que puede ser impactado por la cámara).")]
+    public LayerMask aimMask = ~0; // todas por defecto
+    [Tooltip("Capas que pueden obstruir la trayectoria desde el cañón al punto objetivo.")]
+    public LayerMask obstructionMask = ~0; // todas por defecto
+    [Tooltip("Mostrar líneas de depuración.")]
+    public bool showDebugLines = true;
+
+    [Header("Close-quarters safety")]
+    [Tooltip("Si algo obstruye justo frente al cañón a esta distancia, se cancela el disparo para evitar autodaño.")]
+    public float barrelBlockDistance = 0.3f;
+    public bool cancelShotWhenBlocked = true;
+    public GameObject blockedMuzzleVFXPrefab;
+    public float blockedMuzzleVFXLifetime = 0.1f;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,26 +57,41 @@ public class WeaponController : MonoBehaviour
             shooting = false;
         }
 
-        Debug.DrawLine(Camera.main.transform.position, Camera.main.transform.position + Camera.main.transform.forward * 10f, Color.blue);
-        
+        // 1) Ray desde la cámara para obtener punto de mira (aim point)
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        Vector3 camOrigin = cam.transform.position;
+        Vector3 camDir = cam.transform.forward;
+        Ray cameraRay = new Ray(camOrigin, camDir);
+        Vector3 aimPoint = camOrigin + camDir * maxShootDistance; // por defecto, punto lejano
+
         RaycastHit cameraHit;
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out cameraHit))
+        if (Physics.Raycast(cameraRay, out cameraHit, maxShootDistance, aimMask))
         {
-            // Calcular la dirección desde el arma hasta el punto donde mira la cámara
-            Vector3 targetPoint = cameraHit.point;
-            Vector3 directionToTarget = (targetPoint - shootSpawn.position).normalized;
-            shootSpawn.rotation = Quaternion.LookRotation(directionToTarget);
-            
-            // Dibujar la línea roja solo hasta el punto de impacto
-            RaycastHit weaponHit;
-            if (Physics.Raycast(shootSpawn.position, directionToTarget, out weaponHit))
-            {
-                Debug.DrawLine(shootSpawn.position, weaponHit.point, Color.red);
-            }
-            else
-            {
-                Debug.DrawLine(shootSpawn.position, shootSpawn.position + directionToTarget * 10f, Color.red);
-            }
+            aimPoint = cameraHit.point; // cortamos al primer collider
+        }
+
+        // 2) Ray desde el cañón al aimPoint para detectar obstrucciones cercanas al arma
+        Vector3 barrelOrigin = shootSpawn.position;
+        Vector3 toAim = aimPoint - barrelOrigin;
+        Vector3 barrelDir = toAim.normalized;
+        float barrelDist = toAim.magnitude;
+        Vector3 finalPoint = aimPoint;
+        RaycastHit barrelHit;
+        if (Physics.Raycast(barrelOrigin, barrelDir, out barrelHit, barrelDist, obstructionMask))
+        {
+            finalPoint = barrelHit.point; // recorta trayectoria si algo bloquea
+        }
+
+        // 3) Alinear el shootSpawn solamente hacia el punto final (sin desviar artificialmente)
+        shootSpawn.rotation = Quaternion.LookRotation((finalPoint - barrelOrigin).normalized);
+
+        // 4) Debug lines
+        if (showDebugLines)
+        {
+            Debug.DrawLine(camOrigin, aimPoint, Color.blue);           // línea de la cámara
+            Debug.DrawLine(barrelOrigin, finalPoint, Color.red);        // trayectoria real de la bala
         }
 
 
@@ -86,6 +119,25 @@ public class WeaponController : MonoBehaviour
 
     public void InstantiateBullet()
     {
+        // Seguridad: no dispares si hay algo pegado al cañón (pared/objeto), evita autodaño
+        RaycastHit blockHit;
+        if (Physics.Raycast(shootSpawn.position, shootSpawn.forward, out blockHit, barrelBlockDistance, obstructionMask))
+        {
+            // Si lo que golpea no es parte del propio jugador, cancelar el disparo
+            if (blockHit.transform.root != transform.root)
+            {
+                if (blockedMuzzleVFXPrefab != null)
+                {
+                    var fx = Instantiate(blockedMuzzleVFXPrefab, blockHit.point, Quaternion.LookRotation(blockHit.normal));
+                    if (blockedMuzzleVFXLifetime > 0f) Destroy(fx, blockedMuzzleVFXLifetime);
+                }
+                if (showDebugLines)
+                    Debug.DrawLine(shootSpawn.position, blockHit.point, Color.yellow, 0.2f);
+                if (cancelShotWhenBlocked)
+                    return; // no instanciamos bala
+            }
+        }
+
         GameObject bullet = Instantiate(bulletPrefab, shootSpawn.position, shootSpawn.rotation);
         BulletController bulletCtrl = bullet.GetComponent<BulletController>();
         if (bulletCtrl != null)

@@ -64,6 +64,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPower: 100
   lifeTime: 4
+  bulletDamage: 1
+  hitboxMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  shooter: {fileID: 0}
+  shooterIgnoreDuration: 0.15
 --- !u!1001 &7450247774885217909
 PrefabInstance:
   m_ObjectHideFlags: 0

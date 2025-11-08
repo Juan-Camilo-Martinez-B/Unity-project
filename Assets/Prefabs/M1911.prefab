@@ -83,6 +83,7 @@ MonoBehaviour:
   lastShootTime: 0
   currentShootMode: 0
   bulletPrefab: {fileID: 5668379645781201426, guid: 2fd65e5a90b132246b5b0a9869c565f2, type: 3}
+  weaponIcon: {fileID: 21300022, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
 --- !u!1001 &7486960829830109654
 PrefabInstance:
   m_ObjectHideFlags: 0

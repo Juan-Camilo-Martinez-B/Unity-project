@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
 
@@ -59,6 +60,13 @@ public class PlayerController : MonoBehaviour
     public Transform throwableSlot;
 
     public Transform spawnGrenade;
+
+    //UI
+
+    public Canvas playerUI;
+    public Image primaryWeaponIcon;
+    public Image secondaryWeaponIcon;
+    public Image throwableWeaponIcon;
     
     // Start is called before the first frame update
     void Start()
@@ -202,6 +210,10 @@ public class PlayerController : MonoBehaviour
 
                     nearItem = null;
 
+                    WeaponController pwIcon = instantiatedItem.GetComponentInChildren<WeaponController>();
+                    primaryWeaponIcon.sprite = pwIcon.weaponIcon;
+                    primaryWeaponIcon.gameObject.SetActive(true);
+
                     break;
                 }
                 else if (itemPrefab.CompareTag("SW") && nearItem.CompareTag("SW"))
@@ -222,6 +234,9 @@ public class PlayerController : MonoBehaviour
                     instantiatedItem.transform.parent = secondarySlot;
 
                     nearItem = null;
+                    WeaponController swIcon = instantiatedItem.GetComponentInChildren<WeaponController>();
+                    secondaryWeaponIcon.sprite = swIcon.weaponIcon;
+                    secondaryWeaponIcon.gameObject.SetActive(true);
 
                     break;
                 }
@@ -243,6 +258,10 @@ public class PlayerController : MonoBehaviour
                     instantiatedItem.transform.parent = throwableSlot;
 
                     nearItem = null;
+
+                    GrenadeController twIcon = instantiatedItem.GetComponentInChildren<GrenadeController>();
+                    throwableWeaponIcon.sprite = twIcon.weaponIcon;
+                    throwableWeaponIcon.gameObject.SetActive(true);
 
                     break;
                 }

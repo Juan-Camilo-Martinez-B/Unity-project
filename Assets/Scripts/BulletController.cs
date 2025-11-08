@@ -64,13 +64,18 @@ public class BulletController : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Physics.Raycast(lastBulletPos, bulletDirection.normalized, out hit, bulletDirection.magnitude, hitboxMask))
+        // Raycast contra cualquier collider para que la bala se detenga en paredes/props/etc.
+        if (Physics.Raycast(lastBulletPos, bulletDirection.normalized, out hit, bulletDirection.magnitude))
         {
-            // Si el collider golpeado es parte del lanzador (cacheado), ignorar
-            if (shooterColliders != null && shooterColliders.Contains(hit.collider))
+            // Ignorar impactos contra el propio lanzador por seguridad (raycast)
+            if (shooter != null && hit.collider != null)
             {
-                lastBulletPos = bulletNewPos;
-                return;
+                Transform root = hit.collider.transform.root;
+                if (root != null && root.gameObject == shooter)
+                {
+                    lastBulletPos = bulletNewPos;
+                    return;
+                }
             }
 
             GameObject go = hit.collider.gameObject;
@@ -82,7 +87,7 @@ public class BulletController : MonoBehaviour
                 Debug.Log("Disparo en " + playerBodyPart.BodyName);
             }
 
-            // Destruir la bala al impactar
+            // Destruir la bala al impactar con cualquier cosa
             Destroy(gameObject);
         }
 

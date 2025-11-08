@@ -49,6 +49,7 @@ MonoBehaviour:
   throwDelayTime: 1.02
   time: 0
   theGrenade: {fileID: 8154748646402248973, guid: fe0dd4309891f7f47980ba5eb11b8fb5, type: 3}
+  weaponIcon: {fileID: 21300028, guid: 5163ae49a0de665458bba61cd20c99b1, type: 3}
 --- !u!1001 &7833388200551376100
 PrefabInstance:
   m_ObjectHideFlags: 0
