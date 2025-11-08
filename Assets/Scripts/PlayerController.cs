@@ -54,6 +54,10 @@ public class PlayerController : MonoBehaviour
     public GameObject secondaryWeapon;
     public GameObject throwableWeapon;
 
+    public Transform primarySlot;
+    public Transform secondarySlot;
+    public Transform throwableSlot;
+
     public Transform spawnGrenade;
     
     // Start is called before the first frame update
@@ -95,19 +99,8 @@ public class PlayerController : MonoBehaviour
         ItemLogic();
         AnimLogic();
 
-        if (hasPistol || hasRiffle || hasGrenade)
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                SwitchWeapon();
-            }
-        }
-        {
-            if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-            {
-                SwitchWeapon();
-            }
-        }
+      
+
 
         if (Input.GetKeyDown(KeyCode.Y))
         {
@@ -184,7 +177,7 @@ public class PlayerController : MonoBehaviour
             // Instanciar el item directamente como hijo del itemSlot
             GameObject instantiatedItem = null;
 
-            bool haveWeapon = false;
+
 
             int countWeapons = 0;
 
@@ -200,11 +193,12 @@ public class PlayerController : MonoBehaviour
                     instantiatedItem.transform.localRotation = Quaternion.identity;
                     
                     primaryWeapon = this.gameObject;
-                    haveWeapon = true;
+
                     countWeapons++;
                     weapons++;
 
                     Destroy(nearItem.gameObject);
+                    instantiatedItem.transform.parent = primarySlot;
 
                     nearItem = null;
 
@@ -220,11 +214,12 @@ public class PlayerController : MonoBehaviour
                     instantiatedItem.transform.localRotation = Quaternion.identity;
                     
                     secondaryWeapon = this.gameObject;
-                    haveWeapon = true;
+
                     countWeapons++;
                     weapons++;
 
                     Destroy(nearItem.gameObject);
+                    instantiatedItem.transform.parent = secondarySlot;
 
                     nearItem = null;
 
@@ -240,11 +235,12 @@ public class PlayerController : MonoBehaviour
                     instantiatedItem.transform.localRotation = Quaternion.identity;
                     
                     throwableWeapon = this.gameObject;
-                    haveWeapon = true;
+
                     countWeapons++;
                     weapons++;
 
                     Destroy(nearItem.gameObject);
+                    instantiatedItem.transform.parent = throwableSlot;
 
                     nearItem = null;
 
@@ -252,150 +248,13 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            if (haveWeapon && hasPistol && countWeapons > 1)
-            {
-                hasPistol = false;
-            }
-            else if (haveWeapon && hasRiffle && countWeapons > 1)
-            {
-                hasRiffle = false;
-            }
-            else if (haveWeapon && hasGrenade && countWeapons > 1)
-            {
-                hasGrenade = false;
-            }
-
-            if (instantiatedItem.CompareTag("PW"))
-            {
-                primaryWeapon = instantiatedItem;
-                hasPistol = true;
-                hasRiffle = false;
-                hasGrenade = false;
-
-                primaryWeapon.SetActive(true);
-                if (secondaryWeapon != null)
-                {
-                    secondaryWeapon.SetActive(false);
-                }
-                if (throwableWeapon != null)
-                {
-                    throwableWeapon.SetActive(false);
-                }
-            }
-            else if (instantiatedItem.CompareTag("SW"))
-            {
-                secondaryWeapon = instantiatedItem;
-                hasRiffle = true;
-                hasPistol = false;
-                hasGrenade = false;
-
-                if (primaryWeapon != null)
-                {
-                    primaryWeapon.SetActive(false);
-                }
-                if (throwableWeapon != null)
-                {
-                    throwableWeapon.SetActive(false);
-                }
-                secondaryWeapon.SetActive(true);
-            }
-            else if (instantiatedItem.CompareTag("TW"))
-            {
-                throwableWeapon = instantiatedItem;
-                hasRiffle = false;
-                hasPistol = false;
-                hasGrenade = true;
-
-                if (primaryWeapon != null)
-                {
-                    primaryWeapon.SetActive(false);
-                }
-                if (secondaryWeapon != null)
-                {
-                    secondaryWeapon.SetActive(false);
-                }
-                throwableWeapon.SetActive(true);
-                
-            }
 
 
         }
 
     }
 
-    public void SwitchWeapon()
-    {
-        // Si no hay armas equipadas, no hacer nada
-        if (primaryWeapon == null && secondaryWeapon == null && throwableWeapon == null)
-            return;
-
-        // Encontrar el arma actualmente activa
-        bool isPrimaryActive = primaryWeapon != null && primaryWeapon.activeSelf;
-        bool isSecondaryActive = secondaryWeapon != null && secondaryWeapon.activeSelf;
-        bool isThrowableActive = throwableWeapon != null && throwableWeapon.activeSelf;
-
-        // Desactivar todas las armas
-        if (primaryWeapon != null) primaryWeapon.SetActive(false);
-        if (secondaryWeapon != null) secondaryWeapon.SetActive(false);
-        if (throwableWeapon != null) throwableWeapon.SetActive(false);
-
-        // Rotar entre las armas disponibles
-        if (isPrimaryActive)
-        {
-            // Si estaba activa la primaria, activar la secundaria si existe
-            if (secondaryWeapon != null)
-            {
-                secondaryWeapon.SetActive(true);
-                hasPistol = false;
-                hasRiffle = true;
-                hasGrenade = false;
-            }
-            else if (throwableWeapon != null)
-            {
-                throwableWeapon.SetActive(true);
-                hasPistol = false;
-                hasRiffle = false;
-                hasGrenade = true;
-            }
-        }
-        else if (isSecondaryActive)
-        {
-            // Si estaba activa la secundaria, activar la throwable si existe
-            if (throwableWeapon != null)
-            {
-                throwableWeapon.SetActive(true);
-                hasPistol = false;
-                hasRiffle = false;
-                hasGrenade = true;
-            }
-            else if (primaryWeapon != null)
-            {
-                primaryWeapon.SetActive(true);
-                hasPistol = true;
-                hasRiffle = false;
-                hasGrenade = false;
-            }
-        }
-        else
-        {
-            // Si estaba activa la throwable o ninguna, activar la primaria
-            if (primaryWeapon != null)
-            {
-                primaryWeapon.SetActive(true);
-                hasPistol = true;
-                hasRiffle = false;
-                hasGrenade = false;
-            }
-            else if (secondaryWeapon != null)
-            {
-                secondaryWeapon.SetActive(true);
-                hasPistol = false;
-                hasRiffle = true;
-                hasGrenade = false;
-            }
-        }
-         
-    }
+    
 
     public void TakeDamage(float damage)
     {
