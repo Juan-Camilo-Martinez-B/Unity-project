@@ -24,6 +24,11 @@ public class BulletController : MonoBehaviour
     [Header("Protección contra autodaño")]
     public float shooterIgnoreDuration = 0.15f; // segundos a ignorar colisiones con el lanzador
 
+    [Header("Impact Effects")]
+    public GameObject hitEffect; // Prefab de efecto de impacto
+    public AudioClip hitSound; // Sonido de impacto
+    [Range(0f, 1f)] public float hitSoundVolume = 1f;
+
     Collider myCollider;
     List<Collider> shooterColliders;
 
@@ -87,11 +92,30 @@ public class BulletController : MonoBehaviour
                 Debug.Log("Disparo en " + playerBodyPart.BodyName);
             }
 
+            // Efectos de impacto
+            SpawnImpactEffects(hit.point, hit.normal);
+
             // Destruir la bala al impactar con cualquier cosa
             Destroy(gameObject);
         }
 
         lastBulletPos = bulletNewPos;
+    }
+
+    private void SpawnImpactEffects(Vector3 hitPoint, Vector3 hitNormal)
+    {
+        // Efecto visual de impacto
+        if (hitEffect != null)
+        {
+            GameObject fx = Instantiate(hitEffect, hitPoint, Quaternion.LookRotation(hitNormal));
+            Destroy(fx, 3f); // Auto-destruir después de 3 segundos
+        }
+
+        // Sonido de impacto
+        if (hitSound != null)
+        {
+            AudioSource.PlayClipAtPoint(hitSound, hitPoint, hitSoundVolume);
+        }
     }
 
     // Llamar desde quien instancia la bala para configurar protección contra autodaño
@@ -121,6 +145,6 @@ public class BulletController : MonoBehaviour
             if (c != null)
                 Physics.IgnoreCollision(myCollider, c, false);
         }
-        shooterColliders = null;
-    }
+        shooterColliders = null;
+    }
 }

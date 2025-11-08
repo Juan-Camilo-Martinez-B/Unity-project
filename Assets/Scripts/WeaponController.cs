@@ -23,6 +23,14 @@ public class WeaponController : MonoBehaviour
 
     public Sprite weaponIcon;
 
+    [Header("Muzzle Flash & Shoot Sound")]
+    public ParticleSystem muzzleFlashParticles; // Sistema de partículas para fogonazo
+    public GameObject muzzleFlashPrefab; // Alternativa: prefab de fogonazo
+    public float muzzleFlashLifetime = 0.15f;
+    public AudioClip shootSound; // Sonido de disparo
+    [Range(0f, 1f)] public float shootSoundVolume = 1f;
+    public AudioSource weaponAudioSource; // AudioSource dedicado (opcional)
+
     [Header("Aiming")]
     public float maxShootDistance = 100f;
     [Tooltip("Capas consideradas para apuntar (lo que puede ser impactado por la cámara).")]
@@ -119,6 +127,10 @@ public class WeaponController : MonoBehaviour
 
     public void InstantiateBullet()
     {
+        // Efectos de disparo: fogonazo y sonido
+        PlayMuzzleFlash();
+        PlayShootSound();
+
         // Seguridad: no dispares si hay algo pegado al cañón (pared/objeto), evita autodaño
         RaycastHit blockHit;
         if (Physics.Raycast(shootSpawn.position, shootSpawn.forward, out blockHit, barrelBlockDistance, obstructionMask))
@@ -146,12 +158,45 @@ public class WeaponController : MonoBehaviour
         }
     }
 
+    private void PlayMuzzleFlash()
+    {
+        // Reproducir partículas de fogonazo si están configuradas
+        if (muzzleFlashParticles != null)
+        {
+            muzzleFlashParticles.Play();
+        }
+
+        // O instanciar un prefab de fogonazo
+        if (muzzleFlashPrefab != null)
+        {
+            GameObject flash = Instantiate(muzzleFlashPrefab, shootSpawn.position, shootSpawn.rotation, shootSpawn);
+            if (muzzleFlashLifetime > 0f)
+                Destroy(flash, muzzleFlashLifetime);
+        }
+    }
+
+    private void PlayShootSound()
+    {
+        if (shootSound == null) return;
+
+        // Si hay AudioSource dedicado, usarlo
+        if (weaponAudioSource != null)
+        {
+            weaponAudioSource.PlayOneShot(shootSound, shootSoundVolume);
+        }
+        else
+        {
+            // Sino, crear uno temporal en el punto de disparo
+            AudioSource.PlayClipAtPoint(shootSound, shootSpawn.position, shootSoundVolume);
+        }
+    }
+
     IEnumerator AutomaticShoot()
     {
         while (shooting)
         {
             InstantiateBullet();
             yield return new WaitForSeconds(shootDelay);
-        }
-    }
+        }
+    }
 }
