@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 575128771027480142}
   - component: {fileID: 4165485733054496517}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Hand Grenade Prefab
   m_TagString: TW
   m_Icon: {fileID: 0}
@@ -45,6 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19d1b2c04e3ade9479d10fa66f879cf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  throwing: 0
+  throwDelayTime: 1.02
+  time: 0
+  theGrenade: {fileID: 8154748646402248973, guid: fe0dd4309891f7f47980ba5eb11b8fb5, type: 3}
 --- !u!1001 &7833388200551376100
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58,7 +62,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 4f9635b162a471144969563595ddeed9, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 4f9635b162a471144969563595ddeed9, type: 3}
+      propertyPath: m_TagString
+      value: TW
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 4f9635b162a471144969563595ddeed9, type: 3}
       propertyPath: m_RootOrder

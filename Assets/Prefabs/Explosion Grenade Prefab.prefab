@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 4963181073838672706}
   - component: {fileID: 6123952995987384934}
   - component: {fileID: 85954593079002816}
-  - component: {fileID: 770825455350942144}
-  m_Layer: 6
+  - component: {fileID: -4431567069930277465}
+  - component: {fileID: -8054781213373904927}
+  m_Layer: 0
   m_Name: Explosion Grenade Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 8154748646402248973}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3470912720467523886}
@@ -45,7 +46,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.02
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -61,11 +62,11 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.004
-  m_Height: 0.018
+  m_Radius: 0.0035099946
+  m_Height: 0.019571025
   m_Direction: 0
-  m_Center: {x: 0.0035, y: 0.0085, z: 0.0035}
---- !u!114 &770825455350942144
+  m_Center: {x: 0.0033746928, y: 0.008700772, z: 0}
+--- !u!114 &-4431567069930277465
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -77,6 +78,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09464eb1e75dce43a5b9b6137dd91d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explode: 1
+  damageArea: 3
+  throwForce: 7
+  explodePower: 10
+  lifeTime: 3
+  explodeDamage: 1.5
+  hitboxMask:
+    serializedVersion: 2
+    m_Bits: 3041
+  ShowDebugGizmos: 1
+--- !u!23 &-8054781213373904927
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8154748646402248973}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1001 &3470912720467911598
 PrefabInstance:
   m_ObjectHideFlags: 0

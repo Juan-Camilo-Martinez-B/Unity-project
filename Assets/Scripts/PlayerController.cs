@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     //Personaje
     Transform playerTr;
     Rigidbody playerRb;
-    Animator playerAnim;
+    internal Animator playerAnim;
     RagdollController playerRagdoll;
 
     public float maxHealth = 100f;
@@ -273,9 +273,14 @@ public class PlayerController : MonoBehaviour
                 hasGrenade = false;
 
                 primaryWeapon.SetActive(true);
-                if (secondaryWeapon && throwableWeapon != null)
+                if (secondaryWeapon != null)
+                {
                     secondaryWeapon.SetActive(false);
+                }
+                if (throwableWeapon != null)
+                {
                     throwableWeapon.SetActive(false);
+                }
             }
             else if (instantiatedItem.CompareTag("SW"))
             {
@@ -284,11 +289,15 @@ public class PlayerController : MonoBehaviour
                 hasPistol = false;
                 hasGrenade = false;
 
-                if (primaryWeapon && throwableWeapon != null)
+                if (primaryWeapon != null)
+                {
                     primaryWeapon.SetActive(false);
+                }
+                if (throwableWeapon != null)
+                {
                     throwableWeapon.SetActive(false);
+                }
                 secondaryWeapon.SetActive(true);
-                
             }
             else if (instantiatedItem.CompareTag("TW"))
             {
@@ -297,9 +306,14 @@ public class PlayerController : MonoBehaviour
                 hasPistol = false;
                 hasGrenade = true;
 
-                if (primaryWeapon && secondaryWeapon != null)
+                if (primaryWeapon != null)
+                {
                     primaryWeapon.SetActive(false);
+                }
+                if (secondaryWeapon != null)
+                {
                     secondaryWeapon.SetActive(false);
+                }
                 throwableWeapon.SetActive(true);
                 
             }
@@ -311,39 +325,74 @@ public class PlayerController : MonoBehaviour
 
     public void SwitchWeapon()
     {
-        // Verificar que ambas armas existan
-        if (primaryWeapon == null || secondaryWeapon == null)
+        // Si no hay armas equipadas, no hacer nada
+        if (primaryWeapon == null && secondaryWeapon == null && throwableWeapon == null)
             return;
 
-        if (primaryWeapon.activeSelf == true)
-        {
-            hasPistol = false;
-            hasGrenade = false;
-            hasRiffle = true;
+        // Encontrar el arma actualmente activa
+        bool isPrimaryActive = primaryWeapon != null && primaryWeapon.activeSelf;
+        bool isSecondaryActive = secondaryWeapon != null && secondaryWeapon.activeSelf;
+        bool isThrowableActive = throwableWeapon != null && throwableWeapon.activeSelf;
 
-            primaryWeapon.gameObject.SetActive(false);
-            secondaryWeapon.gameObject.SetActive(true);
-            throwableWeapon.gameObject.SetActive(false);
+        // Desactivar todas las armas
+        if (primaryWeapon != null) primaryWeapon.SetActive(false);
+        if (secondaryWeapon != null) secondaryWeapon.SetActive(false);
+        if (throwableWeapon != null) throwableWeapon.SetActive(false);
+
+        // Rotar entre las armas disponibles
+        if (isPrimaryActive)
+        {
+            // Si estaba activa la primaria, activar la secundaria si existe
+            if (secondaryWeapon != null)
+            {
+                secondaryWeapon.SetActive(true);
+                hasPistol = false;
+                hasRiffle = true;
+                hasGrenade = false;
+            }
+            else if (throwableWeapon != null)
+            {
+                throwableWeapon.SetActive(true);
+                hasPistol = false;
+                hasRiffle = false;
+                hasGrenade = true;
+            }
         }
-        else if (throwableWeapon.activeSelf == true)
+        else if (isSecondaryActive)
         {
-            hasRiffle = false;
-            hasPistol = false;
-            hasGrenade = true;
-
-            secondaryWeapon.gameObject.SetActive(false);
-            primaryWeapon.gameObject.SetActive(false);
-            throwableWeapon.gameObject.SetActive(true);
+            // Si estaba activa la secundaria, activar la throwable si existe
+            if (throwableWeapon != null)
+            {
+                throwableWeapon.SetActive(true);
+                hasPistol = false;
+                hasRiffle = false;
+                hasGrenade = true;
+            }
+            else if (primaryWeapon != null)
+            {
+                primaryWeapon.SetActive(true);
+                hasPistol = true;
+                hasRiffle = false;
+                hasGrenade = false;
+            }
         }
-        else if (secondaryWeapon.activeSelf == true)
+        else
         {
-            hasRiffle = false;
-            hasGrenade = false;
-            hasPistol = true;
-
-            primaryWeapon.gameObject.SetActive(true);
-            secondaryWeapon.gameObject.SetActive(false);
-            throwableWeapon.gameObject.SetActive(false);
+            // Si estaba activa la throwable o ninguna, activar la primaria
+            if (primaryWeapon != null)
+            {
+                primaryWeapon.SetActive(true);
+                hasPistol = true;
+                hasRiffle = false;
+                hasGrenade = false;
+            }
+            else if (secondaryWeapon != null)
+            {
+                secondaryWeapon.SetActive(true);
+                hasPistol = false;
+                hasRiffle = true;
+                hasGrenade = false;
+            }
         }
          
     }

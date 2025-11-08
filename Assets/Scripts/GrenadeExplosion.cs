@@ -4,15 +4,133 @@ using UnityEngine;
 
 public class GrenadeExplosion : MonoBehaviour
 {
-    // Start is called before the first frame update
+    Transform grenadeTr;
+    Rigidbody grenadeRb;
+    MeshRenderer grenadeRenderer;
+
+    public bool explode = false;
+
+    public float damageArea = 0f;
+
+    public float throwForce = 0f;
+
+    public float explodePower = 0f;
+    public float lifeTime = 0f;
+
+    public float explodeDamage = 0f;
+
+    private float time = 0f;
+
+    public LayerMask hitboxMask;
+    Vector3 lastGrenadePos;
+
+    public bool ShowDebugGizmos = true;
+
     void Start()
     {
-        
-    }
+        grenadeTr = GetComponent<Transform>();
+        grenadeRb = GetComponent<Rigidbody>();
+        grenadeRenderer = GetComponent<MeshRenderer>();
 
-    // Update is called once per frame
+        // Asegurarse de que la granada sea visible
+        if (grenadeRenderer != null)
+        {
+            grenadeRenderer.enabled = true;
+        }
+
+        // Configurar el Rigidbody para física continua
+        grenadeRb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        grenadeRb.interpolation = RigidbodyInterpolation.Interpolate;
+        
+        hitboxMask = LayerMask.NameToLayer("Hitbox");
+        lastGrenadePos = transform.position;
+
+        grenadeRb.velocity = grenadeTr.forward * throwForce;
+    }
     void Update()
     {
-        
+        time += Time.deltaTime;
+        if (explode)
+        {
+            if (time >= lifeTime)
+            {
+                ExplodeNow();
+                // Ocultar la granada antes de destruirla
+                if (grenadeRenderer != null)
+                {
+                    grenadeRenderer.enabled = false;
+                }
+                // Esperar un frame para que se vea el efecto de explosión antes de destruir
+                Destroy(this.gameObject, 0.1f);
+            }
+            
+        }
+        else
+        {
+            DetectCollision();
+
+        }
     }
+
+    public void ExplodeNow()
+    {
+        Vector3 explodePos = grenadeTr.position;
+
+        Collider[] checking = Physics.OverlapSphere(explodePos, this.damageArea, ~hitboxMask);
+
+        if (checking.Length > 0)
+        {
+            foreach (Collider c in checking)
+            {
+                GameObject go = c.gameObject;
+
+                if (go.layer == hitboxMask)
+                {
+                    BodyPartHitCheck playerBodyPart = go.GetComponent<BodyPartHitCheck>();
+
+                    if (playerBodyPart != null)
+                    {
+                        Vector3 collisionPos = c.ClosestPoint(explodePos);
+
+                        float distance = Vector3.Distance(explodePos, collisionPos);
+
+                        float damageDisminution = distance / damageArea;
+
+                        float finalDamage = explodeDamage - explodeDamage * damageDisminution;
+                        playerBodyPart.TakeHit(finalDamage);
+                        Debug.Log("Explosión en " + playerBodyPart.BodyName);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void DetectCollision()
+    {
+        Vector3 grenadeNewPos = grenadeTr.position;
+        Vector3 grenadeDirection = lastGrenadePos - grenadeNewPos;
+        float distance = grenadeDirection.magnitude;
+
+        // Usar SphereCast en lugar de Raycast para mejor detección
+        RaycastHit hit;
+        if (Physics.SphereCast(grenadeNewPos, 0.1f, grenadeDirection.normalized, out hit, distance))
+        {
+            // Si golpea cualquier objeto, explotar
+            explode = true;
+            time = lifeTime; // Forzar explosión inmediata
+        }
+
+        lastGrenadePos = grenadeNewPos;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (ShowDebugGizmos)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, damageArea);
+        }
+    }
+ 
 }

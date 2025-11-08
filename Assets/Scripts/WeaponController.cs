@@ -90,7 +90,7 @@ public class WeaponController : MonoBehaviour
         BulletController bulletCtrl = bullet.GetComponent<BulletController>();
         if (bulletCtrl != null)
         {
-            bulletCtrl.shooter = transform.root.gameObject; // Asigna el objeto raíz del jugador
+            bulletCtrl.SetShooter(transform.root.gameObject); // Configura lanzador y protección temporal
         }
     }
 

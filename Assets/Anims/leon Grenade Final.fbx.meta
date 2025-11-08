@@ -36,8 +36,8 @@ ModelImporter:
       name: Toss Grenade
       takeName: mixamo.com
       internalID: -203655887218126122
-      firstFrame: 62
-      lastFrame: 142
+      firstFrame: 58
+      lastFrame: 140
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

@@ -21,6 +21,12 @@ public class BulletController : MonoBehaviour
     [HideInInspector]
     public GameObject shooter; // Referencia al jugador que disparó la bala
 
+    [Header("Protección contra autodaño")]
+    public float shooterIgnoreDuration = 0.15f; // segundos a ignorar colisiones con el lanzador
+
+    Collider myCollider;
+    List<Collider> shooterColliders;
+
 
 
 
@@ -29,6 +35,7 @@ public class BulletController : MonoBehaviour
     {
         bulletTr = GetComponent<Transform>();
         bulletRb = GetComponent<Rigidbody>();
+        myCollider = GetComponent<Collider>();
 
         bulletRb.velocity = this.transform.forward * bulletPower; 
 
@@ -59,15 +66,14 @@ public class BulletController : MonoBehaviour
 
         if (Physics.Raycast(lastBulletPos, bulletDirection.normalized, out hit, bulletDirection.magnitude, hitboxMask))
         {
-            GameObject go = hit.collider.gameObject;
-
-            // Verificar si el objeto golpeado pertenece al jugador que disparó
-            if (shooter != null && go.transform.IsChildOf(shooter.transform))
+            // Si el collider golpeado es parte del lanzador (cacheado), ignorar
+            if (shooterColliders != null && shooterColliders.Contains(hit.collider))
             {
                 lastBulletPos = bulletNewPos;
-                return; // Ignorar colisión con el jugador que disparó
+                return;
             }
 
+            GameObject go = hit.collider.gameObject;
             BodyPartHitCheck playerBodyPart = go.GetComponent<BodyPartHitCheck>();
 
             if (playerBodyPart != null)
@@ -81,5 +87,35 @@ public class BulletController : MonoBehaviour
         }
 
         lastBulletPos = bulletNewPos;
+    }
+
+    // Llamar desde quien instancia la bala para configurar protección contra autodaño
+    public void SetShooter(GameObject shooterObj)
+    {
+        shooter = shooterObj;
+        if (shooter == null || myCollider == null) return;
+
+        shooterColliders = new List<Collider>(shooter.GetComponentsInChildren<Collider>());
+        foreach (var c in shooterColliders)
+        {
+            if (c != null)
+                Physics.IgnoreCollision(myCollider, c, true);
+        }
+
+        // Restaurar colisiones después de un breve tiempo
+        if (shooterIgnoreDuration > 0f)
+            StartCoroutine(RestoreShooterCollisionsAfter(shooterIgnoreDuration));
+    }
+
+    System.Collections.IEnumerator RestoreShooterCollisionsAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (myCollider == null || shooterColliders == null) yield break;
+        foreach (var c in shooterColliders)
+        {
+            if (c != null)
+                Physics.IgnoreCollision(myCollider, c, false);
+        }
+        shooterColliders = null;
     }
 }
