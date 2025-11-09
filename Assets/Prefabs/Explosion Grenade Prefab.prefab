@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -8054781213373904927}
   m_Layer: 0
   m_Name: Explosion Grenade Prefab
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -143,6 +143,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 4f9635b162a471144969563595ddeed9, type: 3}
       propertyPath: m_Name
       value: Grenade
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 4f9635b162a471144969563595ddeed9, type: 3}
+      propertyPath: m_TagString
+      value: Bullet
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 4f9635b162a471144969563595ddeed9, type: 3}
       propertyPath: m_RootOrder

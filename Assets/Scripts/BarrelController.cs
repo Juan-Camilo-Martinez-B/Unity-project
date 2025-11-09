@@ -16,7 +16,7 @@ public class BarrelController : MonoBehaviour
     public AudioSource barrelAudioSource; // AudioSource dedicado (opcional)
 
     [Header("Visual Settings")]
-    public float destroyDelay = 2f; // Tiempo antes de destruir el barril después de explotar (debe ser suficiente para que termine el audio)
+    public float destroyDelay = 0.2f; // Tiempo antes de destruir el barril después de explotar
     public bool showDebugGizmos = true;
 
     private bool hasExploded = false; // Evita explosiones múltiples
@@ -46,10 +46,24 @@ public class BarrelController : MonoBehaviour
 
         Vector3 explosionPosition = transform.position;
 
-        // Efectos de explosión: visual y sonido
+        // PRIMERO: Reproducir efectos de explosión ANTES de cualquier otra cosa
         SpawnExplosionEffects(explosionPosition);
 
-        // Aplicar daño a todos los colliders en el radio de explosión
+        // SEGUNDO: Ocultar el barril inmediatamente
+        MeshRenderer renderer = GetComponent<MeshRenderer>();
+        if (renderer != null)
+        {
+            renderer.enabled = false;
+        }
+
+        // TERCERO: Desactivar el collider
+        Collider barrelCollider = GetComponent<Collider>();
+        if (barrelCollider != null)
+        {
+            barrelCollider.enabled = false;
+        }
+
+        // CUARTO: Aplicar daño a todos los colliders en el radio de explosión
         Collider[] hitColliders = Physics.OverlapSphere(explosionPosition, explosionRadius);
 
         foreach (Collider hit in hitColliders)
@@ -94,38 +108,63 @@ public class BarrelController : MonoBehaviour
             }
         }
 
-        // Ocultar el barril y destruirlo después de un breve delay
-        MeshRenderer renderer = GetComponent<MeshRenderer>();
-        if (renderer != null)
-        {
-            renderer.enabled = false;
-        }
-
-        // Desactivar el collider para que no interfiera
-        Collider barrelCollider = GetComponent<Collider>();
-        if (barrelCollider != null)
-        {
-            barrelCollider.enabled = false;
-        }
-
+        // FINALMENTE: Destruir el GameObject del barril
         Destroy(gameObject, destroyDelay);
     }
 
     private void SpawnExplosionEffects(Vector3 explosionPosition)
     {
+        Debug.Log("=== INICIANDO EFECTOS DE EXPLOSIÓN ===");
+        
         // Efecto visual de explosión
         if (explosionEffect != null)
         {
             GameObject fx = Instantiate(explosionEffect, explosionPosition, Quaternion.identity);
-            Destroy(fx, 5f); // Auto-destruir después de 5 segundos
+            Destroy(fx, 5f);
+            Debug.Log("✓ Efecto visual instanciado");
+        }
+        else
+        {
+            Debug.LogWarning("✗ explosionEffect es NULL");
         }
 
-        // Sonido de explosión - usar PlayClipAtPoint para que no se destruya con el barril
+        // Sonido de explosión - crear GameObject temporal INDEPENDIENTE
         if (explosionSound != null)
         {
-            AudioSource.PlayClipAtPoint(explosionSound, explosionPosition, explosionSoundVolume);
-            Debug.Log($"Reproduciendo sonido de explosión del barril con volumen: {explosionSoundVolume}");
+            Debug.Log($"✓ explosionSound asignado: {explosionSound.name}");
+            
+            // Crear GameObject completamente independiente
+            GameObject audioObject = new GameObject("BarrelExplosionAudio");
+            audioObject.transform.position = explosionPosition;
+            
+            // Configurar AudioSource
+            AudioSource audioSource = audioObject.AddComponent<AudioSource>();
+            audioSource.clip = explosionSound;
+            audioSource.volume = explosionSoundVolume;
+            audioSource.spatialBlend = 1f; // 100% 3D
+            audioSource.minDistance = 1f;
+            audioSource.maxDistance = 100f;
+            audioSource.rolloffMode = AudioRolloffMode.Linear;
+            audioSource.playOnAwake = false;
+            
+            // Reproducir inmediatamente
+            audioSource.Play();
+            
+            Debug.Log($"✓ Audio reproduciéndose - Volumen: {explosionSoundVolume}, Duración: {explosionSound.length}s");
+            Debug.Log($"✓ AudioSource.isPlaying: {audioSource.isPlaying}");
+            
+            // Destruir después de que termine con más margen de seguridad
+            float destroyTime = explosionSound.length + 2f; // +2 segundos de margen
+            Destroy(audioObject, destroyTime);
+            
+            Debug.Log($"✓ Audio object se destruirá en {destroyTime}s");
         }
+        else
+        {
+            Debug.LogError("✗✗✗ explosionSound es NULL - NO HAY AUDIO ASIGNADO ✗✗✗");
+        }
+        
+        Debug.Log("=== FIN EFECTOS DE EXPLOSIÓN ===");
     }
 
     private void OnDrawGizmosSelected()

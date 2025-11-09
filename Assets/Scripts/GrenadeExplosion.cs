@@ -84,13 +84,22 @@ public class GrenadeExplosion : MonoBehaviour
         // Efectos de explosión: visual y sonido
         SpawnExplosionEffects(explodePos);
 
-        Collider[] checking = Physics.OverlapSphere(explodePos, this.damageArea, ~hitboxMask);
+        Collider[] checking = Physics.OverlapSphere(explodePos, this.damageArea);
 
         if (checking.Length > 0)
         {
             foreach (Collider c in checking)
             {
                 GameObject go = c.gameObject;
+
+                // Detectar barriles y hacerlos explotar
+                BarrelController barrel = go.GetComponent<BarrelController>();
+                if (barrel != null)
+                {
+                    barrel.TakeHit();
+                    Debug.Log("Granada hizo explotar un barril!");
+                    continue; // Saltar al siguiente objeto
+                }
 
                 if (go.layer == hitboxMask)
                 {
