@@ -88,6 +88,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 3041
   ShowDebugGizmos: 1
+  explosionEffect: {fileID: 100008, guid: 7075bd5fe1480184695a32611c15da57, type: 3}
+  explosionSound: {fileID: 8300000, guid: 992fc45e398d9ff44ab0d41e0f2f09d4, type: 3}
+  explosionSoundVolume: 1
 --- !u!23 &-8054781213373904927
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -85,8 +85,8 @@ MonoBehaviour:
   currentShootMode: 1
   bulletPrefab: {fileID: 5668379645781201426, guid: 2fd65e5a90b132246b5b0a9869c565f2, type: 3}
   weaponIcon: {fileID: 21300044, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
-  muzzleFlashParticles: {fileID: 0}
-  muzzleFlashPrefab: {fileID: 0}
+  muzzleFlashParticles: {fileID: 19800002, guid: eb553b67921c92649ac7dbbc561e2047, type: 3}
+  muzzleFlashPrefab: {fileID: 100002, guid: eb553b67921c92649ac7dbbc561e2047, type: 3}
   muzzleFlashLifetime: 0.15
   shootSound: {fileID: 8300000, guid: 8639b2fff78abce40b31348d6bb6de50, type: 3}
   shootSoundVolume: 1

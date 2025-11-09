@@ -26,6 +26,11 @@ public class GrenadeExplosion : MonoBehaviour
 
     public bool ShowDebugGizmos = true;
 
+    [Header("Explosion Effects")]
+    public GameObject explosionEffect; // Prefab de efecto de explosión
+    public AudioClip explosionSound; // Sonido de explosión
+    [Range(0f, 1f)] public float explosionSoundVolume = 1f;
+
     void Start()
     {
         grenadeTr = GetComponent<Transform>();
@@ -76,6 +81,9 @@ public class GrenadeExplosion : MonoBehaviour
     {
         Vector3 explodePos = grenadeTr.position;
 
+        // Efectos de explosión: visual y sonido
+        SpawnExplosionEffects(explodePos);
+
         Collider[] checking = Physics.OverlapSphere(explodePos, this.damageArea, ~hitboxMask);
 
         if (checking.Length > 0)
@@ -104,6 +112,22 @@ public class GrenadeExplosion : MonoBehaviour
             }
         }
 
+    }
+
+    private void SpawnExplosionEffects(Vector3 explosionPosition)
+    {
+        // Efecto visual de explosión
+        if (explosionEffect != null)
+        {
+            GameObject fx = Instantiate(explosionEffect, explosionPosition, Quaternion.identity);
+            Destroy(fx, 5f); // Auto-destruir después de 5 segundos
+        }
+
+        // Sonido de explosión
+        if (explosionSound != null)
+        {
+            AudioSource.PlayClipAtPoint(explosionSound, explosionPosition, explosionSoundVolume);
+        }
     }
 
     public void DetectCollision()

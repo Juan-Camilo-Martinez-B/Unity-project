@@ -70,6 +70,9 @@ MonoBehaviour:
     m_Bits: 2048
   shooter: {fileID: 0}
   shooterIgnoreDuration: 0.15
+  hitEffect: {fileID: 100002, guid: 957385c45b877e645a128e11a3efb2f9, type: 3}
+  hitSound: {fileID: 0}
+  hitSoundVolume: 1
 --- !u!1001 &7450247774885217909
 PrefabInstance:
   m_ObjectHideFlags: 0

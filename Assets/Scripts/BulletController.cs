@@ -26,8 +26,6 @@ public class BulletController : MonoBehaviour
 
     [Header("Impact Effects")]
     public GameObject hitEffect; // Prefab de efecto de impacto
-    public AudioClip hitSound; // Sonido de impacto
-    [Range(0f, 1f)] public float hitSoundVolume = 1f;
 
     Collider myCollider;
     List<Collider> shooterColliders;
@@ -109,12 +107,6 @@ public class BulletController : MonoBehaviour
         {
             GameObject fx = Instantiate(hitEffect, hitPoint, Quaternion.LookRotation(hitNormal));
             Destroy(fx, 3f); // Auto-destruir después de 3 segundos
-        }
-
-        // Sonido de impacto
-        if (hitSound != null)
-        {
-            AudioSource.PlayClipAtPoint(hitSound, hitPoint, hitSoundVolume);
         }
     }
 

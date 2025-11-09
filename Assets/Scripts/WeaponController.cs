@@ -170,6 +170,15 @@ public class WeaponController : MonoBehaviour
         if (muzzleFlashPrefab != null)
         {
             GameObject flash = Instantiate(muzzleFlashPrefab, shootSpawn.position, shootSpawn.rotation, shootSpawn);
+            
+            // Reducir la intensidad de la luz del fogonazo para evitar que sature la cámara
+            Light flashLight = flash.GetComponentInChildren<Light>();
+            if (flashLight != null)
+            {
+                flashLight.intensity *= 0.3f; // Reduce la intensidad al 30%
+                flashLight.range *= 0.5f;      // Reduce el rango al 50%
+            }
+            
             if (muzzleFlashLifetime > 0f)
                 Destroy(flash, muzzleFlashLifetime);
         }

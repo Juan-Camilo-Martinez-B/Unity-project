@@ -242,6 +242,12 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (itemPrefab.CompareTag("TW") && nearItem.CompareTag("TW"))
                 {
+                    // Reactivar el throwableSlot por si había sido desactivado al lanzar una granada previa
+                    if (throwableSlot != null && !throwableSlot.gameObject.activeSelf)
+                    {
+                        throwableSlot.gameObject.SetActive(true);
+                    }
+
                     // Instanciar como hijo del itemSlot
                     instantiatedItem = Instantiate(itemPrefab, itemSlot);
                     
