@@ -26,6 +26,8 @@ public class BulletController : MonoBehaviour
 
     [Header("Impact Effects")]
     public GameObject hitEffect; // Prefab de efecto de impacto
+    public AudioClip hitSound; // Sonido de impacto
+    [Range(0f, 1f)] public float hitSoundVolume = 1f;
 
     Collider myCollider;
     List<Collider> shooterColliders;
@@ -98,7 +100,7 @@ public class BulletController : MonoBehaviour
             }
 
             // Efectos de impacto
-            SpawnImpactEffects(hit.point, hit.normal);
+            SpawnImpactEffects(hit.point, hit.normal, hit.collider.transform);
 
             // Destruir la bala al impactar con cualquier cosa
             Destroy(gameObject);
@@ -107,13 +109,28 @@ public class BulletController : MonoBehaviour
         lastBulletPos = bulletNewPos;
     }
 
-    private void SpawnImpactEffects(Vector3 hitPoint, Vector3 hitNormal)
+    private void SpawnImpactEffects(Vector3 hitPoint, Vector3 hitNormal, Transform hitTransform)
     {
         // Efecto visual de impacto
         if (hitEffect != null)
         {
             GameObject fx = Instantiate(hitEffect, hitPoint, Quaternion.LookRotation(hitNormal));
-            Destroy(fx, 3f); // Auto-destruir después de 3 segundos
+            
+            // Si golpeó un objeto con Rigidbody (enemigo), hacer el efecto hijo para que se mueva con él
+            // Si golpeó superficie estática (pared), dejarlo libre y destruir rápido
+            Rigidbody hitRb = hitTransform.GetComponent<Rigidbody>();
+            if (hitRb != null)
+            {
+                fx.transform.SetParent(hitTransform); // Adherir al enemigo
+            }
+            
+            Destroy(fx, 1f); // Destruir rápido (0.5s en lugar de 3s)
+        }
+
+        // Sonido de impacto
+        if (hitSound != null)
+        {
+            AudioSource.PlayClipAtPoint(hitSound, hitPoint, hitSoundVolume);
         }
     }
 

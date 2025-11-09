@@ -18,6 +18,10 @@ public class PlayerController : MonoBehaviour
     public float maxHealth = 100f;
     public float currentHealth;
     public float playerSpeed = 0f;
+    
+    [Header("Sprint")]
+    public float sprintMultiplier = 2f; // Multiplicador de velocidad al correr
+    private bool isSprinting = false;
 
     private Vector2 newDirection;
 
@@ -60,6 +64,11 @@ public class PlayerController : MonoBehaviour
     public Transform throwableSlot;
 
     public Transform spawnGrenade;
+
+    // Referencias a los prefabs "Dropped" para cada slot (para poder soltarlos correctamente)
+    private GameObject primaryDroppedPrefab;
+    private GameObject secondaryDroppedPrefab;
+    private GameObject throwableDroppedPrefab;
 
     //UI
 
@@ -124,16 +133,20 @@ public class PlayerController : MonoBehaviour
         float moveZ = Input.GetAxis("Vertical");
         float theTime = Time.deltaTime;
 
+        // Detectar si está corriendo (Shift presionado)
+        isSprinting = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+
+        // Calcular velocidad actual (normal o sprint)
+        float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
+
         newDirection = new Vector2(moveX, moveZ);
 
-        Vector3 side = playerSpeed * moveX * theTime * playerTr.right;
-        Vector3 forward = playerSpeed * moveZ * theTime * playerTr.forward;
+        Vector3 side = currentSpeed * moveX * theTime * playerTr.right;
+        Vector3 forward = currentSpeed * moveZ * theTime * playerTr.forward;
 
         Vector3 endDirection = side + forward;
 
         playerRb.velocity = endDirection;
-
-
     }
 
     public void CameraLogic()
@@ -180,103 +193,256 @@ public class PlayerController : MonoBehaviour
 
     public void ItemLogic()
     {
-        if (nearItem != null && Input.GetKeyDown(KeyCode.E))
+        if (nearItem == null)
+            return;
+
+        // Tecla E: Recoger item solo si el slot está vacío
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            // Instanciar el item directamente como hijo del itemSlot
-            GameObject instantiatedItem = null;
+            TryPickupItem(false); // false = no intercambiar
+        }
+        // Tecla F: Intercambiar item (soltar el actual y recoger el nuevo)
+        else if (Input.GetKeyDown(KeyCode.F))
+        {
+            TryPickupItem(true); // true = intercambiar si slot está lleno
+        }
+    }
 
+    private void TryPickupItem(bool allowSwap)
+    {
+        if (nearItem == null)
+            return;
 
+        GameObject instantiatedItem = null;
 
-            int countWeapons = 0;
+        foreach (GameObject itemPrefab in itemPrefabs)
+        {
+            if (itemPrefab.CompareTag("PW") && nearItem.CompareTag("PW"))
+            {
+                // Verificar si el slot ya tiene un arma
+                if (primarySlot.childCount > 0)
+                {
+                    if (!allowSwap)
+                    {
+                        Debug.Log("Slot primario lleno. Presiona F para intercambiar.");
+                        return; // No permitir recoger si el slot está lleno y no es intercambio
+                    }
+                    else
+                    {
+                        // Intercambiar: soltar arma actual al piso
+                        DropWeaponFromSlot(primarySlot, nearItem.transform.position, primaryDroppedPrefab);
+                    }
+                }
 
+                // Guardar referencia al prefab "Dropped" original (nearItem es el objeto Dropped en el mundo)
+                primaryDroppedPrefab = nearItem;
+
+                // Instanciar como hijo del itemSlot
+                instantiatedItem = Instantiate(itemPrefab, itemSlot);
+                
+                // Resetear posición y rotación local
+                instantiatedItem.transform.localPosition = Vector3.zero;
+                instantiatedItem.transform.localRotation = Quaternion.identity;
+                
+                primaryWeapon = this.gameObject;
+
+                if (primarySlot.childCount == 0) // Solo incrementar si el slot estaba vacío
+                    weapons++;
+
+                Destroy(nearItem.gameObject);
+                instantiatedItem.transform.parent = primarySlot;
+
+                nearItem = null;
+
+                WeaponController pwIcon = instantiatedItem.GetComponentInChildren<WeaponController>();
+                primaryWeaponIcon.sprite = pwIcon.weaponIcon;
+                primaryWeaponIcon.gameObject.SetActive(true);
+
+                break;
+            }
+                else if (itemPrefab.CompareTag("SW") && nearItem.CompareTag("SW"))
+            {
+                // Verificar si el slot ya tiene un arma
+                if (secondarySlot.childCount > 0)
+                {
+                    if (!allowSwap)
+                    {
+                        Debug.Log("Slot secundario lleno. Presiona F para intercambiar.");
+                        return; // No permitir recoger si el slot está lleno y no es intercambio
+                    }
+                    else
+                    {
+                        // Intercambiar: soltar arma actual al piso
+                        DropWeaponFromSlot(secondarySlot, nearItem.transform.position, secondaryDroppedPrefab);
+                    }
+                }
+
+                // Guardar referencia al prefab "Dropped" original
+                secondaryDroppedPrefab = nearItem;
+
+                // Instanciar como hijo del itemSlot
+                instantiatedItem = Instantiate(itemPrefab, itemSlot);
+                
+                // Resetear posición y rotación local
+                instantiatedItem.transform.localPosition = Vector3.zero;
+                instantiatedItem.transform.localRotation = Quaternion.identity;
+                
+                secondaryWeapon = this.gameObject;
+
+                if (secondarySlot.childCount == 0) // Solo incrementar si el slot estaba vacío
+                    weapons++;
+
+                Destroy(nearItem.gameObject);
+                instantiatedItem.transform.parent = secondarySlot;
+
+                nearItem = null;
+                WeaponController swIcon = instantiatedItem.GetComponentInChildren<WeaponController>();
+                secondaryWeaponIcon.sprite = swIcon.weaponIcon;
+                secondaryWeaponIcon.gameObject.SetActive(true);
+
+                break;
+            }
+                else if (itemPrefab.CompareTag("TW") && nearItem.CompareTag("TW"))
+            {
+                // Verificar si el slot ya tiene un arma
+                if (throwableSlot.childCount > 0)
+                {
+                    if (!allowSwap)
+                    {
+                        Debug.Log("Slot de granada lleno. Presiona F para intercambiar.");
+                        return; // No permitir recoger si el slot está lleno y no es intercambio
+                    }
+                    else
+                    {
+                        // Intercambiar: soltar arma actual al piso
+                        DropWeaponFromSlot(throwableSlot, nearItem.transform.position, throwableDroppedPrefab);
+                    }
+                }
+
+                // Reactivar el throwableSlot por si había sido desactivado al lanzar una granada previa
+                if (throwableSlot != null && !throwableSlot.gameObject.activeSelf)
+                {
+                    throwableSlot.gameObject.SetActive(true);
+                }
+
+                // Guardar referencia al prefab "Dropped" original
+                throwableDroppedPrefab = nearItem;
+
+                // Instanciar como hijo del itemSlot
+                instantiatedItem = Instantiate(itemPrefab, itemSlot);
+                
+                // Resetear posición y rotación local
+                instantiatedItem.transform.localPosition = Vector3.zero;
+                instantiatedItem.transform.localRotation = Quaternion.identity;
+                
+                throwableWeapon = this.gameObject;
+
+                if (throwableSlot.childCount == 0) // Solo incrementar si el slot estaba vacío
+                    weapons++;
+
+                Destroy(nearItem.gameObject);
+                instantiatedItem.transform.parent = throwableSlot;
+
+                nearItem = null;
+
+                GrenadeController twIcon = instantiatedItem.GetComponentInChildren<GrenadeController>();
+                throwableWeaponIcon.sprite = twIcon.weaponIcon;
+                throwableWeaponIcon.gameObject.SetActive(true);
+
+                break;
+            }
+        }
+    }
+
+    // Método para soltar el arma del slot al piso
+    private void DropWeaponFromSlot(Transform slot, Vector3 dropPosition, GameObject droppedPrefabReference)
+    {
+        if (slot.childCount == 0)
+            return;
+
+        // Obtener el arma actual del slot (Hand Grenade, Hand Pistol, etc.)
+        Transform weaponTransform = slot.GetChild(0);
+        GameObject weaponObject = weaponTransform.gameObject;
+        
+        // Intentar obtener el prefab "Dropped" desde el componente del arma
+        GameObject droppedPrefab = null;
+        
+        // Primero, intentar obtener desde WeaponController o GrenadeController
+        WeaponController weaponCtrl = weaponObject.GetComponentInChildren<WeaponController>();
+        if (weaponCtrl != null && weaponCtrl.droppedItemPrefab != null)
+        {
+            droppedPrefab = weaponCtrl.droppedItemPrefab;
+        }
+        else
+        {
+            GrenadeController grenadeCtrl = weaponObject.GetComponentInChildren<GrenadeController>();
+            if (grenadeCtrl != null && grenadeCtrl.droppedItemPrefab != null)
+            {
+                droppedPrefab = grenadeCtrl.droppedItemPrefab;
+            }
+        }
+        
+        // Si no se encontró en el componente, usar la referencia guardada (fallback)
+        if (droppedPrefab == null)
+        {
+            droppedPrefab = droppedPrefabReference;
+        }
+        
+        // Si aún no hay referencia, buscar en itemPrefabs[] por nombre/tipo (último fallback)
+        if (droppedPrefab == null)
+        {
+            string droppedNameToFind = "";
+            
+            if (slot == primarySlot)
+            {
+                droppedNameToFind = "M1911";
+            }
+            else if (slot == secondarySlot)
+            {
+                droppedNameToFind = "Ak-7";
+            }
+            else if (slot == throwableSlot)
+            {
+                droppedNameToFind = "Grenade";
+            }
+            
+            // Buscar el prefab "Dropped" en itemPrefabs[]
             foreach (GameObject itemPrefab in itemPrefabs)
             {
-                if (itemPrefab.CompareTag("PW") && nearItem.CompareTag("PW"))
+                if (itemPrefab != null && 
+                    itemPrefab.CompareTag("Item") && 
+                    itemPrefab.name.Contains(droppedNameToFind))
                 {
-                    // Instanciar como hijo del itemSlot
-                    instantiatedItem = Instantiate(itemPrefab, itemSlot);
-                    
-                    // Resetear posición y rotación local
-                    instantiatedItem.transform.localPosition = Vector3.zero;
-                    instantiatedItem.transform.localRotation = Quaternion.identity;
-                    
-                    primaryWeapon = this.gameObject;
-
-                    countWeapons++;
-                    weapons++;
-
-                    Destroy(nearItem.gameObject);
-                    instantiatedItem.transform.parent = primarySlot;
-
-                    nearItem = null;
-
-                    WeaponController pwIcon = instantiatedItem.GetComponentInChildren<WeaponController>();
-                    primaryWeaponIcon.sprite = pwIcon.weaponIcon;
-                    primaryWeaponIcon.gameObject.SetActive(true);
-
-                    break;
-                }
-                else if (itemPrefab.CompareTag("SW") && nearItem.CompareTag("SW"))
-                {
-                    // Instanciar como hijo del itemSlot
-                    instantiatedItem = Instantiate(itemPrefab, itemSlot);
-                    
-                    // Resetear posición y rotación local
-                    instantiatedItem.transform.localPosition = Vector3.zero;
-                    instantiatedItem.transform.localRotation = Quaternion.identity;
-                    
-                    secondaryWeapon = this.gameObject;
-
-                    countWeapons++;
-                    weapons++;
-
-                    Destroy(nearItem.gameObject);
-                    instantiatedItem.transform.parent = secondarySlot;
-
-                    nearItem = null;
-                    WeaponController swIcon = instantiatedItem.GetComponentInChildren<WeaponController>();
-                    secondaryWeaponIcon.sprite = swIcon.weaponIcon;
-                    secondaryWeaponIcon.gameObject.SetActive(true);
-
-                    break;
-                }
-                else if (itemPrefab.CompareTag("TW") && nearItem.CompareTag("TW"))
-                {
-                    // Reactivar el throwableSlot por si había sido desactivado al lanzar una granada previa
-                    if (throwableSlot != null && !throwableSlot.gameObject.activeSelf)
-                    {
-                        throwableSlot.gameObject.SetActive(true);
-                    }
-
-                    // Instanciar como hijo del itemSlot
-                    instantiatedItem = Instantiate(itemPrefab, itemSlot);
-                    
-                    // Resetear posición y rotación local
-                    instantiatedItem.transform.localPosition = Vector3.zero;
-                    instantiatedItem.transform.localRotation = Quaternion.identity;
-                    
-                    throwableWeapon = this.gameObject;
-
-                    countWeapons++;
-                    weapons++;
-
-                    Destroy(nearItem.gameObject);
-                    instantiatedItem.transform.parent = throwableSlot;
-
-                    nearItem = null;
-
-                    GrenadeController twIcon = instantiatedItem.GetComponentInChildren<GrenadeController>();
-                    throwableWeaponIcon.sprite = twIcon.weaponIcon;
-                    throwableWeaponIcon.gameObject.SetActive(true);
-
+                    droppedPrefab = itemPrefab;
                     break;
                 }
             }
-
-
-
         }
-
+        
+        // Verificar que tengamos un prefab "Dropped" válido
+        if (droppedPrefab == null)
+        {
+            Debug.LogWarning("No se encontró el prefab Dropped con tag 'Item' para esta arma.");
+            return;
+        }
+        
+        // Guardar la posición y rotación del nearItem original antes de destruirlo
+        Vector3 originalPosition = nearItem.transform.position;
+        Quaternion originalRotation = nearItem.transform.rotation;
+        
+        // Destruir el objeto "Hand" del slot
+        Destroy(weaponObject);
+        
+        // Instanciar el prefab "Dropped" en la misma posición y rotación que el nearItem original
+        GameObject droppedWeapon = Instantiate(droppedPrefab, originalPosition, originalRotation);
+        
+        // Asegurar que esté en la capa "Item"
+        droppedWeapon.layer = LayerMask.NameToLayer("Item");
+        
+        // Decrementar el contador de armas
+        weapons--;
+        
+        Debug.Log("Arma soltada usando posición/rotación del item original: " + droppedPrefab.name);
     }
 
     
@@ -336,6 +502,12 @@ public class PlayerController : MonoBehaviour
         {
             playerAnim.SetLayerWeight(1, 0);
             playerAnim.SetLayerWeight(2, 1);
+        }
+        else
+        {
+            // Ningún arma activa: resetear capas a 0 para usar animación base (caminar)
+            playerAnim.SetLayerWeight(1, 0);
+            playerAnim.SetLayerWeight(2, 0);
         }
         
     }

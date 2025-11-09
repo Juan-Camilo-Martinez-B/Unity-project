@@ -104,7 +104,7 @@ MonoBehaviour:
   explosionForce: 500
   explosionEffect: {fileID: 100008, guid: 7075bd5fe1480184695a32611c15da57, type: 3}
   explosionSound: {fileID: 8300000, guid: a5f556a93c282834b941b18ef993dce2, type: 3}
-  explosionSoundVolume: 3
+  explosionSoundVolume: 1
   barrelAudioSource: {fileID: 4260309020692110859}
   destroyDelay: 0.1
   showDebugGizmos: 1

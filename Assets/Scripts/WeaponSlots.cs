@@ -30,6 +30,14 @@ public class WeaponSlots : MonoBehaviour
     {
         if (player.weapons < 1)
             return;
+
+        // Tecla Q: esconder todas las armas y volver a animación de caminar
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            HideAllWeapons();
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             if (player.primaryWeapon == null)
@@ -42,9 +50,7 @@ public class WeaponSlots : MonoBehaviour
             player.hasRiffle = false;
             player.hasGrenade = false;
 
-            player.primaryWeaponIcon.color = Color.green;
-            player.secondaryWeaponIcon.color = Color.white;
-            player.throwableWeaponIcon.color = Color.white;
+            UpdateWeaponIcons(1);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -58,9 +64,7 @@ public class WeaponSlots : MonoBehaviour
             player.hasPistol = false;
             player.hasGrenade = false;
 
-            player.secondaryWeaponIcon.color = Color.green;
-            player.throwableWeaponIcon.color = Color.white;
-            player.primaryWeaponIcon.color = Color.white;
+            UpdateWeaponIcons(2);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -72,9 +76,7 @@ public class WeaponSlots : MonoBehaviour
             player.hasPistol = false;
             player.hasRiffle = false;
 
-            player.throwableWeaponIcon.color = Color.green;
-            player.primaryWeaponIcon.color = Color.white;
-            player.secondaryWeaponIcon.color = Color.white;
+            UpdateWeaponIcons(3);
 
             // Forzar que la animación de "sacar granada" se reproduzca cada vez que cambiamos a la granada
             if (player != null && player.playerAnim != null && !string.IsNullOrEmpty(grenadeDrawStateName))
@@ -134,5 +136,38 @@ public class WeaponSlots : MonoBehaviour
             player.hasRiffle = false;
             player.hasGrenade = false;
         }
+    }
+
+    // Actualiza los colores de los iconos de armas según el slot activo
+    private void UpdateWeaponIcons(int activeSlot)
+    {
+        player.primaryWeaponIcon.color = (activeSlot == 1) ? Color.green : Color.white;
+        player.secondaryWeaponIcon.color = (activeSlot == 2) ? Color.green : Color.white;
+        player.throwableWeaponIcon.color = (activeSlot == 3) ? Color.green : Color.white;
+    }
+
+    // Esconde todas las armas y vuelve a la animación de caminar
+    public void HideAllWeapons()
+    {
+        // Desactivar todos los slots visualmente
+        DeactivateAllSlots();
+        
+        // Limpiar el rastro del último slot activo
+        lastActivatedSlot = null;
+        
+        // CRÍTICO: Resetear TODAS las flags de armas a false
+        // Esto hace que el Animator detecte que NO hay ningún arma activa
+        // y vuelva a la animación de caminar (idle)
+        player.hasPistol = false;
+        player.hasRiffle = false;
+        player.hasGrenade = false;
+        
+        // Resetear todos los iconos de UI a blanco (ninguno seleccionado)
+        if (player.primaryWeaponIcon != null)
+            player.primaryWeaponIcon.color = Color.white;
+        if (player.secondaryWeaponIcon != null)
+            player.secondaryWeaponIcon.color = Color.white;
+        if (player.throwableWeaponIcon != null)
+            player.throwableWeaponIcon.color = Color.white;
     }
 }

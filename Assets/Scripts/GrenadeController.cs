@@ -14,6 +14,10 @@ public class GrenadeController : MonoBehaviour
 
     public Sprite weaponIcon;
 
+    [Header("Dropped Item Reference")]
+    [Tooltip("Prefab 'Dropped' de esta granada (con tag Item) que se instancia al soltar la granada.")]
+    public GameObject droppedItemPrefab;
+
     //Externos
     PlayerController player;
     WeaponSlots weaponSlots;

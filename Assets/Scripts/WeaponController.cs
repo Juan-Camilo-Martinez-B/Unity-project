@@ -23,6 +23,10 @@ public class WeaponController : MonoBehaviour
 
     public Sprite weaponIcon;
 
+    [Header("Dropped Item Reference")]
+    [Tooltip("Prefab 'Dropped' de esta arma (con tag Item) que se instancia al soltar el arma.")]
+    public GameObject droppedItemPrefab;
+
     [Header("Muzzle Flash & Shoot Sound")]
     public ParticleSystem muzzleFlashParticles; // Sistema de partículas para fogonazo
     public GameObject muzzleFlashPrefab; // Alternativa: prefab de fogonazo
