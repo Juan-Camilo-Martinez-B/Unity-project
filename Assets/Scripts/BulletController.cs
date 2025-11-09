@@ -90,6 +90,13 @@ public class BulletController : MonoBehaviour
                 Debug.Log("Disparo en " + playerBodyPart.BodyName);
             }
 
+            // Detectar impacto en barril y hacerlo explotar
+            BarrelController barrel = go.GetComponent<BarrelController>();
+            if (barrel != null)
+            {
+                barrel.TakeHit();
+            }
+
             // Efectos de impacto
             SpawnImpactEffects(hit.point, hit.normal);
 

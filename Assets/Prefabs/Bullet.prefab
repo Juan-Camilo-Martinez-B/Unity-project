@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6497473059337214563}
   m_Layer: 0
   m_Name: Bullet
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -71,8 +71,6 @@ MonoBehaviour:
   shooter: {fileID: 0}
   shooterIgnoreDuration: 0.15
   hitEffect: {fileID: 100002, guid: 957385c45b877e645a128e11a3efb2f9, type: 3}
-  hitSound: {fileID: 0}
-  hitSoundVolume: 1
 --- !u!1001 &7450247774885217909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -82,6 +80,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1051806375445904, guid: 0a5afcbadaf5ec448840d27d71c543a9, type: 3}
       propertyPath: m_Name
+      value: Bullet
+      objectReference: {fileID: 0}
+    - target: {fileID: 1051806375445904, guid: 0a5afcbadaf5ec448840d27d71c543a9, type: 3}
+      propertyPath: m_TagString
       value: Bullet
       objectReference: {fileID: 0}
     - target: {fileID: 4435883513989822, guid: 0a5afcbadaf5ec448840d27d71c543a9, type: 3}

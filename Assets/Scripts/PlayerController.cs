@@ -284,6 +284,9 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
+        
+        // Asegurar que la vida no sea negativa
+        currentHealth = Mathf.Max(0f, currentHealth);
 
         if (currentHealth <= 0f)
         {
