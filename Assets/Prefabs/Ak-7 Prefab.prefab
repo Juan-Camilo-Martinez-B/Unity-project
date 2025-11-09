@@ -80,7 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootSpawn: {fileID: 5422050213874716135}
   shooting: 0
-  shootDelay: 0.15
+  shootDelay: 0.1
   lastShootTime: 0
   currentShootMode: 1
   bulletPrefab: {fileID: 5668379645781201426, guid: 2fd65e5a90b132246b5b0a9869c565f2, type: 3}

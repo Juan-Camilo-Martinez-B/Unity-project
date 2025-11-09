@@ -69,8 +69,8 @@ public class BulletController : MonoBehaviour
 
         RaycastHit hit;
 
-        // Raycast contra cualquier collider para que la bala se detenga en paredes/props/etc.
-        if (Physics.Raycast(lastBulletPos, bulletDirection.normalized, out hit, bulletDirection.magnitude))
+        // Raycast contra todos los colliders excepto triggers
+        if (Physics.Raycast(lastBulletPos, bulletDirection.normalized, out hit, bulletDirection.magnitude, ~0, QueryTriggerInteraction.Ignore))
         {
             // Ignorar impactos contra el propio lanzador por seguridad (raycast)
             if (shooter != null && hit.collider != null)
@@ -84,12 +84,21 @@ public class BulletController : MonoBehaviour
             }
 
             GameObject go = hit.collider.gameObject;
+            
+            // Detectar impacto en jugador
             BodyPartHitCheck playerBodyPart = go.GetComponent<BodyPartHitCheck>();
-
             if (playerBodyPart != null)
             {
                 playerBodyPart.TakeHit(bulletDamage);
-                Debug.Log("Disparo en " + playerBodyPart.BodyName);
+                Debug.Log("Disparo en " + playerBodyPart.BodyName + " del jugador");
+            }
+
+            // Detectar impacto en zombie
+            ZombieBodyPart zombieBodyPart = go.GetComponent<ZombieBodyPart>();
+            if (zombieBodyPart != null)
+            {
+                zombieBodyPart.TakeHit(bulletDamage);
+                Debug.Log("Disparo a zombie en " + zombieBodyPart.bodyPartName + " (multiplicador: " + zombieBodyPart.damageMultiplier + "x)");
             }
 
             // Detectar impacto en barril y hacerlo explotar
