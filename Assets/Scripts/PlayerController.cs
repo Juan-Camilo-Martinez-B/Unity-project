@@ -451,8 +451,8 @@ public class PlayerController : MonoBehaviour
     {
         currentHealth -= damage;
         
-        // Asegurar que la vida no sea negativa
-        currentHealth = Mathf.Max(0f, currentHealth);
+        // Asegurar que la vida esté entre 0 y maxHealth
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
 
         if (currentHealth <= 0f)
         {

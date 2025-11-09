@@ -46,6 +46,13 @@ public class BarrelController : MonoBehaviour
 
         Vector3 explosionPosition = transform.position;
 
+        // Notificar al LevelManager que este barril fue destruido
+        LevelManager levelManager = FindObjectOfType<LevelManager>();
+        if (levelManager != null)
+        {
+            levelManager.OnBarrelDestroyed();
+        }
+
         // PRIMERO: Reproducir efectos de explosión ANTES de cualquier otra cosa
         SpawnExplosionEffects(explosionPosition);
 
