@@ -4,8 +4,32 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
+public enum ZombieBehaviorMode
+{
+    Idle,    // Quieto hasta detectar jugador
+    Patrol   // Patrullando por área hasta detectar jugador
+}
+
 public class ZombieController : MonoBehaviour
 {
+    [Header("Behavior Mode")]
+    [Tooltip("Idle: Quieto hasta detectar jugador | Patrol: Vagando por área hasta detectar jugador")]
+    public ZombieBehaviorMode behaviorMode = ZombieBehaviorMode.Idle;
+    
+    [Header("Patrol Settings - Solo para Patrol Mode")]
+    [Tooltip("Centro del área de patrulla (usualmente el ZombieSpawner)")]
+    public Transform patrolCenter;
+    [Tooltip("Radio del área donde patrullará el zombie")]
+    public float patrolRadius = 10f;
+    [Tooltip("Velocidad al patrullar (más lenta que al perseguir)")]
+    public float patrolSpeed = 1.5f;
+    [Tooltip("Tiempo de espera al llegar a un punto de patrulla")]
+    public float patrolWaitTime = 2f;
+    
+    private Vector3 currentPatrolTarget;
+    private bool isWaitingAtPatrolPoint = false;
+    private float patrolWaitTimer = 0f;
+    
     [Header("Health Settings")]
     public float maxHealth = 100f;
     public float currentHealth;
@@ -74,6 +98,7 @@ public class ZombieController : MonoBehaviour
         // Obtener componentes
         if (zombieAnimator == null)
             zombieAnimator = GetComponent<Animator>();
+
         
         if (agent == null)
             agent = GetComponent<NavMeshAgent>();
@@ -116,14 +141,17 @@ public class ZombieController : MonoBehaviour
         else if (agent != null)
         {
             // Configurar NavMeshAgent para mejor navegación
-            agent.speed = runSpeed;
+            agent.speed = (behaviorMode == ZombieBehaviorMode.Patrol) ? patrolSpeed : runSpeed;
             agent.angularSpeed = 120f; // Velocidad de giro
             agent.acceleration = 8f; // Aceleración
-            agent.stoppingDistance = stoppingDistance;
+            // En modo patrol, usar stopping distance más pequeña para que llegue a los puntos
+            agent.stoppingDistance = (behaviorMode == ZombieBehaviorMode.Patrol) ? 0.5f : stoppingDistance;
             agent.autoBraking = true;
             agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
             agent.radius = 0.3f;
             agent.height = 1.8f;
+            
+            Debug.Log($"Zombie {gameObject.name}: NavMeshAgent configurado - Speed:{agent.speed}, StoppingDistance:{agent.stoppingDistance}, Mode:{behaviorMode}");
         }
 
         // Buscar al jugador si no está asignado
@@ -131,7 +159,14 @@ public class ZombieController : MonoBehaviour
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
             if (playerObj != null)
+            {
                 player = playerObj.transform;
+                Debug.Log($"Zombie {gameObject.name}: Player encontrado automáticamente");
+            }
+            else
+            {
+                Debug.LogWarning($"Zombie {gameObject.name}: No se encontró GameObject con tag 'Player'");
+            }
         }
 
         // Si no hay eyePosition asignado, usar la posición del zombie + offset
@@ -164,6 +199,27 @@ public class ZombieController : MonoBehaviour
                 // Obtener el RectTransform
                 healthBarScript.rectTransform = healthBarInstance.GetComponent<RectTransform>();
             }
+        }
+        
+        // Inicializar patrulla si está en modo Patrol
+        if (behaviorMode == ZombieBehaviorMode.Patrol)
+        {
+            // Si no hay patrol center asignado, usar la posición inicial del zombie
+            if (patrolCenter == null)
+            {
+                GameObject patrolCenterObj = new GameObject($"{gameObject.name}_PatrolCenter");
+                patrolCenterObj.transform.position = transform.position;
+                patrolCenter = patrolCenterObj.transform;
+                Debug.LogWarning($"Zombie {gameObject.name} en modo Patrol sin Patrol Center asignado. Usando posición inicial.");
+            }
+            
+            // Generar primer punto de patrulla INMEDIATAMENTE
+            Debug.Log($"Zombie {gameObject.name}: Inicializando patrulla en modo Patrol");
+            GenerateNewPatrolPoint();
+            
+            // Asegurarse de que NO esté esperando al inicio
+            isWaitingAtPatrolPoint = false;
+            patrolWaitTimer = 0f;
         }
     }
 
@@ -225,7 +281,25 @@ public class ZombieController : MonoBehaviour
             {
                 isPlayingDetectionAnimation = false;
                 hasPlayedDetectionAnimation = true; // Marcar que ya se reprodujo
-                UpdateAnimator(true, false);
+                
+                // IMPORTANTE: Cambiar velocidad a runSpeed INMEDIATAMENTE
+                if (agent != null && agent.enabled)
+                {
+                    agent.speed = runSpeed;
+                    agent.stoppingDistance = stoppingDistance;
+                }
+                
+                // FORZAR cambio de animación INMEDIATAMENTE
+                if (zombieAnimator != null)
+                {
+                    zombieAnimator.SetBool("isWalking", false); // FORZAR a false para Run
+                    zombieAnimator.SetLayerWeight(1, 1f); // Asegurar que Walk layer esté activo
+                    zombieAnimator.SetLayerWeight(2, 0f); // Desactivar detectPlayer layer
+                }
+                
+                UpdateAnimator(true, false); // Activar animación de Run
+                
+                Debug.Log($"🏃 Zombie {gameObject.name}: Terminó detección, FORZANDO RUN - isWalking:{zombieAnimator?.GetBool("isWalking")}");
             }
             
             return;
@@ -238,11 +312,22 @@ public class ZombieController : MonoBehaviour
         }
         else
         {
-            // Quedarse quieto (Idle)
-            if (agent != null && agent.enabled && agent.isOnNavMesh)
-                agent.SetDestination(transform.position);
-            
-            UpdateAnimator(false, false);
+            // Comportamiento según el modo cuando NO hay jugador detectado
+            switch (behaviorMode)
+            {
+                case ZombieBehaviorMode.Idle:
+                    // Modo Idle: Quedarse quieto
+                    if (agent != null && agent.enabled && agent.isOnNavMesh)
+                        agent.SetDestination(transform.position);
+                    
+                    UpdateAnimator(false, false);
+                    break;
+                    
+                case ZombieBehaviorMode.Patrol:
+                    // Modo Patrol: Caminar por el área
+                    PatrolArea();
+                    break;
+            }
         }
     }
 
@@ -338,7 +423,22 @@ public class ZombieController : MonoBehaviour
                             lastKnownPlayerPosition = player.position;
                             isPlayingDetectionAnimation = false;
                             
-                            Debug.Log($"Zombie re-detectó al jugador (sin animación) a {distanceToPlayer:F1}m");
+                            // IMPORTANTE: Cambiar velocidad a runSpeed inmediatamente
+                            if (agent != null && agent.enabled)
+                            {
+                                agent.speed = runSpeed;
+                                agent.stoppingDistance = stoppingDistance;
+                            }
+                            
+                            // FORZAR cambio de animación INMEDIATAMENTE
+                            if (zombieAnimator != null)
+                            {
+                                zombieAnimator.SetBool("isWalking", false); // FORZAR a false para Run
+                                zombieAnimator.SetLayerWeight(1, 1f);
+                                zombieAnimator.SetLayerWeight(2, 0f);
+                            }
+                            
+                            Debug.Log($"🏃 Zombie {gameObject.name}: Re-detectó - FORZANDO RUN - Speed:{runSpeed}, isWalking:{zombieAnimator?.GetBool("isWalking")}");
                         }
                         else
                         {
@@ -406,6 +506,13 @@ public class ZombieController : MonoBehaviour
         {
             // Perseguir al jugador
             agent.isStopped = false;
+            
+            // IMPORTANTE: Cambiar stopping distance a la de ataque cuando persigue
+            if (agent.stoppingDistance != stoppingDistance)
+            {
+                agent.stoppingDistance = stoppingDistance;
+            }
+            
             agent.SetDestination(player.position);
 
             // Cambiar velocidad y animación según la salud
@@ -416,8 +523,21 @@ public class ZombieController : MonoBehaviour
             }
             else
             {
+                // Al perseguir, siempre usar velocidad de run (independiente del modo de patrulla)
                 agent.speed = runSpeed;
                 UpdateAnimator(true, false); // Run
+                
+                // Debug para verificar TODO
+                if (Time.frameCount % 60 == 0) // Cada segundo aprox
+                {
+                    Debug.Log($"🏃 Zombie {gameObject.name} PERSIGUIENDO:");
+                    Debug.Log($"   - agent.speed: {agent.speed} (debería ser {runSpeed})");
+                    Debug.Log($"   - UpdateAnimator(true, false) llamado");
+                    Debug.Log($"   - isWalking en Animator: {zombieAnimator?.GetBool("isWalking")}");
+                    Debug.Log($"   - Layer Walk weight: {zombieAnimator?.GetLayerWeight(1)}");
+                    Debug.Log($"   - BehaviorMode: {behaviorMode}");
+                    Debug.Log($"   - Distance: {distanceToPlayer:F2}m");
+                }
             }
         }
     }
@@ -521,7 +641,16 @@ public class ZombieController : MonoBehaviour
     void UpdateAnimator(bool running, bool walking)
     {
         if (zombieAnimator == null)
+        {
+            Debug.LogWarning($"Zombie {gameObject.name}: zombieAnimator es null!");
             return;
+        }
+
+        // Debug para patrulla
+        if (behaviorMode == ZombieBehaviorMode.Patrol && Time.frameCount % 120 == 0)
+        {
+            Debug.Log($"Zombie {gameObject.name}: UpdateAnimator - Running:{running}, Walking:{walking}, isWalking param:{zombieAnimator.GetBool("isWalking")}");
+        }
 
         // Usar layers según el estado
         if (running)
@@ -530,12 +659,19 @@ public class ZombieController : MonoBehaviour
             zombieAnimator.SetLayerWeight(1, 1f); // Walk layer - animación de correr
             zombieAnimator.SetLayerWeight(2, 0f); // detectPlayer layer - apagar detección
             
-            // Activar animación de correr (desactivar walking)
+            // FORZAR animación de correr (desactivar walking)
+            // Importante: Debe ser false para que el Blend Tree use Run en lugar de Walk
             zombieAnimator.SetBool("isWalking", false);
+            
+            // Debug cada vez que se establece Run
+            if (behaviorMode == ZombieBehaviorMode.Patrol && Time.frameCount % 60 == 0)
+            {
+                Debug.Log($"⚡ FORZANDO RUN: isWalking = {zombieAnimator.GetBool("isWalking")}, LayerWeight = {zombieAnimator.GetLayerWeight(1)}");
+            }
         }
         else if (walking)
         {
-            // Activar layer Walk (Walking lento por baja vida)
+            // Activar layer Walk (Walking lento por baja vida o PATRULLA)
             zombieAnimator.SetLayerWeight(1, 1f); // Walk layer - animación de caminar
             zombieAnimator.SetLayerWeight(2, 0f); // detectPlayer layer - apagar detección
             
@@ -673,6 +809,136 @@ public class ZombieController : MonoBehaviour
         {
             Gizmos.color = playerDetected ? Color.green : Color.gray;
             Gizmos.DrawLine(eyePosition.position, player.position);
+        }
+        
+        // Área de patrulla (solo en modo Patrol)
+        if (behaviorMode == ZombieBehaviorMode.Patrol && patrolCenter != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(patrolCenter.position, patrolRadius);
+            
+            // Línea hacia el punto de patrulla actual
+            if (currentPatrolTarget != Vector3.zero)
+            {
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawLine(transform.position, currentPatrolTarget);
+                Gizmos.DrawWireSphere(currentPatrolTarget, 0.5f);
+            }
+        }
+    }
+
+    // ============================================
+    // MÉTODOS DE PATRULLA
+    // ============================================
+    
+    void PatrolArea()
+    {
+        if (agent == null || !agent.enabled || !agent.isOnNavMesh || patrolCenter == null)
+        {
+            Debug.LogWarning($"Zombie {gameObject.name}: No puede patrullar - Agent:{agent != null}, Enabled:{agent?.enabled}, OnNavMesh:{agent?.isOnNavMesh}, Center:{patrolCenter != null}");
+            return;
+        }
+        
+        // IMPORTANTE: Solo patrullar si NO está persiguiendo al jugador
+        if (playerDetected)
+        {
+            // Si detectó al jugador, no hacer nada aquí (ChasePlayer() se encarga)
+            return;
+        }
+        
+        // Si está esperando en un punto de patrulla
+        if (isWaitingAtPatrolPoint)
+        {
+            patrolWaitTimer += Time.deltaTime;
+            
+            // Quedarse quieto mientras espera
+            agent.SetDestination(transform.position);
+            UpdateAnimator(false, false); // Idle
+            
+            // Cuando termine la espera, generar nuevo punto
+            if (patrolWaitTimer >= patrolWaitTime)
+            {
+                isWaitingAtPatrolPoint = false;
+                patrolWaitTimer = 0f;
+                GenerateNewPatrolPoint();
+                Debug.Log($"Zombie {gameObject.name}: Terminó espera, generando nuevo punto de patrulla");
+            }
+            
+            return;
+        }
+        
+        // Verificar si el target es válido
+        if (currentPatrolTarget == Vector3.zero)
+        {
+            Debug.LogWarning($"Zombie {gameObject.name}: currentPatrolTarget es Vector3.zero, regenerando punto");
+            GenerateNewPatrolPoint();
+            return;
+        }
+        
+        // Verificar si llegó al punto de patrulla
+        if (!agent.pathPending && agent.hasPath && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            // Llegó al punto, empezar a esperar
+            isWaitingAtPatrolPoint = true;
+            patrolWaitTimer = 0f;
+            Debug.Log($"Zombie {gameObject.name}: Llegó al punto de patrulla, esperando {patrolWaitTime}s");
+            return;
+        }
+        
+        // Está caminando hacia el punto de patrulla
+        // IMPORTANTE: Solo cambiar velocidad si NO está persiguiendo
+        agent.speed = patrolSpeed;
+        agent.isStopped = false;
+        
+        // Asegurarse de establecer el destino
+        if (!agent.hasPath || agent.pathStatus == NavMeshPathStatus.PathInvalid)
+        {
+            agent.SetDestination(currentPatrolTarget);
+            Debug.Log($"Zombie {gameObject.name}: Estableciendo nuevo path hacia {currentPatrolTarget}");
+        }
+        
+        // Actualizar animación de caminar
+        UpdateAnimator(false, true); // Walking (isRunning = false, isWalking = true)
+        
+        // Debug visual cada 2 segundos
+        if (Time.frameCount % 120 == 0)
+        {
+            Debug.Log($"Zombie {gameObject.name}: Patrullando - HasPath:{agent.hasPath}, Distance:{agent.remainingDistance:F2}m, PathStatus:{agent.pathStatus}");
+        }
+    }
+    
+    void GenerateNewPatrolPoint()
+    {
+        if (patrolCenter == null)
+        {
+            Debug.LogError($"Zombie {gameObject.name}: patrolCenter es null, no puede generar punto de patrulla");
+            return;
+        }
+        
+        // Generar punto aleatorio dentro del radio de patrulla
+        Vector2 randomCircle = Random.insideUnitCircle * patrolRadius;
+        Vector3 randomPoint = patrolCenter.position + new Vector3(randomCircle.x, 0, randomCircle.y);
+        
+        // Encontrar el punto más cercano en el NavMesh
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomPoint, out hit, patrolRadius, NavMesh.AllAreas))
+        {
+            currentPatrolTarget = hit.position;
+            Debug.Log($"✅ Zombie {gameObject.name} generó nuevo punto de patrulla en {currentPatrolTarget}");
+        }
+        else
+        {
+            // Si no encuentra un punto válido, intentar desde la posición actual del zombie
+            if (NavMesh.SamplePosition(transform.position, out hit, 5f, NavMesh.AllAreas))
+            {
+                currentPatrolTarget = hit.position;
+                Debug.LogWarning($"⚠️ Zombie {gameObject.name} usó su posición actual como punto de patrulla");
+            }
+            else
+            {
+                currentPatrolTarget = transform.position;
+                Debug.LogError($"❌ Zombie {gameObject.name} NO pudo generar punto de patrulla válido en NavMesh!");
+            }
         }
     }
 }

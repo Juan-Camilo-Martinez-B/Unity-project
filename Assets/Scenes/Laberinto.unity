@@ -16043,15 +16043,20 @@ MonoBehaviour:
   timerText: {fileID: 219236537}
   barrelTargetText: {fileID: 1413647029}
   barrelCountText: {fileID: 244777272}
-  victoryPanel: {fileID: 1138747418}
-  victoryRecordTimeText: {fileID: 358351270}
-  victoryDestroyedBarrelsText: {fileID: 1700219510}
-  restartButton: {fileID: 436922549}
-  nextLevelButton: {fileID: 1479927105}
+  victoryPanelLaberinto: {fileID: 1138747418}
+  victoryPanelNivel2: {fileID: 0}
+  victoryPanelBoss: {fileID: 0}
+  laberintoLevelTimeText: {fileID: 0}
+  laberintoBarrelsText: {fileID: 0}
+  nivel2LevelTimeText: {fileID: 0}
+  bossLaberintoTimeText: {fileID: 0}
+  bossNivel2TimeText: {fileID: 0}
+  bossBossTimeText: {fileID: 0}
+  bossTotalTimeText: {fileID: 0}
   defeatPanel: {fileID: 1577873680}
   defeatPlayedTimeText: {fileID: 1463431331}
   defeatDestroyedBarrelsText: {fileID: 1670759361}
-  nextLevelName: Boss
+  victoryDelayTime: 3
 --- !u!4 &738422826
 Transform:
   m_ObjectHideFlags: 0

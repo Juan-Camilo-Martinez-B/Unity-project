@@ -7,6 +7,7 @@ using TMPro;
 
 public class LevelManager : MonoBehaviour
 {
+
     [Header("Menu Panel")]
     public GameObject menuPanel;
 
@@ -29,33 +30,56 @@ public class LevelManager : MonoBehaviour
     public TextMeshProUGUI barrelTargetText;
     public TextMeshProUGUI barrelCountText;
 
-    [Header("Victory Panel")]
-    public GameObject victoryPanel;
-    public TextMeshProUGUI victoryRecordTimeText;
-    public TextMeshProUGUI victoryDestroyedBarrelsText;
-    public GameObject restartButton;
-    public GameObject nextLevelButton;
+    [Header("Victory Panels - Assign per level")]
+    public GameObject victoryPanelLaberinto;
+    public GameObject victoryPanelNivel2; // Para el nivel del medio cuando lo crees
+    public GameObject victoryPanelBoss;
+
+    [Header("Victory Panel Stats - Laberinto")]
+    public TextMeshProUGUI laberintoLevelTimeText;
+    public TextMeshProUGUI laberintoBarrelsText;
+
+    [Header("Victory Panel Stats - Nivel 2")]
+    public TextMeshProUGUI nivel2LevelTimeText;
+    // Agregar más stats según necesites
+
+    [Header("Victory Panel Stats - Boss (Final)")]
+    public TextMeshProUGUI bossLaberintoTimeText;
+    public TextMeshProUGUI bossNivel2TimeText;
+    public TextMeshProUGUI bossBossTimeText;
+    public TextMeshProUGUI bossTotalTimeText;
 
     [Header("Defeat Panel")]
     public GameObject defeatPanel;
     public TextMeshProUGUI defeatPlayedTimeText;
     public TextMeshProUGUI defeatDestroyedBarrelsText;
+    public GameObject defeatRestartButton;
+    public GameObject defeatExitButton;
 
     [Header("Level Settings")]
-    public string nextLevelName = "Boss"; // Nombre de la siguiente escena
+    public float victoryDelayTime = 3.0f; // Tiempo de espera antes de mostrar victoria
+    [Tooltip("Activar para testing: simula tiempos previos si inicias desde niveles intermedios")]
+    public bool allowTestingFromAnyLevel = true;
 
     private bool isGameStarted = false;
     private bool isGamePaused = false;
     private bool isGameOver = false;
-    private bool hasGameBegun = false; // Nueva variable para controlar si ya se presionó Play
+    private bool hasGameBegun = false;
     private PlayerController playerController;
     private WeaponSlots weaponSlots;
-    private float elapsedTime = 0f;
+    
+    // Timers
+    private float currentLevelTime = 0f; // Tiempo del nivel actual
+    private static float globalTime = 0f; // Tiempo total del juego
+    private static float laberintoTime = 0f; // Tiempo del nivel Laberinto
+    private static float nivel2Time = 0f; // Tiempo del nivel 2
+    private static float bossTime = 0f; // Tiempo del nivel Boss
+    private static bool isFirstLevelLoad = true; // Para detectar si es la primera carga del juego
     
     // Sistema de barriles
     private int totalBarrels = 0;
     private int destroyedBarrels = 0;
-    private bool useBarrelSystem = false; // Determina si usar el sistema de barriles
+    private bool useBarrelSystem = false;
     private string currentSceneName;
 
     void Start()
@@ -63,11 +87,19 @@ public class LevelManager : MonoBehaviour
         // Obtener el nombre de la escena actual
         currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         
+        // Si es la primera carga del juego y estamos en testing, simular progresión previa
+        if (isFirstLevelLoad && allowTestingFromAnyLevel)
+        {
+            SimulateProgressionForTesting();
+            isFirstLevelLoad = false;
+        }
+        
         // Determinar si usar el sistema de barriles (solo en Laberinto)
         useBarrelSystem = (currentSceneName == "Laberinto");
         
         Debug.Log($"Escena actual: {currentSceneName}");
         Debug.Log($"Sistema de barriles: {(useBarrelSystem ? "ACTIVADO" : "DESACTIVADO")}");
+        Debug.Log($"Tiempo global acumulado: {GetFormattedTime(globalTime)}");
 
         // Obtener referencia al PlayerController
         if (player != null)
@@ -80,6 +112,43 @@ public class LevelManager : MonoBehaviour
         StartCoroutine(InitializeMenuAfterFrame());
     }
 
+    // Simular progresión previa si iniciamos desde un nivel intermedio (para testing en Unity)
+    void SimulateProgressionForTesting()
+    {
+        switch (currentSceneName)
+        {
+            case "Nivel2":
+                // Si iniciamos en Nivel 2, simular que completamos el Laberinto
+                if (laberintoTime == 0f)
+                {
+                    laberintoTime = 120f; // Tiempo simulado: 2 minutos
+                    globalTime = laberintoTime;
+                    Debug.Log($"🔧 [TESTING] Simulando progresión previa para Nivel 2");
+                    Debug.Log($"   - Tiempo Laberinto simulado: {GetFormattedTime(laberintoTime)}");
+                }
+                break;
+                
+            case "Boss":
+                // Si iniciamos en Boss, simular que completamos Laberinto y Nivel 2
+                if (laberintoTime == 0f && nivel2Time == 0f)
+                {
+                    laberintoTime = 120f; // 2 minutos
+                    nivel2Time = 180f;    // 3 minutos
+                    globalTime = laberintoTime + nivel2Time;
+                    Debug.Log($"🔧 [TESTING] Simulando progresión previa para Boss");
+                    Debug.Log($"   - Tiempo Laberinto simulado: {GetFormattedTime(laberintoTime)}");
+                    Debug.Log($"   - Tiempo Nivel 2 simulado: {GetFormattedTime(nivel2Time)}");
+                    Debug.Log($"   - Tiempo global simulado: {GetFormattedTime(globalTime)}");
+                }
+                break;
+                
+            case "Laberinto":
+                // Si iniciamos en Laberinto, resetear todo (es el nivel inicial)
+                Debug.Log($"🎮 Iniciando desde el primer nivel (Laberinto)");
+                break;
+        }
+    }
+
     IEnumerator InitializeMenuAfterFrame()
     {
         // Esperar al final del frame para asegurar que EventSystem esté listo
@@ -88,9 +157,13 @@ public class LevelManager : MonoBehaviour
         // Contar los barriles en la escena
         CountBarrels();
         
-        // Ocultar paneles de victoria y derrota al inicio
-        if (victoryPanel != null)
-            victoryPanel.SetActive(false);
+        // Ocultar TODOS los paneles de victoria y derrota al inicio
+        if (victoryPanelLaberinto != null)
+            victoryPanelLaberinto.SetActive(false);
+        if (victoryPanelNivel2 != null)
+            victoryPanelNivel2.SetActive(false);
+        if (victoryPanelBoss != null)
+            victoryPanelBoss.SetActive(false);
         if (defeatPanel != null)
             defeatPanel.SetActive(false);
         
@@ -128,10 +201,12 @@ public class LevelManager : MonoBehaviour
 
     void Update()
     {
-        // Actualizar el cronómetro solo si el juego ha comenzado (después de presionar Play)
+        // Actualizar los cronómetros solo si el juego ha comenzado
         if (hasGameBegun && isGameStarted && !isGamePaused && !isGameOver)
         {
-            elapsedTime += Time.deltaTime;
+            float deltaTime = Time.deltaTime;
+            currentLevelTime += deltaTime; // Timer del nivel actual
+            globalTime += deltaTime; // Timer global
             UpdateTimerDisplay();
             
             // Verificar si el jugador murió
@@ -277,8 +352,8 @@ public class LevelManager : MonoBehaviour
         isGameStarted = true;
         isGamePaused = false;
 
-        // Reiniciar el cronómetro solo si es la primera vez
-        if (elapsedTime == 0f && timerText != null)
+        // Reiniciar el cronómetro del nivel solo si es la primera vez
+        if (currentLevelTime == 0f && timerText != null)
             timerText.gameObject.SetActive(true);
 
         // Reactivar controles del jugador
@@ -325,8 +400,8 @@ public class LevelManager : MonoBehaviour
         isGameStarted = true;
         isGamePaused = false;
 
-        // Reiniciar el cronómetro
-        elapsedTime = 0f;
+        // Reiniciar el cronómetro del nivel actual
+        currentLevelTime = 0f;
         if (timerText != null)
             timerText.gameObject.SetActive(true);
 
@@ -386,9 +461,9 @@ public class LevelManager : MonoBehaviour
             return;
 
         // Convertir el tiempo a formato mm:ss
-        int minutes = Mathf.FloorToInt(elapsedTime / 60f);
-        int seconds = Mathf.FloorToInt(elapsedTime % 60f);
-        int milliseconds = Mathf.FloorToInt((elapsedTime * 100f) % 100f);
+        int minutes = Mathf.FloorToInt(currentLevelTime / 60f);
+        int seconds = Mathf.FloorToInt(currentLevelTime % 60f);
+        int milliseconds = Mathf.FloorToInt((currentLevelTime * 100f) % 100f);
 
         // Mostrar en formato: 00:00:00 (minutos:segundos:centésimas)
         timerText.text = string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
@@ -428,6 +503,10 @@ public class LevelManager : MonoBehaviour
         // Verificar si se destruyeron todos los barriles
         if (destroyedBarrels >= totalBarrels)
         {
+            // DETENER TIMER INMEDIATAMENTE al completar el objetivo
+            isGameOver = true;
+            Debug.Log($"⏱️ TIMER DETENIDO - Tiempo final: {GetFormattedTime(currentLevelTime)}");
+            
             WinGame();
         }
     }
@@ -438,7 +517,10 @@ public class LevelManager : MonoBehaviour
         if (!isGameStarted || isGameOver)
             return;
 
-        Debug.Log("🏆 BOSS DERROTADO - Esperando animación de muerte...");
+        // DETENER TIMER INMEDIATAMENTE al derrotar al boss
+        isGameOver = true;
+        Debug.Log($"🏆 BOSS DERROTADO - Timer detenido en: {GetFormattedTime(currentLevelTime)}");
+        Debug.Log("⏳ Esperando animación de muerte...");
         
         // Iniciar corrutina para esperar antes de mostrar victoria
         StartCoroutine(BossDefeatedSequence());
@@ -465,11 +547,29 @@ public class LevelManager : MonoBehaviour
     // Función que se ejecuta cuando el jugador gana
     void WinGame()
     {
-        if (isGameOver) return; // Evitar ejecutar múltiples veces
-        isGameOver = true;
+        // NOTA: isGameOver ya se estableció en true cuando se completó el objetivo
+        // Esto evita que el timer siga corriendo durante la espera del panel
+        
+        // Guardar el tiempo del nivel actual en la variable estática correspondiente
+        switch (currentSceneName)
+        {
+            case "Laberinto":
+                laberintoTime = currentLevelTime;
+                Debug.Log($"✅ ¡VICTORIA LABERINTO! Tiempo final: {GetFormattedTime(currentLevelTime)}");
+                break;
+            case "Nivel2":
+                nivel2Time = currentLevelTime;
+                Debug.Log($"✅ ¡VICTORIA NIVEL 2! Tiempo final: {GetFormattedTime(currentLevelTime)}");
+                break;
+            case "Boss":
+                bossTime = currentLevelTime;
+                Debug.Log($"✅ ¡VICTORIA FINAL! Tiempo Boss: {GetFormattedTime(currentLevelTime)}");
+                Debug.Log($"📊 Tiempo Total del juego: {GetFormattedTime(globalTime)}");
+                break;
+        }
 
-        Debug.Log("¡VICTORIA! Todos los barriles destruidos");
-        Debug.Log($"Tiempo final: {GetFormattedTime()}");
+        Debug.Log($"⏱️ Tiempo del nivel guardado: {GetFormattedTime(currentLevelTime)}");
+        Debug.Log($"🌍 Tiempo global acumulado: {GetFormattedTime(globalTime)}");
         
         // Pausar el juego
         Time.timeScale = 0f;
@@ -485,7 +585,7 @@ public class LevelManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Mostrar panel de victoria
+        // Mostrar panel de victoria correspondiente
         ShowVictoryPanel();
     }
 
@@ -520,30 +620,69 @@ public class LevelManager : MonoBehaviour
     // Mostrar el panel de victoria
     void ShowVictoryPanel()
     {
-        if (victoryPanel == null)
+        // Determinar qué panel mostrar según el nivel actual
+        GameObject panelToShow = null;
+        
+        switch (currentSceneName)
         {
-            Debug.LogError("Victory Panel no está asignado!");
-            return;
+            case "Laberinto":
+                panelToShow = victoryPanelLaberinto;
+                
+                // Actualizar estadísticas del Laberinto
+                if (laberintoLevelTimeText != null)
+                    laberintoLevelTimeText.text = GetFormattedTime(laberintoTime);
+                
+                if (laberintoBarrelsText != null && useBarrelSystem)
+                    laberintoBarrelsText.text = $"{destroyedBarrels}/{totalBarrels}";
+                
+                Debug.Log($"Mostrando panel de victoria del Laberinto - Tiempo: {GetFormattedTime(laberintoTime)}");
+                break;
+                
+            case "Nivel2":
+                panelToShow = victoryPanelNivel2;
+                
+                // Actualizar estadísticas del Nivel 2
+                if (nivel2LevelTimeText != null)
+                    nivel2LevelTimeText.text = GetFormattedTime(nivel2Time);
+                
+                Debug.Log($"Mostrando panel de victoria del Nivel 2 - Tiempo: {GetFormattedTime(nivel2Time)}");
+                break;
+                
+            case "Boss":
+                panelToShow = victoryPanelBoss;
+                
+                // Actualizar estadísticas finales del Boss (mostrar todos los tiempos)
+                if (bossLaberintoTimeText != null)
+                    bossLaberintoTimeText.text = GetFormattedTime(laberintoTime);
+                
+                if (bossNivel2TimeText != null)
+                    bossNivel2TimeText.text = GetFormattedTime(nivel2Time);
+                
+                if (bossBossTimeText != null)
+                    bossBossTimeText.text = GetFormattedTime(bossTime);
+                
+                if (bossTotalTimeText != null)
+                    bossTotalTimeText.text = GetFormattedTime(globalTime);
+                
+                Debug.Log($"Mostrando panel de victoria FINAL:");
+                Debug.Log($"  - Tiempo Laberinto: {GetFormattedTime(laberintoTime)}");
+                Debug.Log($"  - Tiempo Nivel 2: {GetFormattedTime(nivel2Time)}");
+                Debug.Log($"  - Tiempo Boss: {GetFormattedTime(bossTime)}");
+                Debug.Log($"  - Tiempo TOTAL: {GetFormattedTime(globalTime)}");
+                break;
+                
+            default:
+                Debug.LogWarning($"Escena '{currentSceneName}' no tiene panel de victoria asignado");
+                return;
         }
-
-        victoryPanel.SetActive(true);
-
-        // Actualizar tiempo récord
-        if (victoryRecordTimeText != null)
-            victoryRecordTimeText.text = GetFormattedTime();
-
-        // Actualizar barriles destruidos (solo si el sistema de barriles está activo)
-        if (victoryDestroyedBarrelsText != null)
+        
+        if (panelToShow != null)
         {
-            if (useBarrelSystem)
-            {
-                victoryDestroyedBarrelsText.text = $"{destroyedBarrels}/{totalBarrels}";
-            }
-            else
-            {
-                // Ocultar el texto de barriles si no se usa el sistema
-                victoryDestroyedBarrelsText.transform.parent.gameObject.SetActive(false);
-            }
+            panelToShow.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError($"Panel de victoria para '{currentSceneName}' no está asignado en el Inspector!");
         }
     }
 
@@ -558,9 +697,9 @@ public class LevelManager : MonoBehaviour
 
         defeatPanel.SetActive(true);
 
-        // Actualizar tiempo jugado
+        // Actualizar tiempo jugado del nivel actual
         if (defeatPlayedTimeText != null)
-            defeatPlayedTimeText.text = GetFormattedTime();
+            defeatPlayedTimeText.text = GetFormattedTime(currentLevelTime);
 
         // Actualizar barriles destruidos (solo si el sistema de barriles está activo)
         if (defeatDestroyedBarrelsText != null)
@@ -586,10 +725,30 @@ public class LevelManager : MonoBehaviour
         // Resetear variables
         hasGameBegun = false;
         
-        // Recargar la escena actual
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
-        );
+        // Si es el panel de victoria, solo recarga el nivel actual
+        // Si es el panel de derrota, reinicia TODA la progresión del juego
+        if (isGameOver && defeatPanel != null && defeatPanel.activeSelf)
+        {
+            // DERROTA: Reiniciar TODO el juego desde el primer nivel
+            Debug.Log("DERROTA - Reiniciando progresión completa del juego");
+            
+            // Resetear todos los tiempos estáticos
+            globalTime = 0f;
+            laberintoTime = 0f;
+            nivel2Time = 0f;
+            bossTime = 0f;
+            
+            // Cargar siempre el primer nivel (Laberinto)
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Laberinto");
+        }
+        else
+        {
+            // VICTORIA: Solo reiniciar el nivel actual
+            Debug.Log($"VICTORIA - Reiniciando nivel actual: {currentSceneName}");
+            
+            // Recargar la escena actual sin resetear tiempos globales
+            UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneName);
+        }
     }
 
     // Función para el botón Next Level (llamar desde el Inspector)
@@ -598,24 +757,62 @@ public class LevelManager : MonoBehaviour
         // Restablecer el timeScale antes de cambiar de escena
         Time.timeScale = 1f;
         
-        Debug.Log($"Cargando siguiente nivel: {nextLevelName}");
+        // Determinar el siguiente nivel según el actual
+        string nextScene = "";
         
-        // Cargar la escena especificada
-        UnityEngine.SceneManagement.SceneManager.LoadScene(nextLevelName);
+        switch (currentSceneName)
+        {
+            case "Laberinto":
+                nextScene = "Nivel2";
+                Debug.Log("Avanzando del Laberinto al Nivel 2");
+                break;
+                
+            case "Nivel2":
+                nextScene = "Boss";
+                Debug.Log("Avanzando del Nivel 2 al Boss");
+                break;
+                
+            case "Boss":
+                // Ya es el último nivel, podrías cargar un menú principal o créditos
+                Debug.Log("¡Juego completado! Volviendo al menú principal");
+                // Por ahora, vuelve a cargar el Boss (puedes cambiarlo a "MainMenu" si tienes uno)
+                nextScene = "Boss";
+                break;
+                
+            default:
+                Debug.LogWarning($"Nivel '{currentSceneName}' no tiene siguiente nivel definido");
+                nextScene = currentSceneName; // Recargar el mismo nivel por defecto
+                break;
+        }
+        
+        // Cargar la escena siguiente
+        UnityEngine.SceneManagement.SceneManager.LoadScene(nextScene);
     }
 
-    // Función pública para obtener el tiempo actual (por si necesitas usarlo en otros scripts)
-    public float GetElapsedTime()
+    // Función pública para obtener el tiempo actual del nivel (reemplaza GetElapsedTime)
+    public float GetCurrentLevelTime()
     {
-        return elapsedTime;
+        return currentLevelTime;
     }
 
-    // Función pública para obtener el tiempo en formato texto
+    // Función pública para obtener el tiempo global acumulado
+    public float GetGlobalTime()
+    {
+        return globalTime;
+    }
+
+    // Función pública para obtener el tiempo en formato texto (sobrecargada)
+    public string GetFormattedTime(float timeInSeconds)
+    {
+        int minutes = Mathf.FloorToInt(timeInSeconds / 60f);
+        int seconds = Mathf.FloorToInt(timeInSeconds % 60f);
+        int milliseconds = Mathf.FloorToInt((timeInSeconds * 100f) % 100f);
+        return string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
+    }
+    
+    // Versión sin parámetros usa el tiempo del nivel actual
     public string GetFormattedTime()
     {
-        int minutes = Mathf.FloorToInt(elapsedTime / 60f);
-        int seconds = Mathf.FloorToInt(elapsedTime % 60f);
-        int milliseconds = Mathf.FloorToInt((elapsedTime * 100f) % 100f);
-        return string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
+        return GetFormattedTime(currentLevelTime);
     }
 }
