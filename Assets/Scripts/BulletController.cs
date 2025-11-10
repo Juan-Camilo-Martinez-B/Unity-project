@@ -101,6 +101,14 @@ public class BulletController : MonoBehaviour
                 Debug.Log("Disparo a zombie en " + zombieBodyPart.bodyPartName + " (multiplicador: " + zombieBodyPart.damageMultiplier + "x)");
             }
 
+            // Detectar impacto en boss
+            BossBodyPart bossBodyPart = go.GetComponent<BossBodyPart>();
+            if (bossBodyPart != null)
+            {
+                bossBodyPart.TakeHit(bulletDamage);
+                Debug.Log("Disparo al BOSS en " + bossBodyPart.bodyPartName + " (multiplicador: " + bossBodyPart.damageMultiplier + "x)");
+            }
+
             // Detectar impacto en barril y hacerlo explotar
             BarrelController barrel = go.GetComponent<BarrelController>();
             if (barrel != null)

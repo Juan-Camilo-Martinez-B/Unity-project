@@ -41,6 +41,9 @@ public class LevelManager : MonoBehaviour
     public TextMeshProUGUI defeatPlayedTimeText;
     public TextMeshProUGUI defeatDestroyedBarrelsText;
 
+    [Header("Level Settings")]
+    public string nextLevelName = "Boss"; // Nombre de la siguiente escena
+
     private bool isGameStarted = false;
     private bool isGamePaused = false;
     private bool isGameOver = false;
@@ -52,9 +55,20 @@ public class LevelManager : MonoBehaviour
     // Sistema de barriles
     private int totalBarrels = 0;
     private int destroyedBarrels = 0;
+    private bool useBarrelSystem = false; // Determina si usar el sistema de barriles
+    private string currentSceneName;
 
     void Start()
     {
+        // Obtener el nombre de la escena actual
+        currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        
+        // Determinar si usar el sistema de barriles (solo en Laberinto)
+        useBarrelSystem = (currentSceneName == "Laberinto");
+        
+        Debug.Log($"Escena actual: {currentSceneName}");
+        Debug.Log($"Sistema de barriles: {(useBarrelSystem ? "ACTIVADO" : "DESACTIVADO")}");
+
         // Obtener referencia al PlayerController
         if (player != null)
         {
@@ -87,6 +101,22 @@ public class LevelManager : MonoBehaviour
     // Contar todos los barriles en la escena
     void CountBarrels()
     {
+        // Solo contar barriles si el sistema está activo (Laberinto)
+        if (!useBarrelSystem)
+        {
+            totalBarrels = 0;
+            destroyedBarrels = 0;
+            
+            // Ocultar la UI de barriles en niveles que no la usan
+            if (barrelTargetText != null)
+                barrelTargetText.transform.parent.gameObject.SetActive(false);
+            if (barrelCountText != null)
+                barrelCountText.transform.parent.gameObject.SetActive(false);
+            
+            Debug.Log("Sistema de barriles desactivado para esta escena");
+            return;
+        }
+
         GameObject[] barrels = GameObject.FindGameObjectsWithTag("Barrel");
         totalBarrels = barrels.Length;
         destroyedBarrels = 0;
@@ -386,7 +416,8 @@ public class LevelManager : MonoBehaviour
     // Función pública para llamar cuando se destruye un barril
     public void OnBarrelDestroyed()
     {
-        if (!isGameStarted)
+        // Solo procesar si el sistema de barriles está activo
+        if (!useBarrelSystem || !isGameStarted)
             return;
 
         destroyedBarrels++;
@@ -399,6 +430,36 @@ public class LevelManager : MonoBehaviour
         {
             WinGame();
         }
+    }
+
+    // Función pública para llamar cuando el boss es derrotado
+    public void OnBossDefeated()
+    {
+        if (!isGameStarted || isGameOver)
+            return;
+
+        Debug.Log("🏆 BOSS DERROTADO - Esperando animación de muerte...");
+        
+        // Iniciar corrutina para esperar antes de mostrar victoria
+        StartCoroutine(BossDefeatedSequence());
+    }
+
+    // Corrutina que espera para mostrar el panel de victoria después de la muerte del boss
+    IEnumerator BossDefeatedSequence()
+    {
+        // Esperar 5 segundos en tiempo REAL (no afectado por timeScale)
+        // 2 segundos para la animación de muerte + 3 segundos para ver el ragdoll caer
+        float waitTime = 5.0f;
+        float elapsedWaitTime = 0f;
+        
+        while (elapsedWaitTime < waitTime)
+        {
+            elapsedWaitTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        
+        Debug.Log("🏆 VICTORIA! Mostrando panel...");
+        WinGame();
     }
 
     // Función que se ejecuta cuando el jugador gana
@@ -471,9 +532,19 @@ public class LevelManager : MonoBehaviour
         if (victoryRecordTimeText != null)
             victoryRecordTimeText.text = GetFormattedTime();
 
-        // Actualizar barriles destruidos
+        // Actualizar barriles destruidos (solo si el sistema de barriles está activo)
         if (victoryDestroyedBarrelsText != null)
-            victoryDestroyedBarrelsText.text = $"{destroyedBarrels}/{totalBarrels}";
+        {
+            if (useBarrelSystem)
+            {
+                victoryDestroyedBarrelsText.text = $"{destroyedBarrels}/{totalBarrels}";
+            }
+            else
+            {
+                // Ocultar el texto de barriles si no se usa el sistema
+                victoryDestroyedBarrelsText.transform.parent.gameObject.SetActive(false);
+            }
+        }
     }
 
     // Mostrar el panel de derrota
@@ -491,9 +562,19 @@ public class LevelManager : MonoBehaviour
         if (defeatPlayedTimeText != null)
             defeatPlayedTimeText.text = GetFormattedTime();
 
-        // Actualizar barriles destruidos
+        // Actualizar barriles destruidos (solo si el sistema de barriles está activo)
         if (defeatDestroyedBarrelsText != null)
-            defeatDestroyedBarrelsText.text = $"{destroyedBarrels}/{totalBarrels}";
+        {
+            if (useBarrelSystem)
+            {
+                defeatDestroyedBarrelsText.text = $"{destroyedBarrels}/{totalBarrels}";
+            }
+            else
+            {
+                // Ocultar el texto de barriles si no se usa el sistema
+                defeatDestroyedBarrelsText.transform.parent.gameObject.SetActive(false);
+            }
+        }
     }
 
     // Función para el botón Restart (llamar desde el Inspector)
@@ -514,11 +595,13 @@ public class LevelManager : MonoBehaviour
     // Función para el botón Next Level (llamar desde el Inspector)
     public void NextLevel()
     {
-        // Por ahora solo muestra un mensaje
-        Debug.Log("Siguiente nivel - Función por implementar");
+        // Restablecer el timeScale antes de cambiar de escena
+        Time.timeScale = 1f;
         
-        // Aquí puedes cargar la siguiente escena cuando esté lista
-        // UnityEngine.SceneManagement.SceneManager.LoadScene("NombreSiguienteEscena");
+        Debug.Log($"Cargando siguiente nivel: {nextLevelName}");
+        
+        // Cargar la escena especificada
+        UnityEngine.SceneManagement.SceneManager.LoadScene(nextLevelName);
     }
 
     // Función pública para obtener el tiempo actual (por si necesitas usarlo en otros scripts)

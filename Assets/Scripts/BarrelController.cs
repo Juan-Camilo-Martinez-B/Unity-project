@@ -91,14 +91,21 @@ public class BarrelController : MonoBehaviour
                 Debug.Log($"Barril dañó a {bodyPart.BodyName} con {finalDamage} de daño");
             }
 
-            // Aplicar daño a enemigos (cuando se implementen)
-            // Descomenta esto cuando tengas un script de enemigo:
-            // EnemyController enemy = hit.GetComponentInParent<EnemyController>();
-            // if (enemy != null)
-            // {
-            //     enemy.TakeDamage(finalDamage);
-            //     Debug.Log($"Barril dañó a enemigo con {finalDamage} de daño");
-            // }
+            // Aplicar daño a zombies
+            ZombieBodyPart zombiePart = hit.GetComponent<ZombieBodyPart>();
+            if (zombiePart != null)
+            {
+                zombiePart.TakeHit(finalDamage);
+                Debug.Log($"Barril dañó a zombie con {finalDamage} de daño");
+            }
+
+            // Aplicar daño al boss
+            BossBodyPart bossPart = hit.GetComponent<BossBodyPart>();
+            if (bossPart != null)
+            {
+                bossPart.TakeHit(finalDamage);
+                Debug.Log($"Barril dañó al BOSS con {finalDamage} de daño");
+            }
 
             // Opcional: aplicar fuerza a rigidbodies cercanos
             Rigidbody rb = hit.GetComponent<Rigidbody>();

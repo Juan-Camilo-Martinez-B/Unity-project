@@ -167,7 +167,7 @@ GameObject:
   - component: {fileID: 5633074503484252501}
   - component: {fileID: 7541720679872843062}
   m_Layer: 5
-  m_Name: Zombie Health Bar
+  m_Name: Zombie Health Bar 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

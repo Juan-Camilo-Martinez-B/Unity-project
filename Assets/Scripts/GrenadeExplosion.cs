@@ -103,6 +103,7 @@ public class GrenadeExplosion : MonoBehaviour
 
                 if (go.layer == hitboxMask)
                 {
+                    // Detectar partes del cuerpo del jugador
                     BodyPartHitCheck playerBodyPart = go.GetComponent<BodyPartHitCheck>();
 
                     if (playerBodyPart != null)
@@ -116,6 +117,38 @@ public class GrenadeExplosion : MonoBehaviour
                         float finalDamage = explodeDamage - explodeDamage * damageDisminution;
                         playerBodyPart.TakeHit(finalDamage);
                         Debug.Log("Explosión en " + playerBodyPart.BodyName);
+                    }
+
+                    // Detectar partes del cuerpo del zombie
+                    ZombieBodyPart zombieBodyPart = go.GetComponent<ZombieBodyPart>();
+
+                    if (zombieBodyPart != null)
+                    {
+                        Vector3 collisionPos = c.ClosestPoint(explodePos);
+
+                        float distance = Vector3.Distance(explodePos, collisionPos);
+
+                        float damageDisminution = distance / damageArea;
+
+                        float finalDamage = explodeDamage - explodeDamage * damageDisminution;
+                        zombieBodyPart.TakeHit(finalDamage);
+                        Debug.Log($"Granada dañó a zombie con {finalDamage} de daño");
+                    }
+
+                    // Detectar partes del cuerpo del boss
+                    BossBodyPart bossBodyPart = go.GetComponent<BossBodyPart>();
+
+                    if (bossBodyPart != null)
+                    {
+                        Vector3 collisionPos = c.ClosestPoint(explodePos);
+
+                        float distance = Vector3.Distance(explodePos, collisionPos);
+
+                        float damageDisminution = distance / damageArea;
+
+                        float finalDamage = explodeDamage - explodeDamage * damageDisminution;
+                        bossBodyPart.TakeHit(finalDamage);
+                        Debug.Log($"Granada dañó al BOSS con {finalDamage} de daño");
                     }
                 }
             }

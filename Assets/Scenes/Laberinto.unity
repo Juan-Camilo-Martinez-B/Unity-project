@@ -16051,6 +16051,7 @@ MonoBehaviour:
   defeatPanel: {fileID: 1577873680}
   defeatPlayedTimeText: {fileID: 1463431331}
   defeatDestroyedBarrelsText: {fileID: 1670759361}
+  nextLevelName: Boss
 --- !u!4 &738422826
 Transform:
   m_ObjectHideFlags: 0
@@ -37551,7 +37552,7 @@ MonoBehaviour:
   idleSoundVolume: 0.7
   zombieDeathSound: {fileID: 8300000, guid: 4ffa85f3e5176124d8dc893aeaba0d97, type: 3}
   deathSoundVolume: 1
-  healthBarPrefab: {fileID: 7649327196332120971, guid: 963897e18d1db8944b4e37b28114d0c4, type: 3}
+  healthBarPrefab: {fileID: 7649327196332120971, guid: bbaf80530a786c34cbb230df7c312a74, type: 3}
   healthBarOffset: {x: 0, y: 2, z: 0}
   player: {fileID: 134940414}
   eyePosition: {fileID: 0}
