@@ -140,16 +140,23 @@ public class ZombieController : MonoBehaviour
         }
         else if (agent != null)
         {
-            // Configurar NavMeshAgent para mejor navegación
+            // Configurar NavMeshAgent para mejor navegación Y evitar traspasar paredes
             agent.speed = (behaviorMode == ZombieBehaviorMode.Patrol) ? patrolSpeed : runSpeed;
             agent.angularSpeed = 120f; // Velocidad de giro
             agent.acceleration = 8f; // Aceleración
             // En modo patrol, usar stopping distance más pequeña para que llegue a los puntos
             agent.stoppingDistance = (behaviorMode == ZombieBehaviorMode.Patrol) ? 0.5f : stoppingDistance;
             agent.autoBraking = true;
+            
+            // IMPORTANTE: Configuración para NO traspasar paredes
             agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
-            agent.radius = 0.3f;
+            agent.avoidancePriority = 50; // 0-99, menor = mayor prioridad para evitar
+            agent.radius = 0.5f; // Aumentado de 0.3 a 0.5 para mejor detección de colisiones
             agent.height = 1.8f;
+            
+            // Asegurar que el agente use el NavMesh correctamente
+            agent.updatePosition = true; // El NavMesh controla la posición
+            agent.updateRotation = true; // El NavMesh controla la rotación
             
             Debug.Log($"Zombie {gameObject.name}: NavMeshAgent configurado - Speed:{agent.speed}, StoppingDistance:{agent.stoppingDistance}, Mode:{behaviorMode}");
         }
@@ -718,6 +725,12 @@ public class ZombieController : MonoBehaviour
 
         isDead = true;
         Debug.Log("💀 Zombie murió");
+        
+        // Notificar al ZombieKillTracker (si existe)
+        if (ZombieKillTracker.Instance != null)
+        {
+            ZombieKillTracker.Instance.OnZombieKilled();
+        }
 
         // Reproducir animación de muerte
         if (zombieAnimator != null && !deathAnimationPlayed)

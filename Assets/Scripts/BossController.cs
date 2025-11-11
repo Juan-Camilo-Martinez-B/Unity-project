@@ -112,14 +112,22 @@ public class BossController : MonoBehaviour
         }
         else if (agent != null)
         {
+            // Configuración mejorada para evitar traspasar paredes
             agent.speed = runSpeed;
             agent.angularSpeed = 120f;
             agent.acceleration = 8f;
             agent.stoppingDistance = stoppingDistance;
             agent.autoBraking = true;
+            
+            // IMPORTANTE: Configuración para NO traspasar paredes
             agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
-            agent.radius = 0.8f;
+            agent.avoidancePriority = 40; // Mayor prioridad que zombies (menor número)
+            agent.radius = 1.0f; // Aumentado de 0.8 a 1.0 para mejor detección (el boss es grande)
             agent.height = 2.5f;
+            
+            // Asegurar que el agente use el NavMesh correctamente
+            agent.updatePosition = true; // El NavMesh controla la posición
+            agent.updateRotation = true; // El NavMesh controla la rotación
             
             Debug.Log($"✅ Boss {gameObject.name} NavMeshAgent configurado correctamente");
         }
