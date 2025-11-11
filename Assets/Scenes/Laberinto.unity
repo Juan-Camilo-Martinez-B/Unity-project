@@ -23610,7 +23610,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1138747419
 RectTransform:
   m_ObjectHideFlags: 0
@@ -35135,6 +35135,10 @@ PrefabInstance:
     - target: {fileID: 7049496850029059982, guid: 5a1d1f92d0c1f4c49b8bb4b9e88033c5, type: 3}
       propertyPath: m_Name
       value: Dropped Grenade (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7049496850029059983, guid: 5a1d1f92d0c1f4c49b8bb4b9e88033c5, type: 3}
+      propertyPath: m_Radius
+      value: 0.03
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a1d1f92d0c1f4c49b8bb4b9e88033c5, type: 3}
@@ -47046,6 +47050,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dropped M1911
       objectReference: {fileID: 0}
+    - target: {fileID: 1868100082690688971, guid: 9fbd30580cf154344b531bb49ac95af4, type: 3}
+      propertyPath: m_Radius
+      value: 0.04
+      objectReference: {fileID: 0}
     - target: {fileID: 1868100082690688974, guid: 9fbd30580cf154344b531bb49ac95af4, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -47203,6 +47211,10 @@ PrefabInstance:
     - target: {fileID: 7049496850029059982, guid: 5a1d1f92d0c1f4c49b8bb4b9e88033c5, type: 3}
       propertyPath: m_Name
       value: Dropped Grenade
+      objectReference: {fileID: 0}
+    - target: {fileID: 7049496850029059983, guid: 5a1d1f92d0c1f4c49b8bb4b9e88033c5, type: 3}
+      propertyPath: m_Radius
+      value: 0.03
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a1d1f92d0c1f4c49b8bb4b9e88033c5, type: 3}
