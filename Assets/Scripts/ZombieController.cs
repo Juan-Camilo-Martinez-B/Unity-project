@@ -732,6 +732,18 @@ public class ZombieController : MonoBehaviour
             ZombieKillTracker.Instance.OnZombieKilled();
         }
 
+        // Desactivar colliders principales para que el jugador pueda caminar sobre el cuerpo
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider col in colliders)
+        {
+            // Desactivar solo los colliders que NO son triggers (los triggers se pueden mantener para efectos)
+            if (!col.isTrigger)
+            {
+                col.enabled = false;
+                Debug.Log($"🔓 Collider desactivado: {col.gameObject.name}");
+            }
+        }
+
         // Reproducir animación de muerte
         if (zombieAnimator != null && !deathAnimationPlayed)
         {

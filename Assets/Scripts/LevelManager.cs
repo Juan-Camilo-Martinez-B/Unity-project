@@ -642,6 +642,9 @@ public class LevelManager : MonoBehaviour
     // Mostrar el panel de victoria
     void ShowVictoryPanel()
     {
+        Debug.Log("=== INICIANDO ShowVictoryPanel ===");
+        Debug.Log($"Escena actual: {currentSceneName}");
+        
         // Determinar qué panel mostrar según el nivel actual
         GameObject panelToShow = null;
         
@@ -650,18 +653,59 @@ public class LevelManager : MonoBehaviour
             case "Laberinto":
                 panelToShow = victoryPanelLaberinto;
                 
-                // Actualizar estadísticas del Laberinto
+                Debug.Log("=== ACTUALIZANDO PANEL DE VICTORIA LABERINTO ===");
+                Debug.Log($"Tiempo del Laberinto: {laberintoTime}s ({GetFormattedTime(laberintoTime)})");
+                Debug.Log($"currentLevelTime: {currentLevelTime}s ({GetFormattedTime(currentLevelTime)})");
+                Debug.Log($"Barriles: {destroyedBarrels}/{totalBarrels}");
+                
+                // PRIMERO activar el panel para que los componentes estén disponibles
+                if (panelToShow != null)
+                {
+                    panelToShow.SetActive(true);
+                    Debug.Log("✓ Panel activado");
+                }
+                else
+                {
+                    Debug.LogError("✗ victoryPanelLaberinto es NULL!");
+                    return;
+                }
+                
+                // LUEGO actualizar los textos
                 if (laberintoLevelTimeText != null)
-                    laberintoLevelTimeText.text = GetFormattedTime(laberintoTime);
+                {
+                    string formattedTime = GetFormattedTime(laberintoTime);
+                    laberintoLevelTimeText.text = formattedTime;
+                    Debug.Log($"✓ Tiempo actualizado: {formattedTime}");
+                    Debug.Log($"✓ Texto después de asignar: '{laberintoLevelTimeText.text}'");
+                }
+                else
+                {
+                    Debug.LogError("✗ laberintoLevelTimeText es NULL - No está asignado en el Inspector!");
+                }
                 
-                if (laberintoBarrelsText != null && useBarrelSystem)
-                    laberintoBarrelsText.text = $"{destroyedBarrels}/{totalBarrels}";
+                if (laberintoBarrelsText != null)
+                {
+                    string barrelsText = $"{destroyedBarrels}/{totalBarrels}";
+                    laberintoBarrelsText.text = barrelsText;
+                    Debug.Log($"✓ Barriles actualizados: {barrelsText}");
+                    Debug.Log($"✓ Texto después de asignar: '{laberintoBarrelsText.text}'");
+                }
+                else
+                {
+                    Debug.LogError("✗ laberintoBarrelsText es NULL - No está asignado en el Inspector!");
+                }
                 
-                Debug.Log($"Mostrando panel de victoria del Laberinto - Tiempo: {GetFormattedTime(laberintoTime)}");
+                Debug.Log("=== FIN ACTUALIZACIÓN LABERINTO ===");
                 break;
                 
             case "Nivel2":
                 panelToShow = victoryPanelNivel2;
+                
+                // Activar el panel primero
+                if (panelToShow != null)
+                {
+                    panelToShow.SetActive(true);
+                }
                 
                 // Actualizar estadísticas del Nivel 2
                 if (nivel2LevelTimeText != null)
@@ -672,6 +716,12 @@ public class LevelManager : MonoBehaviour
                 
             case "Boss":
                 panelToShow = victoryPanelBoss;
+                
+                // Activar el panel primero
+                if (panelToShow != null)
+                {
+                    panelToShow.SetActive(true);
+                }
                 
                 // Actualizar estadísticas finales del Boss (mostrar todos los tiempos)
                 if (bossLaberintoTimeText != null)
@@ -698,14 +748,8 @@ public class LevelManager : MonoBehaviour
                 return;
         }
         
-        if (panelToShow != null)
-        {
-            panelToShow.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError($"Panel de victoria para '{currentSceneName}' no está asignado en el Inspector!");
-        }
+        // Ya no es necesario activar el panel aquí porque se activa en cada case
+        Debug.Log("=== FIN ShowVictoryPanel ===");
     }
 
     // Mostrar el panel de derrota
