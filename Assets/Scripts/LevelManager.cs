@@ -575,11 +575,22 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 0f;
         isGamePaused = true;
 
-        // Desactivar controles del jugador
+        // Desactivar controles del jugador Y sistema de armas completamente
         if (playerController != null)
+        {
             playerController.enabled = false;
+        }
         if (weaponSlots != null)
+        {
             weaponSlots.enabled = false;
+            // Desactivar también todos los slots de armas para evitar disparos
+            if (weaponSlots.primarySlot != null)
+                weaponSlots.primarySlot.gameObject.SetActive(false);
+            if (weaponSlots.secondarySlot != null)
+                weaponSlots.secondarySlot.gameObject.SetActive(false);
+            if (weaponSlots.throwableSlot != null)
+                weaponSlots.throwableSlot.gameObject.SetActive(false);
+        }
 
         // Mostrar cursor
         Cursor.lockState = CursorLockMode.None;
@@ -603,11 +614,22 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 0f;
         isGamePaused = true;
 
-        // Desactivar controles del jugador
+        // Desactivar controles del jugador Y sistema de armas completamente
         if (playerController != null)
+        {
             playerController.enabled = false;
+        }
         if (weaponSlots != null)
+        {
             weaponSlots.enabled = false;
+            // Desactivar también todos los slots de armas para evitar disparos
+            if (weaponSlots.primarySlot != null)
+                weaponSlots.primarySlot.gameObject.SetActive(false);
+            if (weaponSlots.secondarySlot != null)
+                weaponSlots.secondarySlot.gameObject.SetActive(false);
+            if (weaponSlots.throwableSlot != null)
+                weaponSlots.throwableSlot.gameObject.SetActive(false);
+        }
 
         // Mostrar cursor
         Cursor.lockState = CursorLockMode.None;
@@ -716,6 +738,28 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    // Función para REINICIAR EL JUEGO COMPLETO (llamar desde el Inspector)
+    public void RestartGame()
+    {
+        // Restablecer el timeScale antes de recargar
+        Time.timeScale = 1f;
+        
+        Debug.Log("🔄 REINICIANDO JUEGO COMPLETO - Volviendo al inicio");
+        
+        // Resetear todos los tiempos estáticos (toda la progresión)
+        globalTime = 0f;
+        laberintoTime = 0f;
+        nivel2Time = 0f;
+        bossTime = 0f;
+        
+        // Resetear variables
+        hasGameBegun = false;
+        isGameOver = false;
+        
+        // Cargar siempre el primer nivel (Laberinto)
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Laberinto");
+    }
+
     // Función para el botón Restart (llamar desde el Inspector)
     public void RestartLevel()
     {
@@ -725,30 +769,23 @@ public class LevelManager : MonoBehaviour
         // Resetear variables
         hasGameBegun = false;
         
-        // Si es el panel de victoria, solo recarga el nivel actual
-        // Si es el panel de derrota, reinicia TODA la progresión del juego
+        // Si es el panel de DERROTA, reiniciar TODO el juego
         if (isGameOver && defeatPanel != null && defeatPanel.activeSelf)
         {
-            // DERROTA: Reiniciar TODO el juego desde el primer nivel
-            Debug.Log("DERROTA - Reiniciando progresión completa del juego");
-            
-            // Resetear todos los tiempos estáticos
-            globalTime = 0f;
-            laberintoTime = 0f;
-            nivel2Time = 0f;
-            bossTime = 0f;
-            
-            // Cargar siempre el primer nivel (Laberinto)
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Laberinto");
+            RestartGame();
+            return;
         }
-        else
+        
+        // Si es VICTORIA del BOSS, reiniciar TODO el juego también
+        if (currentSceneName == "Boss" && victoryPanelBoss != null && victoryPanelBoss.activeSelf)
         {
-            // VICTORIA: Solo reiniciar el nivel actual
-            Debug.Log($"VICTORIA - Reiniciando nivel actual: {currentSceneName}");
-            
-            // Recargar la escena actual sin resetear tiempos globales
-            UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneName);
+            RestartGame();
+            return;
         }
+        
+        // En cualquier otro caso (victoria en Laberinto o Nivel2), solo recargar el nivel actual
+        Debug.Log($"♻️ Reiniciando nivel actual: {currentSceneName}");
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneName);
     }
 
     // Función para el botón Next Level (llamar desde el Inspector)
@@ -763,8 +800,18 @@ public class LevelManager : MonoBehaviour
         switch (currentSceneName)
         {
             case "Laberinto":
-                nextScene = "Nivel2";
-                Debug.Log("Avanzando del Laberinto al Nivel 2");
+                // Verificar si existe la escena Nivel2 en el Build Settings
+                if (SceneExists("Nivel2"))
+                {
+                    nextScene = "Nivel2";
+                    Debug.Log("Avanzando del Laberinto al Nivel 2");
+                }
+                else
+                {
+                    // Si no existe Nivel2, saltar directamente al Boss
+                    nextScene = "Boss";
+                    Debug.Log("⚠️ Nivel2 no encontrado en Build Settings - Saltando directamente al Boss");
+                }
                 break;
                 
             case "Nivel2":
@@ -787,6 +834,27 @@ public class LevelManager : MonoBehaviour
         
         // Cargar la escena siguiente
         UnityEngine.SceneManagement.SceneManager.LoadScene(nextScene);
+    }
+
+    // Verificar si una escena existe en el Build Settings
+    bool SceneExists(string sceneName)
+    {
+        int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;
+        
+        for (int i = 0; i < sceneCount; i++)
+        {
+            string scenePath = UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex(i);
+            string sceneNameFromPath = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+            
+            if (sceneNameFromPath == sceneName)
+            {
+                Debug.Log($"✅ Escena '{sceneName}' encontrada en Build Settings (índice {i})");
+                return true;
+            }
+        }
+        
+        Debug.Log($"❌ Escena '{sceneName}' NO encontrada en Build Settings");
+        return false;
     }
 
     // Función pública para obtener el tiempo actual del nivel (reemplaza GetElapsedTime)

@@ -101,6 +101,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // NO procesar input si el juego está pausado (Time.timeScale == 0)
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
+        
         // Si el jugador está muerto, detener todo
         if (!Active)
         {

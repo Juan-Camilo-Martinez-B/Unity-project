@@ -28,6 +28,12 @@ public class WeaponSlots : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // NO procesar input si el juego está pausado (Time.timeScale == 0)
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
+        
         if (player.weapons < 1)
             return;
 

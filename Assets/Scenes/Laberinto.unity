@@ -41470,7 +41470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zombiePrefab: {fileID: 5150228463407965037, guid: 275518d3441fe0c4f80247bfcca3dd7e, type: 3}
-  initialZombieCount: 40
+  initialZombieCount: 25
   spawnRadius: 27.2
   patrolRadius: 27.33
   spawnOnStart: 1

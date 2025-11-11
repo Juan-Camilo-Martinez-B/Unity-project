@@ -34,6 +34,12 @@ public class GrenadeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // NO procesar input si el juego está pausado (Time.timeScale == 0)
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
+        
         if (Input.GetKey(KeyCode.Mouse0))
         {
         }

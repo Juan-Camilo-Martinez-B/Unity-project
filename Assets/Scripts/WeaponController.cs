@@ -59,6 +59,13 @@ public class WeaponController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // NO procesar input si el juego está pausado (Time.timeScale == 0)
+        if (Time.timeScale == 0f)
+        {
+            shooting = false;
+            return;
+        }
+        
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             shooting = true;
