@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Laberinto.unity
     guid: 568b7bc7c7e449742adae8d6cd361d19
   - enabled: 1
+    path: Assets/Scenes/Industry.unity
+    guid: 24edf56966a406b48b740e0afbeda14e
+  - enabled: 1
     path: Assets/Scenes/Boss.unity
     guid: 51840fa3405174845b27ae57c7e486fa
   m_configObjects: {}

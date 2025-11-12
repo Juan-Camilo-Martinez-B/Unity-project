@@ -20,7 +20,8 @@ public class PlayerController : MonoBehaviour
     public float playerSpeed = 0f;
     
     [Header("Sprint")]
-    public float sprintMultiplier = 2f; // Multiplicador de velocidad al correr
+    public float sprintMultiplier = 2f; // Multiplicador cuando tiene armas equipadas
+    public float unarmedSprintMultiplier = 3f; // Multiplicador cuando NO tiene armas equipadas
     private bool isSprinting = false;
 
     private Vector2 newDirection;
@@ -142,8 +143,25 @@ public class PlayerController : MonoBehaviour
         // Detectar si está corriendo (Shift presionado)
         isSprinting = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
-        // Calcular velocidad actual (normal o sprint)
-        float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
+        // Calcular velocidad actual
+        float currentSpeed = playerSpeed;
+        
+        // Si está corriendo, aplicar multiplicador correspondiente
+        if (isSprinting)
+        {
+            // Verificar si todos los slots están desactivados O vacíos
+            bool allSlotsInactive = !primarySlot.gameObject.activeSelf && 
+                                    !secondarySlot.gameObject.activeSelf && 
+                                    !throwableSlot.gameObject.activeSelf;
+            
+            bool allSlotsEmpty = primarySlot.childCount == 0 && 
+                                 secondarySlot.childCount == 0 && 
+                                 throwableSlot.childCount == 0;
+            
+            // Si todos los slots están desactivados O vacíos (sin armas), velocidad x3
+            // Si hay armas y algún slot está activo, velocidad x2
+            currentSpeed *= (allSlotsInactive || allSlotsEmpty) ? unarmedSprintMultiplier : sprintMultiplier;
+        }
 
         newDirection = new Vector2(moveX, moveZ);
 

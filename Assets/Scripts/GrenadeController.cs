@@ -40,6 +40,15 @@ public class GrenadeController : MonoBehaviour
             return;
         }
         
+        // CRÍTICO: Solo permitir lanzar granada si el throwableSlot está ACTIVO
+        if (weaponSlots != null && weaponSlots.throwableSlot != null)
+        {
+            if (!weaponSlots.throwableSlot.gameObject.activeSelf)
+            {
+                return; // Si el slot de granada no está activo, no hacer nada
+            }
+        }
+        
         if (Input.GetKey(KeyCode.Mouse0))
         {
         }

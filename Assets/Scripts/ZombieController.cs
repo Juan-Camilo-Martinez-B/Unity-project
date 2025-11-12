@@ -7,13 +7,14 @@ using UnityEngine.UI;
 public enum ZombieBehaviorMode
 {
     Idle,    // Quieto hasta detectar jugador
-    Patrol   // Patrullando por área hasta detectar jugador
+    Patrol,  // Patrullando por área hasta detectar jugador
+    Horde    // Siempre persigue al jugador (para modo hordas)
 }
 
 public class ZombieController : MonoBehaviour
 {
     [Header("Behavior Mode")]
-    [Tooltip("Idle: Quieto hasta detectar jugador | Patrol: Vagando por área hasta detectar jugador")]
+    [Tooltip("Idle: Quieto hasta detectar jugador | Patrol: Vagando por área | Horde: Siempre persigue al jugador")]
     public ZombieBehaviorMode behaviorMode = ZombieBehaviorMode.Idle;
     
     [Header("Patrol Settings - Solo para Patrol Mode")]
@@ -333,6 +334,15 @@ public class ZombieController : MonoBehaviour
                 case ZombieBehaviorMode.Patrol:
                     // Modo Patrol: Caminar por el área
                     PatrolArea();
+                    break;
+                    
+                case ZombieBehaviorMode.Horde:
+                    // Modo Horde: SIEMPRE perseguir al jugador (forzar detección)
+                    if (player != null)
+                    {
+                        playerDetected = true;
+                        ChasePlayer();
+                    }
                     break;
             }
         }
@@ -726,10 +736,16 @@ public class ZombieController : MonoBehaviour
         isDead = true;
         Debug.Log("💀 Zombie murió");
         
-        // Notificar al ZombieKillTracker (si existe)
+        // Notificar al ZombieKillTracker (si existe - para nivel Boss)
         if (ZombieKillTracker.Instance != null)
         {
             ZombieKillTracker.Instance.OnZombieKilled();
+        }
+        
+        // Notificar al KillStreakBonus (si existe - para nivel Industry)
+        if (KillStreakBonus.Instance != null)
+        {
+            KillStreakBonus.Instance.OnZombieKilled();
         }
 
         // Reproducir animación de muerte
@@ -781,7 +797,11 @@ public class ZombieController : MonoBehaviour
             audioSource.enabled = false;
         }
 
-        // Destruir después de unos segundos
+        // DESACTIVAR inmediatamente para que HordeManager detecte que murió
+        // Esto permite que el timer se detenga correctamente en Industry
+        gameObject.SetActive(false);
+        
+        // Destruir después de que termine la animación (el objeto ya está inactivo)
         Destroy(gameObject, 10f);
     }
 

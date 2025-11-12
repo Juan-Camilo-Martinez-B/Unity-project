@@ -30,24 +30,33 @@ public class LevelManager : MonoBehaviour
     public TextMeshProUGUI barrelTargetText;
     public TextMeshProUGUI barrelCountText;
 
+    [Header("Horde Counter UI - Solo para Industry")]
+    public TextMeshProUGUI hordeCounterText;
+
     [Header("Victory Panels - Assign per level")]
     public GameObject victoryPanelLaberinto;
-    public GameObject victoryPanelNivel2; // Para el nivel del medio cuando lo crees
+    public GameObject victoryPanelIndustry;
     public GameObject victoryPanelBoss;
 
     [Header("Victory Panel Stats - Laberinto")]
     public TextMeshProUGUI laberintoLevelTimeText;
     public TextMeshProUGUI laberintoBarrelsText;
 
-    [Header("Victory Panel Stats - Nivel 2")]
-    public TextMeshProUGUI nivel2LevelTimeText;
-    // Agregar más stats según necesites
+    [Header("Victory Panel Stats - Industry")]
+    public TextMeshProUGUI industryPlayedTimeText;      // Tiempo jugado original
+    public TextMeshProUGUI industryAdjustedTimeText;    // Tiempo con bonificadores aplicados
+    public TextMeshProUGUI industryTimeReducedText;     // Tiempo reducido por bonificadores
+    public TextMeshProUGUI industryHordeProgressText;   // Hordas completadas (X/3)
 
     [Header("Victory Panel Stats - Boss (Final)")]
     public TextMeshProUGUI bossLaberintoTimeText;
-    public TextMeshProUGUI bossNivel2TimeText;
+    public TextMeshProUGUI bossIndustryTimeText;
     public TextMeshProUGUI bossBossTimeText;
     public TextMeshProUGUI bossTotalTimeText;
+    
+    [Header("Defeat Panel - Industry")]
+    public TextMeshProUGUI defeatIndustryTimeText;
+    public TextMeshProUGUI defeatIndustryHordeText;
 
     [Header("Defeat Panel")]
     public GameObject defeatPanel;
@@ -72,7 +81,7 @@ public class LevelManager : MonoBehaviour
     private float currentLevelTime = 0f; // Tiempo del nivel actual
     private static float globalTime = 0f; // Tiempo total del juego
     private static float laberintoTime = 0f; // Tiempo del nivel Laberinto
-    private static float nivel2Time = 0f; // Tiempo del nivel 2
+    private static float industryTime = 0f; // Tiempo del nivel Industry
     private static float bossTime = 0f; // Tiempo del nivel Boss
     private static bool isFirstLevelLoad = true; // Para detectar si es la primera carga del juego
     
@@ -84,8 +93,13 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("🎮 ========== LEVELMANAGER INICIADO ==========");
+        
         // Obtener el nombre de la escena actual
         currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        
+        Debug.Log($"📍 Escena actual: {currentSceneName}");
+        Debug.Log($"🎯 GameObject: {gameObject.name}");
         
         // Si es la primera carga del juego y estamos en testing, simular progresión previa
         if (isFirstLevelLoad && allowTestingFromAnyLevel)
@@ -97,7 +111,6 @@ public class LevelManager : MonoBehaviour
         // Determinar si usar el sistema de barriles (solo en Laberinto)
         useBarrelSystem = (currentSceneName == "Laberinto");
         
-        Debug.Log($"Escena actual: {currentSceneName}");
         Debug.Log($"Sistema de barriles: {(useBarrelSystem ? "ACTIVADO" : "DESACTIVADO")}");
         Debug.Log($"Tiempo global acumulado: {GetFormattedTime(globalTime)}");
 
@@ -117,27 +130,27 @@ public class LevelManager : MonoBehaviour
     {
         switch (currentSceneName)
         {
-            case "Nivel2":
-                // Si iniciamos en Nivel 2, simular que completamos el Laberinto
+            case "Industry":
+                // Si iniciamos en Industry, simular que completamos el Laberinto
                 if (laberintoTime == 0f)
                 {
                     laberintoTime = 120f; // Tiempo simulado: 2 minutos
                     globalTime = laberintoTime;
-                    Debug.Log($"🔧 [TESTING] Simulando progresión previa para Nivel 2");
+                    Debug.Log($"🔧 [TESTING] Simulando progresión previa para Industry");
                     Debug.Log($"   - Tiempo Laberinto simulado: {GetFormattedTime(laberintoTime)}");
                 }
                 break;
                 
             case "Boss":
-                // Si iniciamos en Boss, simular que completamos Laberinto y Nivel 2
-                if (laberintoTime == 0f && nivel2Time == 0f)
+                // Si iniciamos en Boss, simular que completamos Laberinto e Industry
+                if (laberintoTime == 0f && industryTime == 0f)
                 {
                     laberintoTime = 120f; // 2 minutos
-                    nivel2Time = 180f;    // 3 minutos
-                    globalTime = laberintoTime + nivel2Time;
+                    industryTime = 180f;    // 3 minutos
+                    globalTime = laberintoTime + industryTime;
                     Debug.Log($"🔧 [TESTING] Simulando progresión previa para Boss");
                     Debug.Log($"   - Tiempo Laberinto simulado: {GetFormattedTime(laberintoTime)}");
-                    Debug.Log($"   - Tiempo Nivel 2 simulado: {GetFormattedTime(nivel2Time)}");
+                    Debug.Log($"   - Tiempo Industry simulado: {GetFormattedTime(industryTime)}");
                     Debug.Log($"   - Tiempo global simulado: {GetFormattedTime(globalTime)}");
                 }
                 break;
@@ -160,8 +173,8 @@ public class LevelManager : MonoBehaviour
         // Ocultar TODOS los paneles de victoria y derrota al inicio
         if (victoryPanelLaberinto != null)
             victoryPanelLaberinto.SetActive(false);
-        if (victoryPanelNivel2 != null)
-            victoryPanelNivel2.SetActive(false);
+        if (victoryPanelIndustry != null)
+            victoryPanelIndustry.SetActive(false);
         if (victoryPanelBoss != null)
             victoryPanelBoss.SetActive(false);
         if (defeatPanel != null)
@@ -525,6 +538,27 @@ public class LevelManager : MonoBehaviour
         // Iniciar corrutina para esperar antes de mostrar victoria
         StartCoroutine(BossDefeatedSequence());
     }
+    
+    // Función específica para cuando se completan todas las hordas en Industry
+    public void OnAllHordesCompleted()
+    {
+        Debug.Log($"⚠️ OnAllHordesCompleted llamado - isGameStarted: {isGameStarted}, isGameOver: {isGameOver}");
+        
+        if (!isGameStarted || isGameOver)
+        {
+            Debug.LogWarning($"⚠️ Victoria bloqueada - isGameStarted: {isGameStarted}, isGameOver: {isGameOver}");
+            return;
+        }
+
+        // DETENER TIMER INMEDIATAMENTE al eliminar todos los zombies
+        isGameOver = true;
+        Debug.Log($"🎉 TODAS LAS HORDAS COMPLETADAS - Timer detenido en: {GetFormattedTime(currentLevelTime)}");
+        Debug.Log($"⏱️ isGameOver ahora es: {isGameOver} - El timer NO debería seguir corriendo");
+        Debug.Log("✅ Mostrando panel de victoria de Industry...");
+        
+        // Para Industry no hay animación de muerte del boss, mostrar victoria inmediatamente
+        WinGame();
+    }
 
     // Corrutina que espera para mostrar el panel de victoria después de la muerte del boss
     IEnumerator BossDefeatedSequence()
@@ -557,9 +591,9 @@ public class LevelManager : MonoBehaviour
                 laberintoTime = currentLevelTime;
                 Debug.Log($"✅ ¡VICTORIA LABERINTO! Tiempo final: {GetFormattedTime(currentLevelTime)}");
                 break;
-            case "Nivel2":
-                nivel2Time = currentLevelTime;
-                Debug.Log($"✅ ¡VICTORIA NIVEL 2! Tiempo final: {GetFormattedTime(currentLevelTime)}");
+            case "Industry":
+                industryTime = currentLevelTime;
+                Debug.Log($"✅ ¡VICTORIA INDUSTRY! Tiempo final: {GetFormattedTime(currentLevelTime)}");
                 break;
             case "Boss":
                 bossTime = currentLevelTime;
@@ -571,19 +605,37 @@ public class LevelManager : MonoBehaviour
         Debug.Log($"⏱️ Tiempo del nivel guardado: {GetFormattedTime(currentLevelTime)}");
         Debug.Log($"🌍 Tiempo global acumulado: {GetFormattedTime(globalTime)}");
         
-        // Pausar el juego
+        // Pausar el juego y desactivar controles
+        PauseGameAndDisableControls();
+
+        // Agregar delay antes de mostrar panel (SOLO para nivel Boss)
+        if (currentSceneName == "Boss")
+        {
+            StartCoroutine(ShowVictoryPanelWithDelay());
+        }
+        else
+        {
+            // Para Laberinto e Industry, mostrar panel inmediatamente
+            ShowVictoryPanel();
+        }
+    }
+    
+    // Helper: Pausar juego y desactivar todos los controles
+    void PauseGameAndDisableControls()
+    {
         Time.timeScale = 0f;
         isGamePaused = true;
 
-        // Desactivar controles del jugador Y sistema de armas completamente
+        // Desactivar controles del jugador
         if (playerController != null)
         {
             playerController.enabled = false;
         }
+        
+        // Desactivar sistema de armas completamente
         if (weaponSlots != null)
         {
             weaponSlots.enabled = false;
-            // Desactivar también todos los slots de armas para evitar disparos
             if (weaponSlots.primarySlot != null)
                 weaponSlots.primarySlot.gameObject.SetActive(false);
             if (weaponSlots.secondarySlot != null)
@@ -595,8 +647,12 @@ public class LevelManager : MonoBehaviour
         // Mostrar cursor
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        // Mostrar panel de victoria correspondiente
+    }
+    
+    // Mostrar panel de victoria con delay
+    IEnumerator ShowVictoryPanelWithDelay()
+    {
+        yield return new WaitForSecondsRealtime(victoryDelayTime); // Usa realtime porque Time.timeScale = 0
         ShowVictoryPanel();
     }
 
@@ -610,30 +666,8 @@ public class LevelManager : MonoBehaviour
         Debug.Log($"Tiempo jugado: {GetFormattedTime()}");
         Debug.Log($"Barriles destruidos: {destroyedBarrels}/{totalBarrels}");
         
-        // Pausar el juego
-        Time.timeScale = 0f;
-        isGamePaused = true;
-
-        // Desactivar controles del jugador Y sistema de armas completamente
-        if (playerController != null)
-        {
-            playerController.enabled = false;
-        }
-        if (weaponSlots != null)
-        {
-            weaponSlots.enabled = false;
-            // Desactivar también todos los slots de armas para evitar disparos
-            if (weaponSlots.primarySlot != null)
-                weaponSlots.primarySlot.gameObject.SetActive(false);
-            if (weaponSlots.secondarySlot != null)
-                weaponSlots.secondarySlot.gameObject.SetActive(false);
-            if (weaponSlots.throwableSlot != null)
-                weaponSlots.throwableSlot.gameObject.SetActive(false);
-        }
-
-        // Mostrar cursor
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        // Pausar el juego y desactivar controles
+        PauseGameAndDisableControls();
 
         // Mostrar panel de derrota
         ShowDefeatPanel();
@@ -651,6 +685,7 @@ public class LevelManager : MonoBehaviour
         switch (currentSceneName)
         {
             case "Laberinto":
+            {
                 panelToShow = victoryPanelLaberinto;
                 
                 Debug.Log("=== ACTUALIZANDO PANEL DE VICTORIA LABERINTO ===");
@@ -697,24 +732,78 @@ public class LevelManager : MonoBehaviour
                 
                 Debug.Log("=== FIN ACTUALIZACIÓN LABERINTO ===");
                 break;
+            }
                 
-            case "Nivel2":
-                panelToShow = victoryPanelNivel2;
+            case "Industry":
+            {
+                panelToShow = victoryPanelIndustry;
                 
-                // Activar el panel primero
-                if (panelToShow != null)
+                Debug.Log("=== ACTUALIZANDO PANEL DE VICTORIA INDUSTRY ===");
+                Debug.Log($"Tiempo Industry: {industryTime}s ({GetFormattedTime(industryTime)})");
+                
+                // PRIMERO verificar que el panel esté asignado
+                if (panelToShow == null)
                 {
-                    panelToShow.SetActive(true);
+                    Debug.LogError("✗ victoryPanelIndustry es NULL! Asigna el panel en el Inspector.");
+                    return;
                 }
                 
-                // Actualizar estadísticas del Nivel 2
-                if (nivel2LevelTimeText != null)
-                    nivel2LevelTimeText.text = GetFormattedTime(nivel2Time);
+                // Activar el panel
+                panelToShow.SetActive(true);
+                Debug.Log("✓ Panel Industry activado");
                 
-                Debug.Log($"Mostrando panel de victoria del Nivel 2 - Tiempo: {GetFormattedTime(nivel2Time)}");
+                // Actualizar estadísticas del Industry
+                KillStreakBonus killStreak = FindObjectOfType<KillStreakBonus>();
+                HordeManager hordeManager = FindObjectOfType<HordeManager>();
+                
+                if (industryPlayedTimeText != null)
+                {
+                    industryPlayedTimeText.text = GetFormattedTime(industryTime);
+                    Debug.Log($"✓ Tiempo jugado: {GetFormattedTime(industryTime)}");
+                }
+                else
+                {
+                    Debug.LogWarning("✗ industryPlayedTimeText no asignado");
+                }
+                
+                if (killStreak != null && industryAdjustedTimeText != null)
+                {
+                    float adjustedTime = killStreak.GetAdjustedTime(industryTime);
+                    industryAdjustedTimeText.text = GetFormattedTime(adjustedTime);
+                    Debug.Log($"✓ Tiempo ajustado: {GetFormattedTime(adjustedTime)}");
+                }
+                else if (industryAdjustedTimeText == null)
+                {
+                    Debug.LogWarning("✗ industryAdjustedTimeText no asignado");
+                }
+                
+                if (killStreak != null && industryTimeReducedText != null)
+                {
+                    industryTimeReducedText.text = GetFormattedTime(killStreak.totalTimeReduced);
+                    Debug.Log($"✓ Tiempo reducido: {GetFormattedTime(killStreak.totalTimeReduced)}");
+                }
+                else if (industryTimeReducedText == null)
+                {
+                    Debug.LogWarning("✗ industryTimeReducedText no asignado");
+                }
+                
+                if (hordeManager != null && industryHordeProgressText != null)
+                {
+                    string progress = hordeManager.GetHordeProgress();
+                    industryHordeProgressText.text = progress;
+                    Debug.Log($"✓ Progreso hordas: {progress}");
+                }
+                else if (industryHordeProgressText == null)
+                {
+                    Debug.LogWarning("✗ industryHordeProgressText no asignado");
+                }
+                
+                Debug.Log("=== FIN ACTUALIZACIÓN INDUSTRY ===");
                 break;
+            }
                 
             case "Boss":
+            {
                 panelToShow = victoryPanelBoss;
                 
                 // Activar el panel primero
@@ -723,25 +812,37 @@ public class LevelManager : MonoBehaviour
                     panelToShow.SetActive(true);
                 }
                 
+                // Calcular el tiempo ajustado de Industry con bonificadores
+                float adjustedIndustryTime = industryTime;
+                KillStreakBonus killStreak = FindObjectOfType<KillStreakBonus>();
+                if (killStreak != null)
+                {
+                    adjustedIndustryTime = killStreak.GetAdjustedTime(industryTime);
+                }
+                
+                // Calcular el tiempo total usando el tiempo ajustado de Industry
+                float totalAdjustedTime = laberintoTime + adjustedIndustryTime + bossTime;
+                
                 // Actualizar estadísticas finales del Boss (mostrar todos los tiempos)
                 if (bossLaberintoTimeText != null)
                     bossLaberintoTimeText.text = GetFormattedTime(laberintoTime);
                 
-                if (bossNivel2TimeText != null)
-                    bossNivel2TimeText.text = GetFormattedTime(nivel2Time);
+                if (bossIndustryTimeText != null)
+                    bossIndustryTimeText.text = GetFormattedTime(adjustedIndustryTime);
                 
                 if (bossBossTimeText != null)
                     bossBossTimeText.text = GetFormattedTime(bossTime);
                 
                 if (bossTotalTimeText != null)
-                    bossTotalTimeText.text = GetFormattedTime(globalTime);
+                    bossTotalTimeText.text = GetFormattedTime(totalAdjustedTime);
                 
                 Debug.Log($"Mostrando panel de victoria FINAL:");
                 Debug.Log($"  - Tiempo Laberinto: {GetFormattedTime(laberintoTime)}");
-                Debug.Log($"  - Tiempo Nivel 2: {GetFormattedTime(nivel2Time)}");
+                Debug.Log($"  - Tiempo Industry (ajustado con bonificadores): {GetFormattedTime(adjustedIndustryTime)}");
                 Debug.Log($"  - Tiempo Boss: {GetFormattedTime(bossTime)}");
-                Debug.Log($"  - Tiempo TOTAL: {GetFormattedTime(globalTime)}");
+                Debug.Log($"  - Tiempo TOTAL (con bonificadores): {GetFormattedTime(totalAdjustedTime)}");
                 break;
+            }
                 
             default:
                 Debug.LogWarning($"Escena '{currentSceneName}' no tiene panel de victoria asignado");
@@ -762,6 +863,8 @@ public class LevelManager : MonoBehaviour
         }
 
         defeatPanel.SetActive(true);
+        
+        Debug.Log($"=== MOSTRANDO PANEL DE DERROTA - Nivel: {currentSceneName} ===");
 
         // Actualizar tiempo jugado del nivel actual
         if (defeatPlayedTimeText != null)
@@ -780,6 +883,27 @@ public class LevelManager : MonoBehaviour
                 defeatDestroyedBarrelsText.transform.parent.gameObject.SetActive(false);
             }
         }
+        
+        // Actualizar estadísticas específicas para Industry
+        if (currentSceneName == "Industry")
+        {
+            HordeManager hordeManager = FindObjectOfType<HordeManager>();
+            
+            if (defeatIndustryTimeText != null)
+            {
+                defeatIndustryTimeText.text = GetFormattedTime(currentLevelTime);
+                Debug.Log($"✓ Tiempo Industry en derrota: {GetFormattedTime(currentLevelTime)}");
+            }
+            
+            if (hordeManager != null && defeatIndustryHordeText != null)
+            {
+                string progress = hordeManager.GetHordeProgress();
+                defeatIndustryHordeText.text = progress;
+                Debug.Log($"✓ Progreso hordas en derrota: {progress}");
+            }
+        }
+        
+        Debug.Log("=== FIN PANEL DE DERROTA ===");
     }
 
     // Función para REINICIAR EL JUEGO COMPLETO (llamar desde el Inspector)
@@ -793,7 +917,7 @@ public class LevelManager : MonoBehaviour
         // Resetear todos los tiempos estáticos (toda la progresión)
         globalTime = 0f;
         laberintoTime = 0f;
-        nivel2Time = 0f;
+        industryTime = 0f;
         bossTime = 0f;
         
         // Resetear variables
@@ -844,23 +968,23 @@ public class LevelManager : MonoBehaviour
         switch (currentSceneName)
         {
             case "Laberinto":
-                // Verificar si existe la escena Nivel2 en el Build Settings
-                if (SceneExists("Nivel2"))
+                // Verificar si existe la escena Industry en el Build Settings
+                if (SceneExists("Industry"))
                 {
-                    nextScene = "Nivel2";
-                    Debug.Log("Avanzando del Laberinto al Nivel 2");
+                    nextScene = "Industry";
+                    Debug.Log("Avanzando del Laberinto a Industry");
                 }
                 else
                 {
-                    // Si no existe Nivel2, saltar directamente al Boss
+                    // Si no existe Industry, saltar directamente al Boss
                     nextScene = "Boss";
-                    Debug.Log("⚠️ Nivel2 no encontrado en Build Settings - Saltando directamente al Boss");
+                    Debug.Log("⚠️ Industry no encontrado en Build Settings - Saltando directamente al Boss");
                 }
                 break;
                 
-            case "Nivel2":
+            case "Industry":
                 nextScene = "Boss";
-                Debug.Log("Avanzando del Nivel 2 al Boss");
+                Debug.Log("Avanzando de Industry al Boss");
                 break;
                 
             case "Boss":
@@ -926,5 +1050,27 @@ public class LevelManager : MonoBehaviour
     public string GetFormattedTime()
     {
         return GetFormattedTime(currentLevelTime);
+    }
+    
+    // Función para reducir el tiempo del nivel (bonificadores)
+    public void ReduceTime(float seconds)
+    {
+        currentLevelTime -= seconds;
+        globalTime -= seconds;
+        
+        // Asegurar que no sea negativo
+        currentLevelTime = Mathf.Max(0, currentLevelTime);
+        globalTime = Mathf.Max(0, globalTime);
+        
+        Debug.Log($"⚡ Tiempo reducido en {seconds}s - Nuevo tiempo: {GetFormattedTime(currentLevelTime)}");
+    }
+    
+    // Función para actualizar el contador de hordas (llamada por HordeManager)
+    public void UpdateHordeCounter(int currentHorde, int totalHordes)
+    {
+        if (hordeCounterText != null)
+        {
+            hordeCounterText.text = $"Horda: {currentHorde}/{totalHordes}";
+        }
     }
 }

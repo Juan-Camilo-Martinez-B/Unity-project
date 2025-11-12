@@ -3818,7 +3818,7 @@ MonoBehaviour:
   Active: 1
   maxHealth: 100
   currentHealth: 0
-  playerSpeed: 150
+  playerSpeed: 400
   sprintMultiplier: 2
   hasPistol: 0
   hasRiffle: 0

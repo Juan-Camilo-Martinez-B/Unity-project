@@ -2436,6 +2436,7 @@ MonoBehaviour:
   currentHealth: 0
   playerSpeed: 400
   sprintMultiplier: 2
+  unarmedSprintMultiplier: 3
   hasPistol: 0
   hasRiffle: 0
   hasGrenade: 0
@@ -16148,16 +16149,22 @@ MonoBehaviour:
   timerText: {fileID: 219236537}
   barrelTargetText: {fileID: 1413647029}
   barrelCountText: {fileID: 244777272}
+  hordeCounterText: {fileID: 0}
   victoryPanelLaberinto: {fileID: 1138747418}
-  victoryPanelNivel2: {fileID: 0}
+  victoryPanelIndustry: {fileID: 0}
   victoryPanelBoss: {fileID: 0}
   laberintoLevelTimeText: {fileID: 358351270}
   laberintoBarrelsText: {fileID: 1700219510}
-  nivel2LevelTimeText: {fileID: 0}
+  industryPlayedTimeText: {fileID: 0}
+  industryAdjustedTimeText: {fileID: 0}
+  industryTimeReducedText: {fileID: 0}
+  industryHordeProgressText: {fileID: 0}
   bossLaberintoTimeText: {fileID: 0}
-  bossNivel2TimeText: {fileID: 0}
+  bossIndustryTimeText: {fileID: 0}
   bossBossTimeText: {fileID: 0}
   bossTotalTimeText: {fileID: 0}
+  defeatIndustryTimeText: {fileID: 0}
+  defeatIndustryHordeText: {fileID: 0}
   defeatPanel: {fileID: 1577873680}
   defeatPlayedTimeText: {fileID: 1463431331}
   defeatDestroyedBarrelsText: {fileID: 1670759361}
@@ -39262,11 +39269,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Bienvenido a Maze Hunt\n\nEstas en el nivel 1\n\n\nPara completar este
-    nivel debes destruir todos los barriles explosivos al rededor del laberinto.
-    Cuidado la explosi\xF3n puede matarte.\n\nUsa la letra E para agarrar los items
-    que hay en la mesa, usa 1 para la pistola, 2 para el rifle y 3 para la granada,
-    muevete con AWSD y corre manteniendo Shift.\n\npuedes usar la letra q para desequpar
-    las armas.\n\nDeber\xEDas tener cuidado con los enemigos."
+    nivel debes destruir todos los barriles explosivos alrededor del laberinto. Cuidado!
+    la explosi\xF3n puede matarte.\n\nUsa la letra E para agarrar los items que hay
+    en la mesa, usa 1 para la pistola, 2 para el rifle y 3 para la granada, muevete
+    con AWSD y corre manteniendo Shift.\n\npuedes usar la letra Q para desequipar
+    las armas, correras m\xE1s r\xE1pido si no tienes armas equipadas.\n\nDeber\xEDas
+    tener cuidado con los enemigos."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 8a8618e4964fe1c4c874cfdc68a88583, type: 2}
@@ -41630,7 +41638,7 @@ MonoBehaviour:
   spawnInterval: 10
   maxActiveZombies: 10
   overrideBehaviorMode: 1
-  zombieBehaviorMode: 1
+  zombieBehaviorMode: 0
   validateNavMesh: 1
   navMeshCheckHeight: 20
 --- !u!4 &1930981677
