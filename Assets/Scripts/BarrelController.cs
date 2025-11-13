@@ -26,7 +26,6 @@ public class BarrelController : MonoBehaviour
         // Verificar que el objeto tenga el tag correcto
         if (!gameObject.CompareTag("Barrel"))
         {
-            Debug.LogWarning($"BarrelController en {gameObject.name} requiere el tag 'Barrel'!");
         }
     }
 
@@ -88,7 +87,6 @@ public class BarrelController : MonoBehaviour
             if (bodyPart != null)
             {
                 bodyPart.TakeHit(finalDamage);
-                Debug.Log($"Barril dañó a {bodyPart.BodyName} con {finalDamage} de daño");
             }
 
             // Aplicar daño a zombies
@@ -96,7 +94,13 @@ public class BarrelController : MonoBehaviour
             if (zombiePart != null)
             {
                 zombiePart.TakeHit(finalDamage);
-                Debug.Log($"Barril dañó a zombie con {finalDamage} de daño");
+            }
+
+            // Aplicar daño a demons
+            DemonBodyPart demonPart = hit.GetComponent<DemonBodyPart>();
+            if (demonPart != null)
+            {
+                demonPart.TakeHit(finalDamage);
             }
 
             // Aplicar daño al boss
@@ -104,7 +108,6 @@ public class BarrelController : MonoBehaviour
             if (bossPart != null)
             {
                 bossPart.TakeHit(finalDamage);
-                Debug.Log($"Barril dañó al BOSS con {finalDamage} de daño");
             }
 
             // Opcional: aplicar fuerza a rigidbodies cercanos
@@ -128,24 +131,20 @@ public class BarrelController : MonoBehaviour
 
     private void SpawnExplosionEffects(Vector3 explosionPosition)
     {
-        Debug.Log("=== INICIANDO EFECTOS DE EXPLOSIÓN ===");
         
         // Efecto visual de explosión
         if (explosionEffect != null)
         {
             GameObject fx = Instantiate(explosionEffect, explosionPosition, Quaternion.identity);
             Destroy(fx, 5f);
-            Debug.Log("✓ Efecto visual instanciado");
         }
         else
         {
-            Debug.LogWarning("✗ explosionEffect es NULL");
         }
 
         // Sonido de explosión - crear GameObject temporal INDEPENDIENTE
         if (explosionSound != null)
         {
-            Debug.Log($"✓ explosionSound asignado: {explosionSound.name}");
             
             // Crear GameObject completamente independiente
             GameObject audioObject = new GameObject("BarrelExplosionAudio");
@@ -164,21 +163,16 @@ public class BarrelController : MonoBehaviour
             // Reproducir inmediatamente
             audioSource.Play();
             
-            Debug.Log($"✓ Audio reproduciéndose - Volumen: {explosionSoundVolume}, Duración: {explosionSound.length}s");
-            Debug.Log($"✓ AudioSource.isPlaying: {audioSource.isPlaying}");
             
             // Destruir después de que termine con más margen de seguridad
             float destroyTime = explosionSound.length + 2f; // +2 segundos de margen
             Destroy(audioObject, destroyTime);
             
-            Debug.Log($"✓ Audio object se destruirá en {destroyTime}s");
         }
         else
         {
-            Debug.LogError("✗✗✗ explosionSound es NULL - NO HAY AUDIO ASIGNADO ✗✗✗");
         }
         
-        Debug.Log("=== FIN EFECTOS DE EXPLOSIÓN ===");
     }
 
     private void OnDrawGizmosSelected()

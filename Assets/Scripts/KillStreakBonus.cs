@@ -67,7 +67,6 @@ public class KillStreakBonus : MonoBehaviour
         // Limpiar kills antiguos (fuera de la ventana de tiempo)
         recentKillTimes.RemoveAll(killTime => currentTime - killTime > timeWindow);
         
-        Debug.Log($"💀 Kill #{totalKills} - Kills recientes en {timeWindow}s: {recentKillTimes.Count}");
         
         // Verificar si se logró un kill streak bonificador
         if (recentKillTimes.Count >= killsRequired)
@@ -88,9 +87,6 @@ public class KillStreakBonus : MonoBehaviour
         totalBonuses++;
         totalTimeReduced += timeReduction;
         
-        Debug.Log($"⚡ ¡KILL STREAK BONIFICADOR! ({killsRequired} kills en {timeWindow}s)");
-        Debug.Log($"   - Tiempo reducido: {timeReduction} segundos");
-        Debug.Log($"   - Tiempo total reducido: {totalTimeReduced} segundos");
         
         // Reducir el tiempo del nivel actual en el LevelManager
         if (levelManager != null)
@@ -112,11 +108,9 @@ public class KillStreakBonus : MonoBehaviour
         if (healedAmount > 0)
         {
             playerController.currentHealth += healedAmount;
-            Debug.Log($"💚 ¡CURACIÓN! +{healedAmount} HP ({totalKills} kills) - Vida actual: {playerController.currentHealth}/{playerController.maxHealth}");
         }
         else
         {
-            Debug.Log($"❤️ Vida completa - No se aplicó curación");
         }
     }
     

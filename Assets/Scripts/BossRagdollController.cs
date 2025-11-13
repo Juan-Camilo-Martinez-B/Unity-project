@@ -27,7 +27,6 @@ public class BossRagdollController : MonoBehaviour
         
         if (layerOfHits == -1)
         {
-            Debug.LogError("La capa 'Hitbox' no existe! Créala en Edit → Project Settings → Tags and Layers");
             return;
         }
 
@@ -46,7 +45,6 @@ public class BossRagdollController : MonoBehaviour
                 capsule.height = 0.3f;
                 capsule.isTrigger = false;
                 col = capsule;
-                Debug.Log($"Collider agregado a {bone.gameObject.name}");
             }
             else
             {
@@ -80,7 +78,6 @@ public class BossRagdollController : MonoBehaviour
 
         Active(false);
         
-        Debug.Log($"<color=green>Boss Ragdoll configurado: {configuredBones} huesos en capa Hitbox (isTrigger=false)</color>");
     }
 
     public void Active(bool state)

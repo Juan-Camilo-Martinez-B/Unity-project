@@ -67,16 +67,13 @@ public class GrenadeController : MonoBehaviour
     public void Throw()
     {
         time += Time.deltaTime;
-        Debug.Log(time);
         player.playerAnim.Play("Final Grenade");
 
         if (time >= throwDelayTime)
         {
             // Diagnostics: log prefab and spawn transform scales (local and lossy)
-            Debug.Log("[Grenade] Prefab localScale: " + theGrenade.transform.localScale + " | lossyScale: " + theGrenade.transform.lossyScale);
             if (player != null && player.spawnGrenade != null)
             {
-                Debug.Log("[Grenade] Spawn transform localScale: " + player.spawnGrenade.localScale + " | lossyScale: " + player.spawnGrenade.lossyScale);
             }
 
             // Instanciar la granada sin parent para evitar heredar escala de padres
@@ -86,7 +83,6 @@ public class GrenadeController : MonoBehaviour
             // Forzar la escala local para que coincida con la del prefab raíz
             g.transform.localScale = theGrenade.transform.localScale;
 
-            Debug.Log("[Grenade] Instanciada localScale: " + g.transform.localScale + " | lossyScale: " + g.transform.lossyScale);
 
             // Actualizar estado antes de destruir el arma en mano
             throwing = false;

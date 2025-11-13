@@ -90,7 +90,6 @@ public class BulletController : MonoBehaviour
             if (playerBodyPart != null)
             {
                 playerBodyPart.TakeHit(bulletDamage);
-                Debug.Log("Disparo en " + playerBodyPart.BodyName + " del jugador");
             }
 
             // Detectar impacto en zombie
@@ -98,7 +97,13 @@ public class BulletController : MonoBehaviour
             if (zombieBodyPart != null)
             {
                 zombieBodyPart.TakeHit(bulletDamage);
-                Debug.Log("Disparo a zombie en " + zombieBodyPart.bodyPartName + " (multiplicador: " + zombieBodyPart.damageMultiplier + "x)");
+            }
+
+            // Detectar impacto en demon
+            DemonBodyPart demonBodyPart = go.GetComponent<DemonBodyPart>();
+            if (demonBodyPart != null)
+            {
+                demonBodyPart.TakeHit(bulletDamage);
             }
 
             // Detectar impacto en boss
@@ -106,7 +111,6 @@ public class BulletController : MonoBehaviour
             if (bossBodyPart != null)
             {
                 bossBodyPart.TakeHit(bulletDamage);
-                Debug.Log("Disparo al BOSS en " + bossBodyPart.bodyPartName + " (multiplicador: " + bossBodyPart.damageMultiplier + "x)");
             }
 
             // Detectar impacto en barril y hacerlo explotar

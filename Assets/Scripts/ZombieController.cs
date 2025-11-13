@@ -130,13 +130,11 @@ public class ZombieController : MonoBehaviour
             mainRb.isKinematic = true;
             mainRb.useGravity = false;
             mainRb.detectCollisions = false;
-            Debug.Log($"Zombie {gameObject.name}: Rigidbody principal configurado como kinematic");
         }
 
         // Verificar que el NavMeshAgent esté en un NavMesh válido
         if (agent != null && !agent.isOnNavMesh)
         {
-            Debug.LogError($"Zombie {gameObject.name} no está sobre un NavMesh válido! Crea el NavMesh en Window → AI → Navigation → Bake");
             agent.enabled = false;
         }
         else if (agent != null)
@@ -159,7 +157,6 @@ public class ZombieController : MonoBehaviour
             agent.updatePosition = true; // El NavMesh controla la posición
             agent.updateRotation = true; // El NavMesh controla la rotación
             
-            Debug.Log($"Zombie {gameObject.name}: NavMeshAgent configurado - Speed:{agent.speed}, StoppingDistance:{agent.stoppingDistance}, Mode:{behaviorMode}");
         }
 
         // Buscar al jugador si no está asignado
@@ -169,11 +166,9 @@ public class ZombieController : MonoBehaviour
             if (playerObj != null)
             {
                 player = playerObj.transform;
-                Debug.Log($"Zombie {gameObject.name}: Player encontrado automáticamente");
             }
             else
             {
-                Debug.LogWarning($"Zombie {gameObject.name}: No se encontró GameObject con tag 'Player'");
             }
         }
 
@@ -218,11 +213,9 @@ public class ZombieController : MonoBehaviour
                 GameObject patrolCenterObj = new GameObject($"{gameObject.name}_PatrolCenter");
                 patrolCenterObj.transform.position = transform.position;
                 patrolCenter = patrolCenterObj.transform;
-                Debug.LogWarning($"Zombie {gameObject.name} en modo Patrol sin Patrol Center asignado. Usando posición inicial.");
             }
             
             // Generar primer punto de patrulla INMEDIATAMENTE
-            Debug.Log($"Zombie {gameObject.name}: Inicializando patrulla en modo Patrol");
             GenerateNewPatrolPoint();
             
             // Asegurarse de que NO esté esperando al inicio
@@ -307,7 +300,6 @@ public class ZombieController : MonoBehaviour
                 
                 UpdateAnimator(true, false); // Activar animación de Run
                 
-                Debug.Log($"🏃 Zombie {gameObject.name}: Terminó detección, FORZANDO RUN - isWalking:{zombieAnimator?.GetBool("isWalking")}");
             }
             
             return;
@@ -372,30 +364,28 @@ public class ZombieController : MonoBehaviour
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         // Si ya detectó al jugador antes (persecución activa)
-        if (hasPlayedDetectionAnimation && distanceToPlayer <= detectionRadius * 2f)
+        if (hasPlayedDetectionAnimation)
         {
-            // Una vez detectado, mantener la persecución sin importar el ángulo
-            // Solo verificar que no haya obstáculos
-            Vector3 directionToPlayer = (player.position - eyePosition.position).normalized;
-            RaycastHit hit;
-            
-            if (Physics.Raycast(eyePosition.position, directionToPlayer, out hit, distanceToPlayer, ~(1 << LayerMask.NameToLayer("Hitbox"))))
+            // Una vez detectado, perseguir sin importar distancia o ángulo
+            // Solo verificar límite de área de patrulla en modo Patrol
+            if (behaviorMode == ZombieBehaviorMode.Patrol && patrolCenter != null)
             {
-                // Si el raycast golpea al jugador (no hay obstáculos)
-                if (hit.transform == player || hit.transform.root == player.root)
+                float distanceFromPatrolCenter = Vector3.Distance(transform.position, patrolCenter.position);
+                
+                // Si está muy lejos del centro de patrulla, volver
+                if (distanceFromPatrolCenter > patrolRadius * 2f)
                 {
-                    playerDetected = true;
-                    lastKnownPlayerPosition = player.position;
-                    return; // Continuar persecución
+                    playerDetected = false;
+                    isPlayingDetectionAnimation = false;
+                    detectionAnimationTimer = 0f;
+                    return;
                 }
             }
             
-            // Si hay obstáculo, seguir persiguiendo la última posición conocida por un tiempo
-            if (playerDetected)
-            {
-                // Mantener persecución hacia la última posición conocida
-                return;
-            }
+            // Mantener persecución constante
+            playerDetected = true;
+            lastKnownPlayerPosition = player.position;
+            return; // Continuar persecución
         }
 
         // Detección INICIAL (primera vez) - requiere estar dentro del FOV
@@ -431,7 +421,6 @@ public class ZombieController : MonoBehaviour
                                 zombieAnimator.SetLayerWeight(1, 0f); // Walk layer apagado
                             }
                             
-                            Debug.Log($"Zombie detectó al jugador a {distanceToPlayer:F1}m - ángulo: {angleToPlayer:F1}°");
                         }
                         else if (!playerDetected && hasPlayedDetectionAnimation)
                         {
@@ -455,7 +444,6 @@ public class ZombieController : MonoBehaviour
                                 zombieAnimator.SetLayerWeight(2, 0f);
                             }
                             
-                            Debug.Log($"🏃 Zombie {gameObject.name}: Re-detectó - FORZANDO RUN - Speed:{runSpeed}, isWalking:{zombieAnimator?.GetBool("isWalking")}");
                         }
                         else
                         {
@@ -478,17 +466,7 @@ public class ZombieController : MonoBehaviour
                     playerDetected = false;
             }
         }
-        else
-        {
-            // Muy lejos - perder detección solo si está MUY lejos (doble del radio)
-            if (distanceToPlayer > detectionRadius * 2f)
-            {
-                playerDetected = false;
-                isPlayingDetectionAnimation = false;
-                detectionAnimationTimer = 0f;
-                // NO resetear hasPlayedDetectionAnimation - se mantiene para toda la partida
-            }
-        }
+        // Ya no se pierde detección por distancia, solo por límite de patrulla (verificado arriba)
     }
 
     void ChasePlayer()
@@ -547,13 +525,6 @@ public class ZombieController : MonoBehaviour
                 // Debug para verificar TODO
                 if (Time.frameCount % 60 == 0) // Cada segundo aprox
                 {
-                    Debug.Log($"🏃 Zombie {gameObject.name} PERSIGUIENDO:");
-                    Debug.Log($"   - agent.speed: {agent.speed} (debería ser {runSpeed})");
-                    Debug.Log($"   - UpdateAnimator(true, false) llamado");
-                    Debug.Log($"   - isWalking en Animator: {zombieAnimator?.GetBool("isWalking")}");
-                    Debug.Log($"   - Layer Walk weight: {zombieAnimator?.GetLayerWeight(1)}");
-                    Debug.Log($"   - BehaviorMode: {behaviorMode}");
-                    Debug.Log($"   - Distance: {distanceToPlayer:F2}m");
                 }
             }
         }
@@ -579,12 +550,10 @@ public class ZombieController : MonoBehaviour
                 if (useAttack1)
                 {
                     zombieAnimator.SetTrigger("Attack1");
-                    Debug.Log("🎬 Zombie iniciando Attack1");
                 }
                 else
                 {
                     zombieAnimator.SetTrigger("Attack2");
-                    Debug.Log("🎬 Zombie iniciando Attack2");
                 }
             }
         }
@@ -593,12 +562,10 @@ public class ZombieController : MonoBehaviour
     // Este método se llama desde un Animation Event en el frame del golpe
     public void OnAttackHit()
     {
-        Debug.Log("🎯 OnAttackHit llamado desde Animation Event");
         
         // No reproducir sonido ni hacer daño si el juego está pausado
         if (Time.timeScale == 0f)
         {
-            Debug.Log("⏸ Juego pausado, ataque cancelado");
             return;
         }
         
@@ -609,19 +576,16 @@ public class ZombieController : MonoBehaviour
             if (soundToPlay != null)
             {
                 audioSource.PlayOneShot(soundToPlay, attackSoundVolume);
-                Debug.Log($"🔊 Reproduciendo sonido de ataque {(lastAttackWasType1 ? "1" : "2")}");
             }
         }
         
         if (player == null || isDead)
         {
-            Debug.LogWarning("Player es null o zombie está muerto");
             return;
         }
 
         // Verificar que el jugador sigue en rango
         float currentDistance = Vector3.Distance(transform.position, player.position);
-        Debug.Log($"Distancia al jugador: {currentDistance:F2}m (rango: {attackRange * 1.5f:F2}m)");
         
         if (currentDistance <= attackRange * 1.5f)
         {
@@ -634,39 +598,32 @@ public class ZombieController : MonoBehaviour
             if (playerController != null)
             {
                 playerController.TakeDamage(attackDamage);
-                Debug.Log($"💥 DAÑO APLICADO: {attackDamage} al jugador");
             }
             else
             {
-                Debug.LogError("No se encontró PlayerController!");
             }
         }
         else
         {
-            Debug.Log("⚠ Jugador fuera de rango, golpe falló");
         }
     }
 
     // Este método se llama desde un Animation Event al final de la animación
     public void OnAttackEnd()
     {
-        Debug.Log("✅ OnAttackEnd llamado desde Animation Event");
         isAttacking = false;
-        Debug.Log("✅ Ataque completado, listo para el siguiente");
     }
 
     void UpdateAnimator(bool running, bool walking)
     {
         if (zombieAnimator == null)
         {
-            Debug.LogWarning($"Zombie {gameObject.name}: zombieAnimator es null!");
             return;
         }
 
         // Debug para patrulla
         if (behaviorMode == ZombieBehaviorMode.Patrol && Time.frameCount % 120 == 0)
         {
-            Debug.Log($"Zombie {gameObject.name}: UpdateAnimator - Running:{running}, Walking:{walking}, isWalking param:{zombieAnimator.GetBool("isWalking")}");
         }
 
         // Usar layers según el estado
@@ -683,7 +640,6 @@ public class ZombieController : MonoBehaviour
             // Debug cada vez que se establece Run
             if (behaviorMode == ZombieBehaviorMode.Patrol && Time.frameCount % 60 == 0)
             {
-                Debug.Log($"⚡ FORZANDO RUN: isWalking = {zombieAnimator.GetBool("isWalking")}, LayerWeight = {zombieAnimator.GetLayerWeight(1)}");
             }
         }
         else if (walking)
@@ -712,13 +668,45 @@ public class ZombieController : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
 
-        Debug.Log($"Zombie recibió {damage} de daño. Vida actual: {currentHealth}");
+        
+        // Si recibe daño y aún no ha detectado al jugador, detectarlo automáticamente
+        if (!playerDetected && player != null)
+        {
+            lastKnownPlayerPosition = player.position;
+            playerDetected = true;
+            if (!hasPlayedDetectionAnimation)
+            {
+                // Iniciar la animación de detección igual que en DetectPlayer()
+                isPlayingDetectionAnimation = true;
+                detectionAnimationTimer = 0f;
+                hasPlayedDetectionAnimation = true;
+                if (zombieAnimator != null)
+                {
+                    zombieAnimator.SetLayerWeight(2, 1f); // detectPlayer layer
+                    zombieAnimator.SetLayerWeight(1, 0f); // Walk layer apagado
+                }
+            }
+            else
+            {
+                // Si ya hizo la animación, saltar directo a correr
+                if (agent != null && agent.enabled)
+                {
+                    agent.speed = runSpeed;
+                    agent.stoppingDistance = stoppingDistance;
+                }
+                if (zombieAnimator != null)
+                {
+                    zombieAnimator.SetBool("isWalking", false);
+                    zombieAnimator.SetLayerWeight(1, 1f);
+                    zombieAnimator.SetLayerWeight(2, 0f);
+                }
+            }
+        }
 
         // Si la vida cae por debajo de 30, cambiar a walk
         if (currentHealth < 30f && !isLowHealth)
         {
             isLowHealth = true;
-            Debug.Log("Zombie en vida baja - cambiando a walk");
         }
 
         // Si la vida llega a 0, morir
@@ -734,7 +722,6 @@ public class ZombieController : MonoBehaviour
             return;
 
         isDead = true;
-        Debug.Log("💀 Zombie murió");
         
         // Notificar al ZombieKillTracker (si existe - para nivel Boss)
         if (ZombieKillTracker.Instance != null)
@@ -753,7 +740,6 @@ public class ZombieController : MonoBehaviour
         {
             deathAnimationPlayed = true;
             zombieAnimator.SetBool("isDead", true);
-            Debug.Log("🎬 Reproduciendo animación de muerte");
         }
 
         // Reproducir sonido de muerte
@@ -761,7 +747,6 @@ public class ZombieController : MonoBehaviour
         {
             audioSource.Stop(); // Detener sonidos actuales
             audioSource.PlayOneShot(zombieDeathSound, deathSoundVolume);
-            Debug.Log("🔊 Reproduciendo sonido de muerte");
         }
         else if (audioSource != null)
         {
@@ -788,7 +773,6 @@ public class ZombieController : MonoBehaviour
         if (zombieRagdoll != null)
         {
             zombieRagdoll.Active(true);
-            Debug.Log("🎭 Ragdoll activado");
         }
 
         // Desactivar completamente el AudioSource
@@ -868,7 +852,6 @@ public class ZombieController : MonoBehaviour
     {
         if (agent == null || !agent.enabled || !agent.isOnNavMesh || patrolCenter == null)
         {
-            Debug.LogWarning($"Zombie {gameObject.name}: No puede patrullar - Agent:{agent != null}, Enabled:{agent?.enabled}, OnNavMesh:{agent?.isOnNavMesh}, Center:{patrolCenter != null}");
             return;
         }
         
@@ -894,7 +877,6 @@ public class ZombieController : MonoBehaviour
                 isWaitingAtPatrolPoint = false;
                 patrolWaitTimer = 0f;
                 GenerateNewPatrolPoint();
-                Debug.Log($"Zombie {gameObject.name}: Terminó espera, generando nuevo punto de patrulla");
             }
             
             return;
@@ -903,7 +885,6 @@ public class ZombieController : MonoBehaviour
         // Verificar si el target es válido
         if (currentPatrolTarget == Vector3.zero)
         {
-            Debug.LogWarning($"Zombie {gameObject.name}: currentPatrolTarget es Vector3.zero, regenerando punto");
             GenerateNewPatrolPoint();
             return;
         }
@@ -914,7 +895,6 @@ public class ZombieController : MonoBehaviour
             // Llegó al punto, empezar a esperar
             isWaitingAtPatrolPoint = true;
             patrolWaitTimer = 0f;
-            Debug.Log($"Zombie {gameObject.name}: Llegó al punto de patrulla, esperando {patrolWaitTime}s");
             return;
         }
         
@@ -927,7 +907,6 @@ public class ZombieController : MonoBehaviour
         if (!agent.hasPath || agent.pathStatus == NavMeshPathStatus.PathInvalid)
         {
             agent.SetDestination(currentPatrolTarget);
-            Debug.Log($"Zombie {gameObject.name}: Estableciendo nuevo path hacia {currentPatrolTarget}");
         }
         
         // Actualizar animación de caminar
@@ -936,7 +915,6 @@ public class ZombieController : MonoBehaviour
         // Debug visual cada 2 segundos
         if (Time.frameCount % 120 == 0)
         {
-            Debug.Log($"Zombie {gameObject.name}: Patrullando - HasPath:{agent.hasPath}, Distance:{agent.remainingDistance:F2}m, PathStatus:{agent.pathStatus}");
         }
     }
     
@@ -944,7 +922,6 @@ public class ZombieController : MonoBehaviour
     {
         if (patrolCenter == null)
         {
-            Debug.LogError($"Zombie {gameObject.name}: patrolCenter es null, no puede generar punto de patrulla");
             return;
         }
         
@@ -957,7 +934,6 @@ public class ZombieController : MonoBehaviour
         if (NavMesh.SamplePosition(randomPoint, out hit, patrolRadius, NavMesh.AllAreas))
         {
             currentPatrolTarget = hit.position;
-            Debug.Log($"✅ Zombie {gameObject.name} generó nuevo punto de patrulla en {currentPatrolTarget}");
         }
         else
         {
@@ -965,12 +941,10 @@ public class ZombieController : MonoBehaviour
             if (NavMesh.SamplePosition(transform.position, out hit, 5f, NavMesh.AllAreas))
             {
                 currentPatrolTarget = hit.position;
-                Debug.LogWarning($"⚠️ Zombie {gameObject.name} usó su posición actual como punto de patrulla");
             }
             else
             {
                 currentPatrolTarget = transform.position;
-                Debug.LogError($"❌ Zombie {gameObject.name} NO pudo generar punto de patrulla válido en NavMesh!");
             }
         }
     }

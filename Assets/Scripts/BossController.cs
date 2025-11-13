@@ -102,12 +102,10 @@ public class BossController : MonoBehaviour
             mainRb.isKinematic = true;
             mainRb.useGravity = false;
             mainRb.detectCollisions = false;
-            Debug.Log($"Boss {gameObject.name}: Rigidbody principal configurado como kinematic");
         }
 
         if (agent != null && !agent.isOnNavMesh)
         {
-            Debug.LogError($"Boss {gameObject.name} no está sobre un NavMesh válido!");
             agent.enabled = false;
         }
         else if (agent != null)
@@ -129,7 +127,6 @@ public class BossController : MonoBehaviour
             agent.updatePosition = true; // El NavMesh controla la posición
             agent.updateRotation = true; // El NavMesh controla la rotación
             
-            Debug.Log($"✅ Boss {gameObject.name} NavMeshAgent configurado correctamente");
         }
 
         if (player == null)
@@ -249,7 +246,6 @@ public class BossController : MonoBehaviour
             // Debug cada 2 segundos para no saturar la consola
             if (Time.frameCount % 120 == 0)
             {
-                Debug.Log($"🛑 Boss en IDLE - playerDetected: {playerDetected}, hasPlayedScream: {hasPlayedDetectionAnimation}");
             }
         }
     }
@@ -330,7 +326,6 @@ public class BossController : MonoBehaviour
                                 audioSource.PlayOneShot(screamSound, screamSoundVolume);
                             }
                             
-                            Debug.Log($"🔊 Boss detectó al jugador a {distanceToPlayer:F1}m - ¡SCREAM!");
                         }
                         else if (!playerDetected && hasPlayedDetectionAnimation)
                         {
@@ -338,7 +333,6 @@ public class BossController : MonoBehaviour
                             lastKnownPlayerPosition = player.position;
                             isPlayingDetectionAnimation = false;
                             
-                            Debug.Log($"Boss re-detectó al jugador (sin scream) a {distanceToPlayer:F1}m");
                         }
                         else
                         {
@@ -373,25 +367,21 @@ public class BossController : MonoBehaviour
     {
         if (agent == null)
         {
-            Debug.LogWarning("⚠️ Boss: agent es null");
             return;
         }
         
         if (!agent.enabled)
         {
-            Debug.LogWarning("⚠️ Boss: agent está deshabilitado");
             return;
         }
         
         if (!agent.isOnNavMesh)
         {
-            Debug.LogWarning("⚠️ Boss: agent NO está sobre NavMesh");
             return;
         }
         
         if (player == null)
         {
-            Debug.LogWarning("⚠️ Boss: player es null");
             return;
         }
 
@@ -447,12 +437,10 @@ public class BossController : MonoBehaviour
                 if (useSwipe)
                 {
                     bossAnimator.SetTrigger("swipeAttack");
-                    Debug.Log("💥 Boss iniciando Swipe Attack");
                 }
                 else
                 {
                     bossAnimator.SetTrigger("jumpAttack");
-                    Debug.Log("💪 Boss iniciando Jump Attack");
                 }
             }
         }
@@ -461,11 +449,9 @@ public class BossController : MonoBehaviour
     // Llamado por Animation Event en el frame del golpe
     public void OnAttackHit()
     {
-        Debug.Log("🎯 OnAttackHit llamado desde Animation Event");
         
         if (Time.timeScale == 0f)
         {
-            Debug.Log("⏸ Juego pausado, ataque cancelado");
             return;
         }
         
@@ -476,13 +462,11 @@ public class BossController : MonoBehaviour
             if (soundToPlay != null)
             {
                 audioSource.PlayOneShot(soundToPlay, attackSoundVolume);
-                Debug.Log($"🔊 Reproduciendo sonido de ataque {(lastAttackWasSwipe ? "Swipe" : "Jump")}");
             }
         }
         
         if (player == null || isDead)
         {
-            Debug.LogWarning("Player es null o boss está muerto");
             return;
         }
 
@@ -500,7 +484,6 @@ public class BossController : MonoBehaviour
                 if (playerPart != null)
                 {
                     playerPart.TakeHit(attackDamage);
-                    Debug.Log($"💥 Boss golpeó a {playerPart.BodyName} con {attackDamage} de daño");
                     playerHit = true; // Marcar que ya golpeamos al jugador
                     continue; // Saltar al siguiente collider
                 }
@@ -511,7 +494,6 @@ public class BossController : MonoBehaviour
             if (barrel != null)
             {
                 barrel.TakeHit();
-                Debug.Log("💥 Boss destruyó un barril!");
             }
         }
     }
@@ -519,9 +501,7 @@ public class BossController : MonoBehaviour
     // Llamado por Animation Event al final de la animación
     public void OnAttackEnd()
     {
-        Debug.Log("✅ OnAttackEnd llamado desde Animation Event");
         isAttacking = false;
-        Debug.Log("✅ Boss terminó ataque, listo para el siguiente");
     }
 
     void UpdateAnimator(bool running, bool walking)
@@ -565,13 +545,45 @@ public class BossController : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
 
-        Debug.Log($"💔 Boss recibió {damage} de daño. Vida actual: {currentHealth}/{maxHealth}");
+        
+        // Si recibe daño y aún no ha detectado al jugador, detectarlo automáticamente
+        if (!playerDetected && player != null)
+        {
+            lastKnownPlayerPosition = player.position;
+            playerDetected = true;
+            if (!hasPlayedDetectionAnimation)
+            {
+                // Iniciar la animación de detección igual que en DetectPlayer()
+                isPlayingDetectionAnimation = true;
+                detectionAnimationTimer = 0f;
+                hasPlayedDetectionAnimation = true;
+                if (bossAnimator != null)
+                {
+                    bossAnimator.SetLayerWeight(2, 1f); // detectPlayer layer
+                    bossAnimator.SetLayerWeight(1, 0f); // Walk layer apagado
+                }
+            }
+            else
+            {
+                // Si ya hizo la animación, saltar directo a correr
+                if (agent != null && agent.enabled)
+                {
+                    agent.speed = runSpeed;
+                    agent.stoppingDistance = stoppingDistance;
+                }
+                if (bossAnimator != null)
+                {
+                    bossAnimator.SetBool("isWalking", false);
+                    bossAnimator.SetLayerWeight(1, 1f);
+                    bossAnimator.SetLayerWeight(2, 0f);
+                }
+            }
+        }
 
         // Si la vida cae por debajo del 50%, cambiar a walk
         if (currentHealth < maxHealth * 0.5f && !isLowHealth)
         {
             isLowHealth = true;
-            Debug.Log("⚠️ Boss en vida baja (50%) - cambiando a walk");
         }
 
         if (currentHealth <= 0f)
@@ -586,7 +598,6 @@ public class BossController : MonoBehaviour
             return;
 
         isDead = true;
-        Debug.Log("💀 BOSS DERROTADO!");
 
         if (bossAnimator != null && !deathAnimationPlayed)
         {
@@ -604,14 +615,12 @@ public class BossController : MonoBehaviour
             // Forzar reproducción del estado Dead directamente (fix para cuando está en Idle)
             bossAnimator.Play("Dead", 0, 0f);
             
-            Debug.Log("🎬 Reproduciendo animación de muerte del Boss");
         }
 
         if (audioSource != null && deathSound != null)
         {
             audioSource.Stop();
             audioSource.PlayOneShot(deathSound, deathSoundVolume);
-            Debug.Log("🔊 Reproduciendo sonido de muerte del Boss");
         }
         else if (audioSource != null)
         {
@@ -642,7 +651,6 @@ public class BossController : MonoBehaviour
         if (bossRagdoll != null)
         {
             bossRagdoll.Active(true);
-            Debug.Log("🎭 Boss Ragdoll activado (esto desactivará el Animator)");
         }
 
         if (audioSource != null)

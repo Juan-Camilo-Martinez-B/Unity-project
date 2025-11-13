@@ -16,7 +16,6 @@ public class ZombieAnimationReceiver : MonoBehaviour
         }
         else
         {
-            Debug.LogError("OnAttackHit: No se encontró ZombieController en los padres!");
         }
     }
 
@@ -30,7 +29,6 @@ public class ZombieAnimationReceiver : MonoBehaviour
         }
         else
         {
-            Debug.LogError("OnAttackEnd: No se encontró ZombieController en los padres!");
         }
     }
 }

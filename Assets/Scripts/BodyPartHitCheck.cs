@@ -29,7 +29,6 @@ public class BodyPartHitCheck : MonoBehaviour
 
         this.PLAYER.TakeDamage(LastDamage);
 
-        Debug.Log(damage + "*" + Multiplier + " = " + LastDamage);
 
     }
 }

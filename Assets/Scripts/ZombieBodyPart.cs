@@ -18,13 +18,11 @@ public class ZombieBodyPart : MonoBehaviour
     {
         if (zombie == null)
         {
-            Debug.LogWarning($"No hay zombie asignado en {gameObject.name}");
             return;
         }
 
         lastDamage = damage * damageMultiplier;
         zombie.TakeDamage(lastDamage);
 
-        Debug.Log($"Zombie golpeado en {bodyPartName}: {damage} * {damageMultiplier} = {lastDamage}");
     }
 }

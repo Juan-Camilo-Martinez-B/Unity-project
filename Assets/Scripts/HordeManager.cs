@@ -6,8 +6,8 @@ using UnityEngine.AI;
 public class HordeManager : MonoBehaviour
 {
     [Header("Horde Configuration")]
-    [Tooltip("Prefab del zombie a spawnear")]
-    public GameObject zombiePrefab;
+    [Tooltip("Prefabs de enemigos a spawnear (Zombie, Demon, etc.)")]
+    public GameObject[] enemyPrefabs; // Array de prefabs
     
     [Tooltip("Radio del área de spawn alrededor de este objeto")]
     public float spawnRadius = 20f;
@@ -46,29 +46,24 @@ public class HordeManager : MonoBehaviour
     
     void Start()
     {
-        Debug.Log("🎮 HordeManager iniciado");
         
         // Buscar al jugador
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
             player = playerObj.transform;
-            Debug.Log($"✅ Player encontrado: {player.name}");
         }
         else
         {
-            Debug.LogError("❌ No se encontró Player con tag 'Player'");
         }
         
         // Verificar que el LevelManager existe en la escena desde el inicio
         LevelManager levelManager = FindObjectOfType<LevelManager>();
         if (levelManager != null)
         {
-            Debug.Log($"✅ LevelManager encontrado en Start: {levelManager.name}");
         }
         else
         {
-            Debug.LogError("❌ NO SE ENCONTRÓ LevelManager en Start!");
         }
         
         // Iniciar la primera horda con delay inicial
@@ -77,7 +72,6 @@ public class HordeManager : MonoBehaviour
     
     IEnumerator StartFirstHorde()
     {
-        Debug.Log($"⏳ Esperando {initialDelay} segundos antes de iniciar la primera horda...");
         yield return new WaitForSeconds(initialDelay);
         
         // Ahora sí iniciar la primera horda
@@ -93,13 +87,11 @@ public class HordeManager : MonoBehaviour
         if (activeZombies.Count != lastZombieCount)
         {
             lastZombieCount = activeZombies.Count;
-            Debug.Log($"📊 Zombies activos: {activeZombies.Count} | Horda activa: {hordeActive} | Por spawnear: {zombiesRemainingInHorde} | Horda: {currentHordeIndex + 1}/{hordeWaves.Length}");
         }
         
         // Verificar si la horda actual se completó
         if (hordeActive && activeZombies.Count == 0 && zombiesRemainingInHorde == 0)
         {
-            Debug.Log($"🔍 Detectado fin de horda - Zombies activos: {activeZombies.Count}, Por spawnear: {zombiesRemainingInHorde}");
             HordeCompleted();
         }
     }
@@ -115,7 +107,6 @@ public class HordeManager : MonoBehaviour
         // Esperar antes de iniciar la horda
         if (currentHordeIndex > 0)
         {
-            Debug.Log($"⏳ Esperando {timeBetweenHordes} segundos antes de la Horda {currentHordeIndex + 1}...");
             yield return new WaitForSeconds(timeBetweenHordes);
         }
         
@@ -123,10 +114,6 @@ public class HordeManager : MonoBehaviour
         zombiesRemainingInHorde = currentWave.zombieCount;
         hordeActive = true;
         
-        Debug.Log($"🧟 INICIANDO HORDA {currentHordeIndex + 1}/{hordeWaves.Length}");
-        Debug.Log($"   - Zombies: {currentWave.zombieCount}");
-        Debug.Log($"   - Velocidad: {currentWave.runSpeed}");
-        Debug.Log($"   - Daño: {currentWave.attackDamage}");
         
         // Actualizar el contador de hordas en la UI
         UpdateHordeUI();
@@ -143,9 +130,16 @@ public class HordeManager : MonoBehaviour
     
     void SpawnZombie(HordeWave wave)
     {
-        if (zombiePrefab == null)
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0)
         {
-            Debug.LogError("HordeManager: zombiePrefab no está asignado!");
+            return;
+        }
+        
+        // Seleccionar un prefab aleatorio del array
+        GameObject selectedPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+        
+        if (selectedPrefab == null)
+        {
             return;
         }
         
@@ -154,23 +148,22 @@ public class HordeManager : MonoBehaviour
         
         if (spawnPosition == Vector3.zero)
         {
-            Debug.LogWarning("HordeManager: No se pudo encontrar posición válida en NavMesh");
             return;
         }
         
-        // Instanciar zombie
-        GameObject zombie = Instantiate(zombiePrefab, spawnPosition, Quaternion.identity);
-        zombie.name = $"Zombie_Horde{currentHordeIndex + 1}_{activeZombies.Count + 1}";
+        // Instanciar enemigo
+        GameObject enemy = Instantiate(selectedPrefab, spawnPosition, Quaternion.identity);
+        string enemyType = selectedPrefab.name.Contains("Demon") ? "Demon" : "Zombie";
+        enemy.name = $"{enemyType}_Horde{currentHordeIndex + 1}_{activeZombies.Count + 1}";
         
-        // Configurar ZombieController
-        ZombieController zombieController = zombie.GetComponent<ZombieController>();
+        // Intentar configurar como Zombie
+        ZombieController zombieController = enemy.GetComponent<ZombieController>();
         if (zombieController != null)
         {
             // Forzar modo Horde si está activado el override
             if (overrideBehaviorMode)
             {
                 zombieController.behaviorMode = ZombieBehaviorMode.Horde;
-                Debug.Log($"🔄 Comportamiento forzado a Horde para {zombie.name}");
             }
             
             // Asignar jugador
@@ -180,10 +173,28 @@ public class HordeManager : MonoBehaviour
             zombieController.runSpeed = wave.runSpeed;
             zombieController.attackDamage = wave.attackDamage;
             
-            Debug.Log($"✅ Zombie spawneado - Modo: {zombieController.behaviorMode}, Velocidad: {wave.runSpeed}, Daño: {wave.attackDamage}");
         }
         
-        activeZombies.Add(zombie);
+        // Intentar configurar como Demon
+        DemonController demonController = enemy.GetComponent<DemonController>();
+        if (demonController != null)
+        {
+            // Forzar modo Horde si está activado el override
+            if (overrideBehaviorMode)
+            {
+                demonController.behaviorMode = DemonBehaviorMode.Horde;
+            }
+            
+            // Asignar jugador
+            demonController.player = player;
+            
+            // Configurar velocidad y daño de la horda actual
+            demonController.runSpeed = wave.runSpeed;
+            demonController.attackDamage = wave.attackDamage;
+            
+        }
+        
+        activeZombies.Add(enemy);
     }
     
     Vector3 GetRandomNavMeshPosition()
@@ -202,7 +213,6 @@ public class HordeManager : MonoBehaviour
             }
         }
         
-        Debug.LogWarning("No se pudo encontrar posición válida después de 30 intentos");
         return Vector3.zero;
     }
     
@@ -212,20 +222,17 @@ public class HordeManager : MonoBehaviour
         
         hordeActive = false; // Desactivar inmediatamente para evitar re-entrada
         
-        Debug.Log($"✅ HORDA {currentHordeIndex + 1}/{hordeWaves.Length} COMPLETADA!");
         
         // PRIMERO verificar si era la última horda ANTES de incrementar
         if (currentHordeIndex + 1 >= hordeWaves.Length)
         {
             // Era la última horda, victoria inmediata
-            Debug.Log("🎯 Era la ÚLTIMA horda - Activando victoria INMEDIATAMENTE");
             currentHordeIndex++;
             AllHordesCompleted();
         }
         else
         {
             // Hay más hordas, incrementar y continuar
-            Debug.Log($"➡️ Preparando siguiente horda ({currentHordeIndex + 2}/{hordeWaves.Length})");
             currentHordeIndex++;
             StartCoroutine(StartNextHorde());
         }
@@ -236,18 +243,15 @@ public class HordeManager : MonoBehaviour
         if (allHordesCompleted) return;
         allHordesCompleted = true;
         
-        Debug.Log("🎉 ¡TODAS LAS HORDAS COMPLETADAS! ¡VICTORIA!");
         
         // Notificar al LevelManager usando la función específica para Industry
         LevelManager levelManager = FindObjectOfType<LevelManager>();
         
         if (levelManager == null)
         {
-            Debug.LogError("❌ NO SE ENCONTRÓ LevelManager en la escena!");
             return;
         }
         
-        Debug.Log($"✅ LevelManager encontrado - Llamando a OnAllHordesCompleted()");
         levelManager.OnAllHordesCompleted(); // Función específica para Industry
     }
     

@@ -16,7 +16,6 @@ public class BossAnimationReceiver : MonoBehaviour
         }
         else
         {
-            Debug.LogError("OnAttackHit: No se encontró BossController en los padres!");
         }
     }
 
@@ -30,7 +29,6 @@ public class BossAnimationReceiver : MonoBehaviour
         }
         else
         {
-            Debug.LogError("OnAttackEnd: No se encontró BossController en los padres!");
         }
     }
 }

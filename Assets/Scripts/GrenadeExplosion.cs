@@ -97,7 +97,6 @@ public class GrenadeExplosion : MonoBehaviour
                 if (barrel != null)
                 {
                     barrel.TakeHit();
-                    Debug.Log("Granada hizo explotar un barril!");
                     continue; // Saltar al siguiente objeto
                 }
 
@@ -116,7 +115,6 @@ public class GrenadeExplosion : MonoBehaviour
 
                         float finalDamage = explodeDamage - explodeDamage * damageDisminution;
                         playerBodyPart.TakeHit(finalDamage);
-                        Debug.Log("Explosión en " + playerBodyPart.BodyName);
                     }
 
                     // Detectar partes del cuerpo del zombie
@@ -132,7 +130,21 @@ public class GrenadeExplosion : MonoBehaviour
 
                         float finalDamage = explodeDamage - explodeDamage * damageDisminution;
                         zombieBodyPart.TakeHit(finalDamage);
-                        Debug.Log($"Granada dañó a zombie con {finalDamage} de daño");
+                    }
+
+                    // Detectar partes del cuerpo del demon
+                    DemonBodyPart demonBodyPart = go.GetComponent<DemonBodyPart>();
+
+                    if (demonBodyPart != null)
+                    {
+                        Vector3 collisionPos = c.ClosestPoint(explodePos);
+
+                        float distance = Vector3.Distance(explodePos, collisionPos);
+
+                        float damageDisminution = distance / damageArea;
+
+                        float finalDamage = explodeDamage - explodeDamage * damageDisminution;
+                        demonBodyPart.TakeHit(finalDamage);
                     }
 
                     // Detectar partes del cuerpo del boss
@@ -148,7 +160,6 @@ public class GrenadeExplosion : MonoBehaviour
 
                         float finalDamage = explodeDamage - explodeDamage * damageDisminution;
                         bossBodyPart.TakeHit(finalDamage);
-                        Debug.Log($"Granada dañó al BOSS con {finalDamage} de daño");
                     }
                 }
             }

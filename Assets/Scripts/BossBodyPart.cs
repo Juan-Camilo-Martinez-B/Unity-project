@@ -16,13 +16,11 @@ public class BossBodyPart : MonoBehaviour
     {
         if (boss == null)
         {
-            Debug.LogWarning($"No hay boss asignado en {gameObject.name}");
             return;
         }
 
         lastDamage = damage * damageMultiplier;
         boss.TakeDamage(lastDamage);
 
-        Debug.Log($"Boss golpeado en {bodyPartName}: {damage} * {damageMultiplier} = {lastDamage}");
     }
 }

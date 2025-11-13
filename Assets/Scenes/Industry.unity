@@ -580,7 +580,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 33147046}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Bucket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -617,7 +617,7 @@ GameObject:
   - component: {fileID: 33907698}
   - component: {fileID: 33907697}
   - component: {fileID: 33907701}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Factory1Wall05 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -809,7 +809,7 @@ GameObject:
   m_Component:
   - component: {fileID: 56609502}
   - component: {fileID: 56609501}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -903,6 +903,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 8da9c1c089c4a1e45ae74c8aaacfebf1, type: 3}
       propertyPath: m_Name
       value: Factory1Stairs05
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 8da9c1c089c4a1e45ae74c8aaacfebf1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 8da9c1c089c4a1e45ae74c8aaacfebf1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -1133,6 +1137,10 @@ PrefabInstance:
       value: Factory1Column07 (5)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -1336,6 +1344,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: a092c0f0b11001d408725f5da8d5b238, type: 3}
       propertyPath: m_Name
       value: Crane01_Motor
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a092c0f0b11001d408725f5da8d5b238, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: a092c0f0b11001d408725f5da8d5b238, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1591,7 +1603,7 @@ GameObject:
   - component: {fileID: 103810652}
   - component: {fileID: 103810651}
   - component: {fileID: 103810655}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Factory1Wall05 (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1919,6 +1931,10 @@ PrefabInstance:
       value: GibbletChunk_6
       objectReference: {fileID: 0}
     - target: {fileID: 1529133568323316, guid: dd107709ac611784db7b9d0e4c74761f, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529133568323316, guid: dd107709ac611784db7b9d0e4c74761f, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -2045,6 +2061,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_Name
       value: Factory1Column07 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -2328,6 +2348,10 @@ PrefabInstance:
       value: Crane01_Motor (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: a092c0f0b11001d408725f5da8d5b238, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a092c0f0b11001d408725f5da8d5b238, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -2406,12 +2430,24 @@ PrefabInstance:
       value: Factory1Wall05 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -2512,6 +2548,10 @@ PrefabInstance:
       value: barrel
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -2576,6 +2616,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_Name
       value: Factory1Column07
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -2665,12 +2709,24 @@ PrefabInstance:
       value: Factory1Wall05
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -2915,6 +2971,10 @@ PrefabInstance:
       value: Factory1RoofBase02 (3)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -3126,7 +3186,7 @@ GameObject:
   m_Component:
   - component: {fileID: 218689524}
   - component: {fileID: 218689523}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point Light (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3219,7 +3279,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 220299811}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PowerBoxes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3253,6 +3313,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: d9ab29e445999844d9c200a6f1155cee, type: 3}
       propertyPath: m_Name
       value: Debris01_11 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: d9ab29e445999844d9c200a6f1155cee, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: d9ab29e445999844d9c200a6f1155cee, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3322,7 +3386,7 @@ GameObject:
   - component: {fileID: 228668358}
   - component: {fileID: 228668357}
   - component: {fileID: 228668361}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Factory1Wall05 (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3435,6 +3499,10 @@ PrefabInstance:
       value: Barrel01_1
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c5fdf194e3a0c184d862ed90db5c3f15, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: c5fdf194e3a0c184d862ed90db5c3f15, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -3513,6 +3581,10 @@ PrefabInstance:
       value: barrel (4)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -3575,8 +3647,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 1935701995}
     m_Modifications:
     - target: {fileID: 100000, guid: b3d72c569766eaf428b607f5c8d95bd1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: b3d72c569766eaf428b607f5c8d95bd1, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: b3d72c569766eaf428b607f5c8d95bd1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: b3d72c569766eaf428b607f5c8d95bd1, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3585,6 +3665,10 @@ PrefabInstance:
     - target: {fileID: 100004, guid: b3d72c569766eaf428b607f5c8d95bd1, type: 3}
       propertyPath: m_Name
       value: MetalCabinet01 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: b3d72c569766eaf428b607f5c8d95bd1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: b3d72c569766eaf428b607f5c8d95bd1, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3989,6 +4073,10 @@ PrefabInstance:
       value: Factory2Roof01 (5)
       objectReference: {fileID: 0}
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -4061,6 +4149,10 @@ PrefabInstance:
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_Name
       value: Factory2Roof01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_NavMeshLayer
@@ -4311,6 +4403,10 @@ PrefabInstance:
       value: PowerBox01 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 100623eee8fd22f4ea50598150f1493c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 100623eee8fd22f4ea50598150f1493c, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -4398,7 +4494,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de48760e5e2a773469a0c16392506023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zombiePrefab: {fileID: 5150228463407965037, guid: 275518d3441fe0c4f80247bfcca3dd7e, type: 3}
+  enemyPrefabs:
+  - {fileID: 3031622495715407176, guid: 3d25275ba196fe040bf69316a70b1ab6, type: 3}
   spawnRadius: 20
   navMeshCheckHeight: 10
   overrideBehaviorMode: 1
@@ -4522,6 +4619,10 @@ PrefabInstance:
       value: Machine_2 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c3158a446a7670d4a8b8025471bce655, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: c3158a446a7670d4a8b8025471bce655, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -4593,7 +4694,7 @@ GameObject:
   - component: {fileID: 349040349}
   - component: {fileID: 349040348}
   - component: {fileID: 349040352}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Factory1Wall05 (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5098,7 +5199,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 425326534}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5132,6 +5233,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -5209,7 +5314,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 434543640}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5301,6 +5406,10 @@ PrefabInstance:
       value: Factory1Column07 (6)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -5375,6 +5484,10 @@ PrefabInstance:
       value: Debris01_1
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: dca939ce68f0e864a9372a26438c9058, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: dca939ce68f0e864a9372a26438c9058, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -5439,7 +5552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 466899359}
   - component: {fileID: 466899358}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point Light (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5743,7 +5856,7 @@ GameObject:
   m_Component:
   - component: {fileID: 498232692}
   - component: {fileID: 498232691}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point Light (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5974,6 +6087,10 @@ PrefabInstance:
       value: GibbletChunk_2 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -6090,6 +6207,10 @@ PrefabInstance:
       value: barrel (8)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -6166,6 +6287,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 729712885}
     m_Modifications:
     - target: {fileID: 100000, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -6174,8 +6299,16 @@ PrefabInstance:
       value: FanBig01Motor01Animated (2)
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -6242,6 +6375,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: d5efdfc02eb2a2d478bd0ff34f281ff0, type: 3}
       propertyPath: m_Name
       value: Machine_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: d5efdfc02eb2a2d478bd0ff34f281ff0, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: d5efdfc02eb2a2d478bd0ff34f281ff0, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -6312,6 +6449,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (17)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -6629,7 +6770,7 @@ GameObject:
   - component: {fileID: 556047689}
   - component: {fileID: 556047688}
   - component: {fileID: 556047691}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Factory1Wall05 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6742,6 +6883,10 @@ PrefabInstance:
       value: Factory1RoofBase02 (18)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -6818,6 +6963,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
       propertyPath: m_Name
       value: Barrel01_4 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -7146,6 +7295,10 @@ PrefabInstance:
       value: Factory1RoofBase02 (4)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -7248,6 +7401,10 @@ PrefabInstance:
       value: Factory1Column07 (3)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -7316,6 +7473,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -7396,6 +7557,10 @@ PrefabInstance:
       value: Debris01_5 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -7474,6 +7639,10 @@ PrefabInstance:
       value: Machine_4
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 69688ec739c8adb4f98ee4ab864ac25e, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 69688ec739c8adb4f98ee4ab864ac25e, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -7540,6 +7709,10 @@ PrefabInstance:
       value: Debris01_3
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 187b9ac747e8f4a42aacccfb5f232306, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 187b9ac747e8f4a42aacccfb5f232306, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -7603,7 +7776,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 650179335}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Debris
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7646,6 +7819,10 @@ PrefabInstance:
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_Name
       value: Factory2Roof01 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_NavMeshLayer
@@ -7738,7 +7915,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 661738863}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Techo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7974,6 +8151,10 @@ PrefabInstance:
       value: Factory1RoofBase02 (20)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -8081,7 +8262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 705507995}
   - component: {fileID: 705507994}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Directional Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8314,6 +8495,10 @@ PrefabInstance:
       value: barrel (10)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -8494,6 +8679,10 @@ PrefabInstance:
       value: Debris01_5
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -8573,7 +8762,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 729712885}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Motor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8594,8 +8783,8 @@ Transform:
   m_Children:
   - {fileID: 1746691134}
   - {fileID: 76443383}
-  - {fileID: 136856149}
   - {fileID: 2010653840}
+  - {fileID: 136856149}
   - {fileID: 601480144}
   m_Father: {fileID: 889565263}
   m_RootOrder: 8
@@ -9055,6 +9244,10 @@ PrefabInstance:
       value: Factory1RoofBase02 (15)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -9129,6 +9322,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 729712885}
     m_Modifications:
     - target: {fileID: 100000, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -9137,8 +9334,16 @@ PrefabInstance:
       value: FanBig01Motor01Animated (3)
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -9276,6 +9481,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -9495,6 +9704,10 @@ PrefabInstance:
       value: barrel (3)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -9592,6 +9805,10 @@ PrefabInstance:
       value: GibbletChunk_2 (2)
       objectReference: {fileID: 0}
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -9671,7 +9888,7 @@ GameObject:
   - component: {fileID: 867732882}
   - component: {fileID: 867732881}
   - component: {fileID: 867732885}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Factory1Wall05 (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9801,6 +10018,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: a8fcabaf169e7694196ea0b13fc7accb, type: 3}
       propertyPath: m_Name
       value: Factory1Roof02
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a8fcabaf169e7694196ea0b13fc7accb, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: a8fcabaf169e7694196ea0b13fc7accb, type: 3}
       propertyPath: m_NavMeshLayer
@@ -9999,6 +10220,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 7b7ac627a1a519a47ace218329e281fe, type: 3}
       propertyPath: m_Name
       value: Debris01_12
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 7b7ac627a1a519a47ace218329e281fe, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 7b7ac627a1a519a47ace218329e281fe, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -10409,7 +10634,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 941653804}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Machines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10846,6 +11071,10 @@ PrefabInstance:
       value: Machine_1
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: f7096417ffd00cf4596a2755f59291ad, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: f7096417ffd00cf4596a2755f59291ad, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -10910,7 +11139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 985545621}
   - component: {fileID: 985545620}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11040,7 +11269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   killsRequired: 5
   timeWindow: 8
-  timeReduction: 0.8
+  timeReduction: 1.5
   healAmount: 35
   killsPerHeal: 5
   totalKills: 0
@@ -11074,6 +11303,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e64c4f7261ca88a4daf1d48076c12336, type: 3}
       propertyPath: m_Name
       value: Machine_5
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e64c4f7261ca88a4daf1d48076c12336, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: e64c4f7261ca88a4daf1d48076c12336, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -11140,6 +11373,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (19)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -11416,6 +11653,10 @@ PrefabInstance:
       value: barrel (6)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -11536,6 +11777,10 @@ PrefabInstance:
       value: GibbletChunk_2 (6)
       objectReference: {fileID: 0}
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -11612,6 +11857,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
       propertyPath: m_Name
       value: Debris01_5 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -11692,6 +11941,10 @@ PrefabInstance:
       value: Debris01_12 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 7b7ac627a1a519a47ace218329e281fe, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 7b7ac627a1a519a47ace218329e281fe, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -11756,6 +12009,10 @@ PrefabInstance:
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_Name
       value: Factory2Roof01 (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_NavMeshLayer
@@ -11933,6 +12190,10 @@ PrefabInstance:
       value: Factory1Stairs05 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 8da9c1c089c4a1e45ae74c8aaacfebf1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 8da9c1c089c4a1e45ae74c8aaacfebf1, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -12005,6 +12266,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_Name
       value: barrel (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -12087,12 +12352,24 @@ PrefabInstance:
       value: Factory1Wall05 (2)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -12219,6 +12496,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
       propertyPath: m_Name
       value: Barrel01_4
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -12553,6 +12834,10 @@ PrefabInstance:
     - target: {fileID: 1529133568323316, guid: dd107709ac611784db7b9d0e4c74761f, type: 3}
       propertyPath: m_Name
       value: GibbletChunk_6 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529133568323316, guid: dd107709ac611784db7b9d0e4c74761f, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1529133568323316, guid: dd107709ac611784db7b9d0e4c74761f, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -12965,7 +13250,7 @@ GameObject:
   - component: {fileID: 1215332097}
   - component: {fileID: 1215332096}
   - component: {fileID: 1215332100}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Factory1Wall05 (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13076,6 +13361,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_Name
       value: Factory1Column07 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -13275,6 +13564,10 @@ PrefabInstance:
       value: barrel (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -13338,7 +13631,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1235673912}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Columns
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13379,6 +13672,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -13457,6 +13754,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -13583,7 +13884,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Reiniciar nivel
+  m_text: Reiniciar juego
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -13744,7 +14045,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 00
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 8c97494ab5c4c574c8450f22a6a4be81, type: 2}
@@ -13853,6 +14154,10 @@ PrefabInstance:
       value: Factory2Roof01 (2)
       objectReference: {fileID: 0}
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -13925,6 +14230,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_Name
       value: barrel (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -14067,7 +14376,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2004049663}
         m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
-        m_MethodName: RestartLevel
+        m_MethodName: RestartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14125,6 +14434,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: d9ab29e445999844d9c200a6f1155cee, type: 3}
       propertyPath: m_Name
       value: Debris01_11
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: d9ab29e445999844d9c200a6f1155cee, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: d9ab29e445999844d9c200a6f1155cee, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -14191,6 +14504,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
       propertyPath: m_Name
       value: Barrel01_4 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -14329,6 +14646,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f091cb134a38e724599913f64ef89fbc, type: 3}
       propertyPath: m_Name
       value: bucket
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f091cb134a38e724599913f64ef89fbc, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f091cb134a38e724599913f64ef89fbc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -14564,6 +14885,10 @@ PrefabInstance:
       value: GibbletChunk_2 (4)
       objectReference: {fileID: 0}
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -14782,6 +15107,10 @@ PrefabInstance:
       value: Barrel01_4 (4)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -14861,6 +15190,10 @@ PrefabInstance:
       value: GibbletChunk_6 (2)
       objectReference: {fileID: 0}
     - target: {fileID: 1529133568323316, guid: dd107709ac611784db7b9d0e4c74761f, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529133568323316, guid: dd107709ac611784db7b9d0e4c74761f, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -14925,6 +15258,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 1d8c5fb2523c68243974af544e14168a, type: 3}
       propertyPath: m_Name
       value: Barrel01_3 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1d8c5fb2523c68243974af544e14168a, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 1d8c5fb2523c68243974af544e14168a, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -14999,6 +15336,10 @@ PrefabInstance:
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_Name
       value: GibbletChunk_2 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -15213,6 +15554,10 @@ PrefabInstance:
       value: Factory1Column07 (8)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -15293,7 +15638,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1474214222}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Chunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15470,7 +15815,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1486447734}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Ligths
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15509,6 +15854,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: fcf49f6f59161974b872d0d3ac6ec722, type: 3}
       propertyPath: m_Name
       value: Machine_6
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: fcf49f6f59161974b872d0d3ac6ec722, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: fcf49f6f59161974b872d0d3ac6ec722, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -15607,12 +15956,24 @@ PrefabInstance:
       value: Factory1Wall05 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: cb35a0332c0e6104187db474ffe90745, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -15732,6 +16093,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (14)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -16189,7 +16554,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Reiniciar nivel
+  m_text: Reiniciar juego
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -16275,7 +16640,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1519361760}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Barrels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16401,7 +16766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1555078913}
   - component: {fileID: 1555078912}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point Light (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16592,6 +16957,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f091cb134a38e724599913f64ef89fbc, type: 3}
       propertyPath: m_Name
       value: bucket (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f091cb134a38e724599913f64ef89fbc, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f091cb134a38e724599913f64ef89fbc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -17195,6 +17564,10 @@ PrefabInstance:
       value: Factory2Roof01 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -17400,6 +17773,10 @@ PrefabInstance:
       value: Factory1RoofBase02 (16)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -17478,6 +17855,10 @@ PrefabInstance:
       value: barrel (2)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -17542,6 +17923,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
       propertyPath: m_Name
       value: GasBallone01_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -17822,6 +18207,10 @@ PrefabInstance:
       value: Machine_7
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: a8a869e05071b0043b58a05e64e8da29, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a8a869e05071b0043b58a05e64e8da29, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -17886,6 +18275,10 @@ PrefabInstance:
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_Name
       value: GibbletChunk_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -18092,6 +18485,10 @@ PrefabInstance:
       value: Factory2Roof01 (7)
       objectReference: {fileID: 0}
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -18164,6 +18561,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -18240,6 +18641,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 729712885}
     m_Modifications:
     - target: {fileID: 100000, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -18248,8 +18653,16 @@ PrefabInstance:
       value: FanBig01Motor01Animated (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 1b2af3c8c45794748afe99f26b5f045a, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -18374,6 +18787,10 @@ PrefabInstance:
       value: Crane01_2
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 7cdb75cee630d9841b76ca8e1c518d94, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 7cdb75cee630d9841b76ca8e1c518d94, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -18446,6 +18863,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -18524,6 +18945,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -18664,6 +19089,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
       propertyPath: m_Name
       value: Barrel01_4 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: af811cc8ee082e544a3823537a0bb0e2, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -19124,6 +19553,10 @@ PrefabInstance:
       value: barrel (5)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5fa2bfd3e583009489e8f0d65bbdcb97, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -19333,6 +19766,10 @@ PrefabInstance:
       value: Factory2Roof01 (8)
       objectReference: {fileID: 0}
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -19409,6 +19846,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
       propertyPath: m_Name
       value: Debris01_5 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: efbfffa3f4c079a48a28140700711aa4, type: 3}
       propertyPath: m_NavMeshLayer
@@ -19511,6 +19952,10 @@ PrefabInstance:
       value: Factory1RoofBase02 (6)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -19589,6 +20034,10 @@ PrefabInstance:
       value: Machine_2
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c3158a446a7670d4a8b8025471bce655, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: c3158a446a7670d4a8b8025471bce655, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -19657,6 +20106,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: dca939ce68f0e864a9372a26438c9058, type: 3}
       propertyPath: m_Name
       value: Debris01_1 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: dca939ce68f0e864a9372a26438c9058, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: dca939ce68f0e864a9372a26438c9058, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -19865,6 +20318,10 @@ PrefabInstance:
       value: Factory1Roof02 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: a8fcabaf169e7694196ea0b13fc7accb, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a8fcabaf169e7694196ea0b13fc7accb, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -19953,7 +20410,7 @@ GameObject:
   - component: {fileID: 1912890079}
   - component: {fileID: 1912890078}
   - component: {fileID: 1912890081}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Factory1Wall05Glass (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20221,7 +20678,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1935701995}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cabines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20343,6 +20800,10 @@ PrefabInstance:
       value: GibbletChunk_2 (7)
       objectReference: {fileID: 0}
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -20419,6 +20880,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_Name
       value: Factory1Column07 (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -21231,6 +21696,10 @@ PrefabInstance:
       value: PowerBox01
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 100623eee8fd22f4ea50598150f1493c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 100623eee8fd22f4ea50598150f1493c, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -21475,6 +21944,7 @@ MonoBehaviour:
   bossIndustryTimeText: {fileID: 0}
   bossBossTimeText: {fileID: 0}
   bossTotalTimeText: {fileID: 0}
+  bossRankText: {fileID: 0}
   defeatIndustryTimeText: {fileID: 744754094}
   defeatIndustryHordeText: {fileID: 132059050}
   defeatPanel: {fileID: 1168999310}
@@ -21661,6 +22131,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_Name
       value: Factory1RoofBase02 (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
@@ -21985,7 +22459,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2040983023}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Others
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22019,6 +22493,10 @@ PrefabInstance:
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_Name
       value: GibbletChunk_2 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1970047134172502, guid: 2298a07c7abdd4b4db772ab4e69d7638, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -22386,6 +22864,10 @@ PrefabInstance:
       value: Factory2Roof01 (4)
       objectReference: {fileID: 0}
     - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955525371547290, guid: 6d346e0a4b2504f4ca59a85f4065a3e5, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -22456,7 +22938,7 @@ GameObject:
   - component: {fileID: 2110151273}
   - component: {fileID: 2110151272}
   - component: {fileID: 2110151271}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Factory1Wall05 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22858,6 +23340,10 @@ PrefabInstance:
       value: Factory1Column07 (2)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 04460bbac4f0e2c4f92c70b82e44e70c, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -23051,6 +23537,10 @@ PrefabInstance:
       value: Factory1RoofBase02 (11)
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2f8267db9a554e24290063c16e64f8d1, type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
       objectReference: {fileID: 0}
@@ -23126,7 +23616,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2138344255}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Doors
   m_TagString: Untagged
   m_Icon: {fileID: 0}

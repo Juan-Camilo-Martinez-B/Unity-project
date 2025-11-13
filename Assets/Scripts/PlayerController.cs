@@ -248,7 +248,6 @@ public class PlayerController : MonoBehaviour
                 {
                     if (!allowSwap)
                     {
-                        Debug.Log("Slot primario lleno. Presiona F para intercambiar.");
                         return; // No permitir recoger si el slot está lleno y no es intercambio
                     }
                     else
@@ -291,7 +290,6 @@ public class PlayerController : MonoBehaviour
                 {
                     if (!allowSwap)
                     {
-                        Debug.Log("Slot secundario lleno. Presiona F para intercambiar.");
                         return; // No permitir recoger si el slot está lleno y no es intercambio
                     }
                     else
@@ -333,7 +331,6 @@ public class PlayerController : MonoBehaviour
                 {
                     if (!allowSwap)
                     {
-                        Debug.Log("Slot de granada lleno. Presiona F para intercambiar.");
                         return; // No permitir recoger si el slot está lleno y no es intercambio
                     }
                     else
@@ -446,7 +443,6 @@ public class PlayerController : MonoBehaviour
         // Verificar que tengamos un prefab "Dropped" válido
         if (droppedPrefab == null)
         {
-            Debug.LogWarning("No se encontró el prefab Dropped con tag 'Item' para esta arma.");
             return;
         }
         
@@ -466,7 +462,6 @@ public class PlayerController : MonoBehaviour
         // Decrementar el contador de armas
         weapons--;
         
-        Debug.Log("Arma soltada usando posición/rotación del item original: " + droppedPrefab.name);
     }
 
     
@@ -480,7 +475,6 @@ public class PlayerController : MonoBehaviour
 
         if (currentHealth <= 0f)
         {
-            Debug.Log("A casa malo!");
 
             playerRagdoll.Active(true);
             Active = false;
@@ -491,7 +485,6 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Item"))
         {
-            Debug.Log("Hay un Item cerca!");
             nearItem = other.gameObject;
         }
 
@@ -501,7 +494,6 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Item"))
         {
-            Debug.Log("Ya no hay un Item cerca!");
             nearItem = null;
         }
         

@@ -53,6 +53,7 @@ public class LevelManager : MonoBehaviour
     public TextMeshProUGUI bossIndustryTimeText;
     public TextMeshProUGUI bossBossTimeText;
     public TextMeshProUGUI bossTotalTimeText;
+    public TextMeshProUGUI bossRankText; // S+, S, A, B, C
     
     [Header("Defeat Panel - Industry")]
     public TextMeshProUGUI defeatIndustryTimeText;
@@ -81,7 +82,8 @@ public class LevelManager : MonoBehaviour
     private float currentLevelTime = 0f; // Tiempo del nivel actual
     private static float globalTime = 0f; // Tiempo total del juego
     private static float laberintoTime = 0f; // Tiempo del nivel Laberinto
-    private static float industryTime = 0f; // Tiempo del nivel Industry
+    private static float industryRawTime = 0f; // Tiempo jugado original de Industry
+    private static float industryTime = 0f; // Tiempo del nivel Industry (ajustado con bonus)
     private static float bossTime = 0f; // Tiempo del nivel Boss
     private static bool isFirstLevelLoad = true; // Para detectar si es la primera carga del juego
     
@@ -93,13 +95,10 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("🎮 ========== LEVELMANAGER INICIADO ==========");
         
         // Obtener el nombre de la escena actual
         currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         
-        Debug.Log($"📍 Escena actual: {currentSceneName}");
-        Debug.Log($"🎯 GameObject: {gameObject.name}");
         
         // Si es la primera carga del juego y estamos en testing, simular progresión previa
         if (isFirstLevelLoad && allowTestingFromAnyLevel)
@@ -111,8 +110,6 @@ public class LevelManager : MonoBehaviour
         // Determinar si usar el sistema de barriles (solo en Laberinto)
         useBarrelSystem = (currentSceneName == "Laberinto");
         
-        Debug.Log($"Sistema de barriles: {(useBarrelSystem ? "ACTIVADO" : "DESACTIVADO")}");
-        Debug.Log($"Tiempo global acumulado: {GetFormattedTime(globalTime)}");
 
         // Obtener referencia al PlayerController
         if (player != null)
@@ -136,8 +133,6 @@ public class LevelManager : MonoBehaviour
                 {
                     laberintoTime = 120f; // Tiempo simulado: 2 minutos
                     globalTime = laberintoTime;
-                    Debug.Log($"🔧 [TESTING] Simulando progresión previa para Industry");
-                    Debug.Log($"   - Tiempo Laberinto simulado: {GetFormattedTime(laberintoTime)}");
                 }
                 break;
                 
@@ -146,18 +141,13 @@ public class LevelManager : MonoBehaviour
                 if (laberintoTime == 0f && industryTime == 0f)
                 {
                     laberintoTime = 120f; // 2 minutos
-                    industryTime = 180f;    // 3 minutos
+                    industryTime = 150f;    // 2.5 minutos (ya con bonus aplicado simulado)
                     globalTime = laberintoTime + industryTime;
-                    Debug.Log($"🔧 [TESTING] Simulando progresión previa para Boss");
-                    Debug.Log($"   - Tiempo Laberinto simulado: {GetFormattedTime(laberintoTime)}");
-                    Debug.Log($"   - Tiempo Industry simulado: {GetFormattedTime(industryTime)}");
-                    Debug.Log($"   - Tiempo global simulado: {GetFormattedTime(globalTime)}");
                 }
                 break;
                 
             case "Laberinto":
                 // Si iniciamos en Laberinto, resetear todo (es el nivel inicial)
-                Debug.Log($"🎮 Iniciando desde el primer nivel (Laberinto)");
                 break;
         }
     }
@@ -199,7 +189,6 @@ public class LevelManager : MonoBehaviour
             if (barrelCountText != null)
                 barrelCountText.transform.parent.gameObject.SetActive(false);
             
-            Debug.Log("Sistema de barriles desactivado para esta escena");
             return;
         }
 
@@ -209,7 +198,6 @@ public class LevelManager : MonoBehaviour
         
         UpdateBarrelUI();
         
-        Debug.Log($"Total de barriles en la escena: {totalBarrels}");
     }
 
     void Update()
@@ -232,7 +220,6 @@ public class LevelManager : MonoBehaviour
             // Verificar que EventSystem esté disponible
             if (EventSystem.current == null)
             {
-                Debug.LogWarning("EventSystem no disponible");
                 return;
             }
 
@@ -244,33 +231,27 @@ public class LevelManager : MonoBehaviour
             List<RaycastResult> results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointerData, results);
 
-            Debug.Log($"Raycast detectó {results.Count} objetos");
 
             foreach (RaycastResult result in results)
             {
-                Debug.Log($"Objeto detectado: {result.gameObject.name}");
                 
                 if (result.gameObject == startButton)
                 {
-                    Debug.Log("Click en Start!");
                     StartGame();
                     return;
                 }
                 else if (result.gameObject == resumeButton)
                 {
-                    Debug.Log("Click en Resume!");
                     ResumeGame();
                     return;
                 }
                 else if (result.gameObject == exitButton)
                 {
-                    Debug.Log("Click en Exit!");
                     ExitGame();
                     return;
                 }
                 else if (result.gameObject == playButton)
                 {
-                    Debug.Log("Click en Play!");
                     PlayGame();
                     return;
                 }
@@ -385,7 +366,6 @@ public class LevelManager : MonoBehaviour
     {
         if (initialMessagePanel == null)
         {
-            Debug.LogError("Initial Message Panel no está asignado!");
             return;
         }
 
@@ -511,14 +491,12 @@ public class LevelManager : MonoBehaviour
         destroyedBarrels++;
         UpdateBarrelUI();
         
-        Debug.Log($"Barril destruido! {destroyedBarrels}/{totalBarrels}");
 
         // Verificar si se destruyeron todos los barriles
         if (destroyedBarrels >= totalBarrels)
         {
             // DETENER TIMER INMEDIATAMENTE al completar el objetivo
             isGameOver = true;
-            Debug.Log($"⏱️ TIMER DETENIDO - Tiempo final: {GetFormattedTime(currentLevelTime)}");
             
             WinGame();
         }
@@ -532,8 +510,6 @@ public class LevelManager : MonoBehaviour
 
         // DETENER TIMER INMEDIATAMENTE al derrotar al boss
         isGameOver = true;
-        Debug.Log($"🏆 BOSS DERROTADO - Timer detenido en: {GetFormattedTime(currentLevelTime)}");
-        Debug.Log("⏳ Esperando animación de muerte...");
         
         // Iniciar corrutina para esperar antes de mostrar victoria
         StartCoroutine(BossDefeatedSequence());
@@ -542,19 +518,14 @@ public class LevelManager : MonoBehaviour
     // Función específica para cuando se completan todas las hordas en Industry
     public void OnAllHordesCompleted()
     {
-        Debug.Log($"⚠️ OnAllHordesCompleted llamado - isGameStarted: {isGameStarted}, isGameOver: {isGameOver}");
         
         if (!isGameStarted || isGameOver)
         {
-            Debug.LogWarning($"⚠️ Victoria bloqueada - isGameStarted: {isGameStarted}, isGameOver: {isGameOver}");
             return;
         }
 
         // DETENER TIMER INMEDIATAMENTE al eliminar todos los zombies
         isGameOver = true;
-        Debug.Log($"🎉 TODAS LAS HORDAS COMPLETADAS - Timer detenido en: {GetFormattedTime(currentLevelTime)}");
-        Debug.Log($"⏱️ isGameOver ahora es: {isGameOver} - El timer NO debería seguir corriendo");
-        Debug.Log("✅ Mostrando panel de victoria de Industry...");
         
         // Para Industry no hay animación de muerte del boss, mostrar victoria inmediatamente
         WinGame();
@@ -574,7 +545,6 @@ public class LevelManager : MonoBehaviour
             yield return null;
         }
         
-        Debug.Log("🏆 VICTORIA! Mostrando panel...");
         WinGame();
     }
 
@@ -589,21 +559,25 @@ public class LevelManager : MonoBehaviour
         {
             case "Laberinto":
                 laberintoTime = currentLevelTime;
-                Debug.Log($"✅ ¡VICTORIA LABERINTO! Tiempo final: {GetFormattedTime(currentLevelTime)}");
                 break;
             case "Industry":
-                industryTime = currentLevelTime;
-                Debug.Log($"✅ ¡VICTORIA INDUSTRY! Tiempo final: {GetFormattedTime(currentLevelTime)}");
+                // Guardar el tiempo jugado original y el ajustado con bonificadores
+                industryRawTime = currentLevelTime;
+                KillStreakBonus killStreak = FindObjectOfType<KillStreakBonus>();
+                if (killStreak != null)
+                {
+                    industryTime = killStreak.GetAdjustedTime(industryRawTime);
+                }
+                else
+                {
+                    industryTime = industryRawTime;
+                }
                 break;
             case "Boss":
                 bossTime = currentLevelTime;
-                Debug.Log($"✅ ¡VICTORIA FINAL! Tiempo Boss: {GetFormattedTime(currentLevelTime)}");
-                Debug.Log($"📊 Tiempo Total del juego: {GetFormattedTime(globalTime)}");
                 break;
         }
 
-        Debug.Log($"⏱️ Tiempo del nivel guardado: {GetFormattedTime(currentLevelTime)}");
-        Debug.Log($"🌍 Tiempo global acumulado: {GetFormattedTime(globalTime)}");
         
         // Pausar el juego y desactivar controles
         PauseGameAndDisableControls();
@@ -662,9 +636,6 @@ public class LevelManager : MonoBehaviour
         if (isGameOver) return; // Evitar ejecutar múltiples veces
         isGameOver = true;
 
-        Debug.Log("DERROTA - El jugador murió");
-        Debug.Log($"Tiempo jugado: {GetFormattedTime()}");
-        Debug.Log($"Barriles destruidos: {destroyedBarrels}/{totalBarrels}");
         
         // Pausar el juego y desactivar controles
         PauseGameAndDisableControls();
@@ -676,8 +647,6 @@ public class LevelManager : MonoBehaviour
     // Mostrar el panel de victoria
     void ShowVictoryPanel()
     {
-        Debug.Log("=== INICIANDO ShowVictoryPanel ===");
-        Debug.Log($"Escena actual: {currentSceneName}");
         
         // Determinar qué panel mostrar según el nivel actual
         GameObject panelToShow = null;
@@ -688,20 +657,14 @@ public class LevelManager : MonoBehaviour
             {
                 panelToShow = victoryPanelLaberinto;
                 
-                Debug.Log("=== ACTUALIZANDO PANEL DE VICTORIA LABERINTO ===");
-                Debug.Log($"Tiempo del Laberinto: {laberintoTime}s ({GetFormattedTime(laberintoTime)})");
-                Debug.Log($"currentLevelTime: {currentLevelTime}s ({GetFormattedTime(currentLevelTime)})");
-                Debug.Log($"Barriles: {destroyedBarrels}/{totalBarrels}");
                 
                 // PRIMERO activar el panel para que los componentes estén disponibles
                 if (panelToShow != null)
                 {
                     panelToShow.SetActive(true);
-                    Debug.Log("✓ Panel activado");
                 }
                 else
                 {
-                    Debug.LogError("✗ victoryPanelLaberinto es NULL!");
                     return;
                 }
                 
@@ -710,95 +673,65 @@ public class LevelManager : MonoBehaviour
                 {
                     string formattedTime = GetFormattedTime(laberintoTime);
                     laberintoLevelTimeText.text = formattedTime;
-                    Debug.Log($"✓ Tiempo actualizado: {formattedTime}");
-                    Debug.Log($"✓ Texto después de asignar: '{laberintoLevelTimeText.text}'");
                 }
                 else
                 {
-                    Debug.LogError("✗ laberintoLevelTimeText es NULL - No está asignado en el Inspector!");
                 }
                 
                 if (laberintoBarrelsText != null)
                 {
                     string barrelsText = $"{destroyedBarrels}/{totalBarrels}";
                     laberintoBarrelsText.text = barrelsText;
-                    Debug.Log($"✓ Barriles actualizados: {barrelsText}");
-                    Debug.Log($"✓ Texto después de asignar: '{laberintoBarrelsText.text}'");
                 }
                 else
                 {
-                    Debug.LogError("✗ laberintoBarrelsText es NULL - No está asignado en el Inspector!");
                 }
                 
-                Debug.Log("=== FIN ACTUALIZACIÓN LABERINTO ===");
                 break;
             }
                 
             case "Industry":
             {
                 panelToShow = victoryPanelIndustry;
-                
-                Debug.Log("=== ACTUALIZANDO PANEL DE VICTORIA INDUSTRY ===");
-                Debug.Log($"Tiempo Industry: {industryTime}s ({GetFormattedTime(industryTime)})");
-                
                 // PRIMERO verificar que el panel esté asignado
                 if (panelToShow == null)
                 {
-                    Debug.LogError("✗ victoryPanelIndustry es NULL! Asigna el panel en el Inspector.");
                     return;
                 }
-                
                 // Activar el panel
                 panelToShow.SetActive(true);
-                Debug.Log("✓ Panel Industry activado");
-                
                 // Actualizar estadísticas del Industry
-                KillStreakBonus killStreak = FindObjectOfType<KillStreakBonus>();
                 HordeManager hordeManager = FindObjectOfType<HordeManager>();
-                
                 if (industryPlayedTimeText != null)
                 {
-                    industryPlayedTimeText.text = GetFormattedTime(industryTime);
-                    Debug.Log($"✓ Tiempo jugado: {GetFormattedTime(industryTime)}");
+                    industryPlayedTimeText.text = GetFormattedTime(industryRawTime);
                 }
                 else
                 {
-                    Debug.LogWarning("✗ industryPlayedTimeText no asignado");
                 }
-                
-                if (killStreak != null && industryAdjustedTimeText != null)
+                if (industryAdjustedTimeText != null)
                 {
-                    float adjustedTime = killStreak.GetAdjustedTime(industryTime);
-                    industryAdjustedTimeText.text = GetFormattedTime(adjustedTime);
-                    Debug.Log($"✓ Tiempo ajustado: {GetFormattedTime(adjustedTime)}");
+                    industryAdjustedTimeText.text = GetFormattedTime(industryTime);
                 }
-                else if (industryAdjustedTimeText == null)
+                else
                 {
-                    Debug.LogWarning("✗ industryAdjustedTimeText no asignado");
                 }
-                
-                if (killStreak != null && industryTimeReducedText != null)
+                if (industryTimeReducedText != null)
                 {
-                    industryTimeReducedText.text = GetFormattedTime(killStreak.totalTimeReduced);
-                    Debug.Log($"✓ Tiempo reducido: {GetFormattedTime(killStreak.totalTimeReduced)}");
+                    float timeReduced = industryRawTime - industryTime;
+                    industryTimeReducedText.text = GetFormattedTime(timeReduced);
                 }
-                else if (industryTimeReducedText == null)
+                else
                 {
-                    Debug.LogWarning("✗ industryTimeReducedText no asignado");
                 }
-                
                 if (hordeManager != null && industryHordeProgressText != null)
                 {
                     string progress = hordeManager.GetHordeProgress();
                     industryHordeProgressText.text = progress;
-                    Debug.Log($"✓ Progreso hordas: {progress}");
                 }
                 else if (industryHordeProgressText == null)
                 {
-                    Debug.LogWarning("✗ industryHordeProgressText no asignado");
                 }
-                
-                Debug.Log("=== FIN ACTUALIZACIÓN INDUSTRY ===");
                 break;
             }
                 
@@ -812,23 +745,19 @@ public class LevelManager : MonoBehaviour
                     panelToShow.SetActive(true);
                 }
                 
-                // Calcular el tiempo ajustado de Industry con bonificadores
-                float adjustedIndustryTime = industryTime;
-                KillStreakBonus killStreak = FindObjectOfType<KillStreakBonus>();
-                if (killStreak != null)
-                {
-                    adjustedIndustryTime = killStreak.GetAdjustedTime(industryTime);
-                }
+                // El tiempo de Industry YA está ajustado con bonificadores (guardado en WinGame)
+                // No necesitamos recalcularlo aquí
+                float totalAdjustedTime = laberintoTime + industryTime + bossTime;
                 
-                // Calcular el tiempo total usando el tiempo ajustado de Industry
-                float totalAdjustedTime = laberintoTime + adjustedIndustryTime + bossTime;
+                // Calcular el rango basado en el tiempo total
+                string rank = CalculateRank(totalAdjustedTime);
                 
                 // Actualizar estadísticas finales del Boss (mostrar todos los tiempos)
                 if (bossLaberintoTimeText != null)
                     bossLaberintoTimeText.text = GetFormattedTime(laberintoTime);
                 
                 if (bossIndustryTimeText != null)
-                    bossIndustryTimeText.text = GetFormattedTime(adjustedIndustryTime);
+                    bossIndustryTimeText.text = GetFormattedTime(industryTime);
                 
                 if (bossBossTimeText != null)
                     bossBossTimeText.text = GetFormattedTime(bossTime);
@@ -836,21 +765,17 @@ public class LevelManager : MonoBehaviour
                 if (bossTotalTimeText != null)
                     bossTotalTimeText.text = GetFormattedTime(totalAdjustedTime);
                 
-                Debug.Log($"Mostrando panel de victoria FINAL:");
-                Debug.Log($"  - Tiempo Laberinto: {GetFormattedTime(laberintoTime)}");
-                Debug.Log($"  - Tiempo Industry (ajustado con bonificadores): {GetFormattedTime(adjustedIndustryTime)}");
-                Debug.Log($"  - Tiempo Boss: {GetFormattedTime(bossTime)}");
-                Debug.Log($"  - Tiempo TOTAL (con bonificadores): {GetFormattedTime(totalAdjustedTime)}");
+                if (bossRankText != null)
+                    bossRankText.text = rank;
+                
                 break;
             }
                 
             default:
-                Debug.LogWarning($"Escena '{currentSceneName}' no tiene panel de victoria asignado");
                 return;
         }
         
         // Ya no es necesario activar el panel aquí porque se activa en cada case
-        Debug.Log("=== FIN ShowVictoryPanel ===");
     }
 
     // Mostrar el panel de derrota
@@ -858,13 +783,11 @@ public class LevelManager : MonoBehaviour
     {
         if (defeatPanel == null)
         {
-            Debug.LogError("Defeat Panel no está asignado!");
             return;
         }
 
         defeatPanel.SetActive(true);
         
-        Debug.Log($"=== MOSTRANDO PANEL DE DERROTA - Nivel: {currentSceneName} ===");
 
         // Actualizar tiempo jugado del nivel actual
         if (defeatPlayedTimeText != null)
@@ -892,7 +815,6 @@ public class LevelManager : MonoBehaviour
             if (defeatIndustryTimeText != null)
             {
                 defeatIndustryTimeText.text = GetFormattedTime(currentLevelTime);
-                Debug.Log($"✓ Tiempo Industry en derrota: {GetFormattedTime(currentLevelTime)}");
             }
             
             if (hordeManager != null && defeatIndustryHordeText != null)
@@ -926,34 +848,6 @@ public class LevelManager : MonoBehaviour
         
         // Cargar siempre el primer nivel (Laberinto)
         UnityEngine.SceneManagement.SceneManager.LoadScene("Laberinto");
-    }
-
-    // Función para el botón Restart (llamar desde el Inspector)
-    public void RestartLevel()
-    {
-        // Restablecer el timeScale antes de recargar
-        Time.timeScale = 1f;
-        
-        // Resetear variables
-        hasGameBegun = false;
-        
-        // Si es el panel de DERROTA, reiniciar TODO el juego
-        if (isGameOver && defeatPanel != null && defeatPanel.activeSelf)
-        {
-            RestartGame();
-            return;
-        }
-        
-        // Si es VICTORIA del BOSS, reiniciar TODO el juego también
-        if (currentSceneName == "Boss" && victoryPanelBoss != null && victoryPanelBoss.activeSelf)
-        {
-            RestartGame();
-            return;
-        }
-        
-        // En cualquier otro caso (victoria en Laberinto o Nivel2), solo recargar el nivel actual
-        Debug.Log($"♻️ Reiniciando nivel actual: {currentSceneName}");
-        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneName);
     }
 
     // Función para el botón Next Level (llamar desde el Inspector)
@@ -1071,6 +965,33 @@ public class LevelManager : MonoBehaviour
         if (hordeCounterText != null)
         {
             hordeCounterText.text = $"Horda: {currentHorde}/{totalHordes}";
+        }
+    }
+    
+    // Calcular el rango basado en el tiempo total (como Resident Evil)
+    string CalculateRank(float totalTimeInSeconds)
+    {
+        float totalMinutes = totalTimeInSeconds / 60f;
+        
+        if (totalMinutes < 5f)
+        {
+            return "S+";
+        }
+        else if (totalMinutes < 5.5f)
+        {
+            return "S";
+        }
+        else if (totalMinutes < 6f)
+        {
+            return "A";
+        }
+        else if (totalMinutes < 6.5f)
+        {
+            return "B";
+        }
+        else
+        {
+            return "C";
         }
     }
 }
